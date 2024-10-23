@@ -2,6 +2,7 @@
 {
     public class User
     {
+        //Id người dùng
         public Guid? UserId { get; set; }
         public string UserCode { get; set; }
         public string FullName { get; set; }
