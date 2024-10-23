@@ -10,7 +10,6 @@
 }
 
 .header {
-    display: flex;
     background-color: yellowgreen;
     height: 56px;
     width: 100%;
@@ -18,12 +17,12 @@
 
 .nav {
     background-color: crimson;
-    width: 100%;
-    height: 56px;
+    width: 200px;
+    height: calc(100vh - 56px);
 }
 
 .main {
-    background-color: pink;
-    width: 100%;
-    height: calc(100vh - 112px);
+    background-color: tomato;
+    width: calc(100% - 200px);
+    height: calc(100vh - 56px);
 }
