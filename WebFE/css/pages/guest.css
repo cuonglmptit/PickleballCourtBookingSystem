@@ -1,0 +1,37 @@
+.left-header {
+    background-color: violet;
+    flex: 1;
+    font-family: roboto-bold;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    padding: 0 30px 0 30px;
+}
+
+.mid-header {
+    background-color: aliceblue;
+    flex: 1;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.mid-header div {
+    font-size: 16px;
+}
+
+.right-header {
+    background-color: teal;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    padding-right: 30px;
+}
+
+.right-header .profile {
+    width: 30px;
+    height: 30px;
+    background-color: white;
+}
