@@ -21,16 +21,31 @@ namespace PickleballCourtBookingSystem.Api.Controllers
             conn.Dispose();
             return StatusCode(200, users);
         }
+        
+        #region Field
+        /// <summary>
+        /// Repo làm việc với user
+        /// </summary>
+        // IUserRepository _userRepository;
+        /// <summary>
+        /// Làm việc với service
+        /// </summary>
+        // IUserService _userService;
+        #endregion
+    
+        #region Constructors
+        /// <summary>
+        /// Constructor của user controller
+        /// Author: CuongLM (07/08/2024)
+        /// </summary>
+        /// <param name="userRepository">DI tự tiêm</param>
+        /// <param name="userService">DI tự tiêm</param>
+        // public UsersController(IUserRepository userRepository, IUserService userService)
+        // {
+        //     _userRepository = userRepository;
+        //     _userService = userService;
+        // }
+        #endregion
 
-    //     [HttpPost]
-    //
-    //     public IActionResult AddUser([FromBody] User user)
-    //     {
-    //         MySqlConnection conn = new MySqlConnection(connectionString);
-    //         string query =
-    //             "INSERT INTO USER (id, code, username, password, email, phoneNumber, isActive, addressId, fullNameId, dateOfBirth)";
-    //         
-    //         
-    //     }
     }
 }
