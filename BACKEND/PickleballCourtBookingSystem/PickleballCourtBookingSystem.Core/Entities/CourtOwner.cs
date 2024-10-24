@@ -3,6 +3,6 @@ namespace PickleballCourtBookingSystem.Api.Models
 {
     public class CourtOwner
     {
-        public Guid? UserId { get; set; }
+        public Guid UserId { get; set; }
     }
 }
