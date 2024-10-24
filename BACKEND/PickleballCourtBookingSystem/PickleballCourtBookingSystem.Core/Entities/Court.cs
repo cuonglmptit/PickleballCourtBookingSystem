@@ -5,7 +5,7 @@ namespace PickleballCourtBookingSystem.Api.Models
     {
         public Guid Id { get; set; }
         public string? Description { get; set; }
-        public string AddressId { get; set; }
-        public string CourseOwnerId { get; set; }
+        public Guid AddressId { get; set; }
+        public Guid CourseOwnerId { get; set; }
     }
 }

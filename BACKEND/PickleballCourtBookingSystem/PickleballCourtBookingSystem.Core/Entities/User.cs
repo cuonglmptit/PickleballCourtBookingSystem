@@ -10,7 +10,7 @@
         public string PhoneNumber { get; set; }
         public DateTime? DateOfBirth { get; set; }
         public int IsActive { get; set; }
-        public string AddressId { get; set; }
-        public string FullNameId { get; set; }
+        public Guid AddressId { get; set; }
+        public Guid FullNameId { get; set; }
     }
 }
