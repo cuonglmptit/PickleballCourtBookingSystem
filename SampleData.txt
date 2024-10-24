@@ -1,0 +1,12 @@
+
+INSERT INTO `bliamiwwk9iex7i9hjc8`.`Address` (`id`, `city`, `district`, `ward`, `street`) VALUES ('23d453c6-938e-4803-9d1c-fb9214775237', 'Lào Cai', 'Phố Mới', 'Wolrd', '123');
+INSERT INTO `bliamiwwk9iex7i9hjc8`.`Address` (`id`, `city`, `district`, `ward`, `street`) VALUES ('350ac029-ecf1-4f34-89a8-0b0ea8b300cf', 'Lai Châu', 'Tân Uyên', 'Thân Thuộc', '123');
+INSERT INTO `bliamiwwk9iex7i9hjc8`.`FullName` (`id`, `firstName`, `middleName`, `lastName`) VALUES ('c59ac4e9-2f9f-49e3-bd12-d6c474305a9e', 'Cường', 'Mạnh', 'Lê');
+INSERT INTO `bliamiwwk9iex7i9hjc8`.`FullName` (`id`, `firstName`, `middleName`, `lastName`) VALUES ('b4fe6a7b-ecdd-47b7-9069-972876d4d1b2', 'Đức', 'Minh', 'Hoàng');
+INSERT INTO `bliamiwwk9iex7i9hjc8`.`Role` (`id`, `roleName`) VALUES ('3ce78851-a1a1-4f18-a30e-a11e7936088b', 'Admin');
+INSERT INTO `bliamiwwk9iex7i9hjc8`.`Role` (`id`, `roleName`) VALUES ('910f245e-715b-41fa-a0fa-b9298eef6811', 'CourtOwner');
+INSERT INTO `bliamiwwk9iex7i9hjc8`.`Role` (`id`, `roleName`) VALUES ('a86e3124-940c-442c-a7d4-76d6e4560ec9', 'Customer');
+
+
+INSERT INTO `bliamiwwk9iex7i9hjc8`.`User` (id, code, username, password, email, phoneNumber, isActive, addressId, fullNameId, dateOfBirth)
+VALUES ('57801d8e-16ac-4e3e-9d26-ddecc806ac03', '123', 'maxholmes', 'max', 'max@gmail.com', '123456', 1, '350ac029-ecf1-4f34-89a8-0b0ea8b300cf', 'b4fe6a7b-ecdd-47b7-9069-972876d4d1b2', '2002-09-17');
