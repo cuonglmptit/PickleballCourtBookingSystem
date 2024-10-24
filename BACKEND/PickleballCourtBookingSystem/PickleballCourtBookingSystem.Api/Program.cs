@@ -1,4 +1,10 @@
-﻿var builder = WebApplication.CreateBuilder(args);
+﻿using PickleballCourtBookingSystem.Core.Interfaces.DBContext;
+using PickleballCourtBookingSystem.Core.Interfaces.Infrastructure;
+using PickleballCourtBookingSystem.Core.Interfaces.Services;
+using PickleballCourtBookingSystem.Core.Services;
+using PickleballCourtBookingSystem.Infrastructure.Repository;
+
+var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
@@ -17,6 +23,11 @@ builder.Services.AddCors(options =>
             .AllowAnyHeader());
 });
 
+//Cấu hình Dependency Injection(DI) cho project
+builder.Services.AddScoped<IDbContext, MySqlDbContext>();
+builder.Services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
+builder.Services.AddScoped(typeof(IBaseService<>), typeof(BaseService<>));
+
 
 var app = builder.Build();
 
@@ -27,7 +38,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
+
+app.UseCors("AllowAllOrigins");
 
 app.UseAuthorization();
 

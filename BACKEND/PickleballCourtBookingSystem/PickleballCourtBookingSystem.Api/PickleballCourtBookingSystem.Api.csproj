@@ -12,4 +12,9 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.9.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\PickleballCourtBookingSystem.Core\PickleballCourtBookingSystem.Core.csproj" />
+    <ProjectReference Include="..\PickleballCourtBookingSystem.Infrastructure\PickleballCourtBookingSystem.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>
