@@ -1,10 +1,11 @@
 namespace PickleballCourtBookingSystem.Api.Models
-
 {
-    public class Cancellation
+    public class CourtTimeBooking
     {
         public Guid Id { get; set; }
-        public DateTime TimeCancel { get; set; }
         public Guid BookingId { get; set; }
+        public Guid CourtTimeId { get; set; }
     }
 }
+
+

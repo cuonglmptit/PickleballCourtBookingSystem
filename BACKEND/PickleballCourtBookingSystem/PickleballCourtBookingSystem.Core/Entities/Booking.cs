@@ -3,7 +3,7 @@ namespace PickleballCourtBookingSystem.Api.Models
 {
     public class Booking
     {
-        public Guid? Id { get; set; }
+        public Guid Id { get; set; }
         public DateTime TimeBooking { get; set; }
         public float Amount { get; set; }
         public int PaymentStatus { get; set; }
