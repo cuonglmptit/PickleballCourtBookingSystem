@@ -10,10 +10,10 @@ namespace PickleballCourtBookingSystem.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController : ControllerBase
+    public class UsersController : ControllerBase
     {
 
-        IBaseRepository<User> _userRepository;
+        IUserRepository _userRepository;
 
         #region Constructors
         /// <summary>
@@ -22,7 +22,7 @@ namespace PickleballCourtBookingSystem.Api.Controllers
         /// </summary>
         /// <param name="userRepository">DI tự tiêm</param>
         /// <param name="userService">DI tự tiêm</param>
-        public UserController(IBaseRepository<User> userRepository)
+        public UsersController(IUserRepository userRepository)
         {
             _userRepository = userRepository;
         }
