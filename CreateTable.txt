@@ -1,10 +1,4 @@
 use `pickleballcourtbookingsystem`;
-CREATE TABLE FullName (
-    id CHAR(36) PRIMARY KEY,
-    firstName VARCHAR(50),
-    middleName VARCHAR(50),
-    lastName VARCHAR(50)
-);
 
 CREATE TABLE Address (
     id CHAR(36) PRIMARY KEY,
@@ -24,9 +18,8 @@ CREATE TABLE User (
     dateOfBirth DATE,
     isActive INT,
     addressId CHAR(36),
-    fullNameId CHAR(36),
+    name VARCHAR(255),
     FOREIGN KEY (addressId) REFERENCES Address(id),
-    FOREIGN KEY (fullNameId) REFERENCES FullName(id)
 );
 
 CREATE TABLE Role (
@@ -43,6 +36,7 @@ CREATE TABLE UserRole (
 );
 
 CREATE TABLE CourtOwner (
+    id CHAR(36) PRIMARY KEY,
     userId CHAR(36),
     FOREIGN KEY (userId) REFERENCES User(id)
 );
@@ -74,6 +68,7 @@ CREATE TABLE CourtTimeAvailability (
     id CHAR(36) PRIMARY KEY,
     time TIME,
     isAvailable INT,
+    price DOUBLE,
     courtId CHAR(36),
     dayId CHAR(36),
     FOREIGN KEY (courtId) REFERENCES Court(id),
@@ -81,11 +76,13 @@ CREATE TABLE CourtTimeAvailability (
 );
 
 CREATE TABLE Customer (
+    id CHAR(36) PRIMARY KEY,
     userId CHAR(36),
     FOREIGN KEY (userId) REFERENCES User(id)
 );
 
 CREATE TABLE Admin (
+    id CHAR(36) PRIMARY KEY,
     userId CHAR(36),
     FOREIGN KEY (userId) REFERENCES User(id)
 );
@@ -104,9 +101,9 @@ CREATE TABLE Booking (
 CREATE TABLE CourtTimeBooking (
 	id CHAR(36) PRIMARY KEY,
     bookingId CHAR(36),
-    courtTimeId CHAR(36),
+    courtTimeAvailabilityId CHAR(36),
     FOREIGN KEY (bookingId) REFERENCES Booking(id),
-    FOREIGN KEY (courtTimeId) REFERENCES CourtTime(id)
+    FOREIGN KEY (courtTimeAvailabilityId) REFERENCES CourtTimeAvailability(id)
 );
 
 CREATE TABLE Feedback (
