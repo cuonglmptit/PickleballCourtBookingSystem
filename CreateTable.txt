@@ -17,9 +17,9 @@ CREATE TABLE User (
     phoneNumber VARCHAR(25),
     dateOfBirth DATE,
     isActive INT,
-    addressId CHAR(36),
     name VARCHAR(255),
-    FOREIGN KEY (addressId) REFERENCES Address(id),
+    addressId CHAR(36),
+    FOREIGN KEY (addressId) REFERENCES Address(id)
 );
 
 CREATE TABLE Role (
