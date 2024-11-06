@@ -45,6 +45,8 @@ CREATE TABLE Court (
     id CHAR(36) PRIMARY KEY,
     name VARCHAR(100),
     description VARCHAR(100),
+    length FLOAT,
+    width FLOAT,
     addressId CHAR(36),
     courtOwnerId CHAR(36),
     FOREIGN KEY (addressId) REFERENCES Address(id),
