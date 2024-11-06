@@ -1,4 +1,4 @@
-use `pickleballcourtbookingsystem`;
+use `freedb_PickleBallCourtBookingSystem`;
 
 CREATE TABLE Address (
     id CHAR(36) PRIMARY KEY,
@@ -66,7 +66,7 @@ CREATE TABLE Day (
     totalSlotAvailable INT
 );
 
-CREATE TABLE CourtTimeAvailability (
+CREATE TABLE CourtTime (
     id CHAR(36) PRIMARY KEY,
     time TIME,
     isAvailable INT,
@@ -103,9 +103,9 @@ CREATE TABLE Booking (
 CREATE TABLE CourtTimeBooking (
 	id CHAR(36) PRIMARY KEY,
     bookingId CHAR(36),
-    courtTimeAvailabilityId CHAR(36),
+    courtTimeId CHAR(36),
     FOREIGN KEY (bookingId) REFERENCES Booking(id),
-    FOREIGN KEY (courtTimeAvailabilityId) REFERENCES CourtTimeAvailability(id)
+    FOREIGN KEY (courtTimeId) REFERENCES CourtTime(id)
 );
 
 CREATE TABLE Feedback (
