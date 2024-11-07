@@ -66,6 +66,10 @@
     background-image: url(../../assets/icon/icons8-single-left-arrow-100.png);
 }
 
+.p-icon-dashboard {
+    background-image: url(../../assets/icon/icons8-dashboard-100.png);
+}
+
 .p-img-icon-20 {
     height: 20px;
 }
