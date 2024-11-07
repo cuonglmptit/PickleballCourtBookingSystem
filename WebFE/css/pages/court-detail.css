@@ -7,6 +7,13 @@
     display: flex;
 }
 
+.google-map {
+    width: 100%;
+    height: 500px;
+    background-color: antiquewhite;
+    margin-bottom: 12px;
+}
+
 .main-content-container .left-part {
     /* background-color: crimson; */
     width: 70%;
@@ -26,11 +33,17 @@
 
 .main-content-container .right-part {
     /* background-color: antiquewhite; */
-    display: flex;
+    display: inline-block;
     flex-direction: column;
-    justify-content: center;
     width: 30%;
     height: 100%;
+    row-gap: 24px;
+}
+
+.main-content-container .right-part .title {
+    font-size: 24px;
+    font-family: roboto-bold;
+    margin-bottom: 12px;
 }
 
 /* Slideshow container */
