@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    id("kotlin-parcelize")
 }
 
 android {
@@ -15,6 +16,10 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildFeatures {
+        viewBinding = true
     }
 
     buildTypes {
@@ -36,7 +41,8 @@ android {
 }
 
 dependencies {
-    val fragment_version = "1.8.3"
+    implementation(libs.androidx.navigation.fragment.ktx)
+    val fragment_version = "1.8.5"
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -46,4 +52,5 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     implementation("androidx.fragment:fragment-ktx:$fragment_version")
+    implementation("com.github.bumptech.glide:glide:4.16.0")
 }
