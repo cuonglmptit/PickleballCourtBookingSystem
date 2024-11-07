@@ -7,18 +7,18 @@
         android:icon="@drawable/ic_home"
         />
     <item
-        android:id="@+id/calendar"
-        android:title="@string/calendar"
-        android:icon="@drawable/ic_calendar" />
+        android:id="@+id/booking"
+        android:title="@string/booking"
+        android:icon="@drawable/ic_booking" />
     <item
         android:id="@+id/notification"
         android:title="@string/notification"
-        android:icon="@drawable/ic_notification_clear" />
+        android:icon="@drawable/ic_notification_empty" />
 
     <item
         android:id="@+id/user"
         android:title="@string/user"
-        android:icon="@drawable/user"
+        android:icon="@drawable/ic_user"
         />
 
 </menu>
