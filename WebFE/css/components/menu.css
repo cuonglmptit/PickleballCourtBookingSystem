@@ -1,0 +1,29 @@
+.p-option {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    column-gap: 4px;
+    width: 100%;
+    height: fit-content;
+    padding: 6px 0px;
+    min-width: 150px;
+    box-sizing: border-box;
+    border: unset;
+    color: black;
+    border-radius: 4px;
+    font-size: 16px;
+    margin: 4px;
+    font-family: roboto-medium;
+    background-color: var(--topic-color-100);
+    cursor: pointer;
+}
+
+.p-option-selected {
+    background-color: white;
+}
+
+.div-option-icon {
+    width: 24px;
+    height: 24px;
+    background-repeat: no-repeat;
+}

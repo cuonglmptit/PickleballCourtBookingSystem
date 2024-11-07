@@ -11,6 +11,6 @@
         public DateTime? DateOfBirth { get; set; }
         public int IsActive { get; set; }
         public Guid AddressId { get; set; }
-        public Guid FullNameId { get; set; }
+        public string Name { get; set; }
     }
 }

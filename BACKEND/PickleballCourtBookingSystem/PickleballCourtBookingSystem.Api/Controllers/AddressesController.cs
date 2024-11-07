@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using PickleballCourtBookingSystem.Api.Models;
 using PickleballCourtBookingSystem.Core.Interfaces.Infrastructure;
+using PickleballCourtBookingSystem.Infrastructure.Repository;
 
 namespace PickleballCourtBookingSystem.Api.Controllers
 {
@@ -16,10 +17,23 @@ namespace PickleballCourtBookingSystem.Api.Controllers
         }
 
         [HttpGet]
-        public IActionResult getAllAddress()
+        public IActionResult GetAllAddress()
         {
             IEnumerable<Address> addresses = _repository.GetAll();
             return Ok(addresses);
+        }
+
+        [HttpPost]
+        public IActionResult PostAddress([FromBody] Address address)
+        {
+            if (_repository.Insert(address) > 0)
+            {
+                return StatusCode(201);
+            }
+            else
+            {
+                return BadRequest();
+            }
         }
 
     }

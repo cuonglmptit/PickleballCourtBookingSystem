@@ -26,6 +26,7 @@ builder.Services.AddCors(options =>
 //Cấu hình Dependency Injection(DI) cho project
 builder.Services.AddScoped<IDbContext, MySqlDbContext>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<ICourtRepository, CourtRepository>();
 builder.Services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
 builder.Services.AddScoped(typeof(IBaseService<>), typeof(BaseService<>));
 

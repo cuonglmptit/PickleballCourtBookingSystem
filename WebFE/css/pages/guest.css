@@ -1,37 +1,18 @@
-.left-header {
-    background-color: violet;
-    flex: 1;
-    font-family: roboto-bold;
-    font-size: 20px;
+/* CSS CHO MAIN PART */
+
+.main-content-container {
+    padding-top: calc(112px + 24px);
+    padding-left: 56px;
+    padding-right: 56px;
+    margin: 0px 200px;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 36px
+}
+
+.main-content-container .item-container{
     display: flex;
+    justify-content: center;
     align-items: center;
-    justify-content: start;
-    padding: 0 30px 0 30px;
-}
-
-.mid-header {
-    background-color: aliceblue;
-    flex: 1;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-}
-
-.mid-header div {
-    font-size: 16px;
-}
-
-.right-header {
-    background-color: teal;
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: end;
-    padding-right: 30px;
-}
-
-.right-header .profile {
-    width: 30px;
-    height: 30px;
-    background-color: white;
 }
