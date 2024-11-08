@@ -24,3 +24,4 @@
 /AndroidApp/google-services.json
 
 *.hprof
+*.bak*
