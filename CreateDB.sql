@@ -10,14 +10,14 @@ CREATE TABLE Address (
 
 CREATE TABLE User (
     id CHAR(36) PRIMARY KEY,
-    code INT,
-    username VARCHAR(255),
+    code INT UNIQUE,
+    username VARCHAR(255) UNIQUE,
     password VARCHAR(255),
+    name VARCHAR(255),
     email VARCHAR(255),
     phoneNumber VARCHAR(25),
-    dateOfBirth DATE,
     isActive INT,
-    name VARCHAR(255),
+    avatarUrl VARCHAR(255),
     addressId CHAR(36),
     FOREIGN KEY (addressId) REFERENCES Address(id)
 );
@@ -41,40 +41,39 @@ CREATE TABLE CourtOwner (
     FOREIGN KEY (userId) REFERENCES User(id)
 );
 
-CREATE TABLE Court (
+CREATE TABLE CourtCluster (
     id CHAR(36) PRIMARY KEY,
-    name VARCHAR(100),
-    description VARCHAR(100),
-    length FLOAT,
-    width FLOAT,
+    name VARCHAR(255),
+    description VARCHAR(255),
     addressId CHAR(36),
     courtOwnerId CHAR(36),
     FOREIGN KEY (addressId) REFERENCES Address(id),
-    FOREIGN KEY (courtOwnerId) REFERENCES CourtOwner(userId)
+    FOREIGN KEY (courtOwnerId) REFERENCES CourtOwner(id)
 );
 
-CREATE TABLE ImageUrl (
+CREATE TABLE Court (
     id CHAR(36) PRIMARY KEY,
-    url VARCHAR(100),
-    courtId CHAR(36),
-    FOREIGN KEY (courtId) REFERENCES Court(id)
+    courtNumber INT,
+    description VARCHAR(255),
+    courtClusterId CHAR(36),
+    FOREIGN KEY (courtClusterId) REFERENCES CourtCluster(id)
 );
 
-CREATE TABLE Day (
+CREATE TABLE ImageCourtURL (
+    id CHAR(36) PRIMARY KEY,
+    url VARCHAR(255),
+    courtClusterId CHAR(36),
+    FOREIGN KEY (courtClusterId) REFERENCES CourtCluster(id)
+);
+
+CREATE TABLE CourtTimeSlot (
     id CHAR(36) PRIMARY KEY,
     date DATE,
-    totalSlotAvailable INT
-);
-
-CREATE TABLE CourtTime (
-    id CHAR(36) PRIMARY KEY,
     time TIME,
     isAvailable INT,
     price DOUBLE,
     courtId CHAR(36),
-    dayId CHAR(36),
-    FOREIGN KEY (courtId) REFERENCES Court(id),
-    FOREIGN KEY (dayId) REFERENCES Day(id)
+    FOREIGN KEY (courtId) REFERENCES Court(id)
 );
 
 CREATE TABLE Customer (
@@ -97,27 +96,27 @@ CREATE TABLE Booking (
     courtId CHAR(36),
     customerId CHAR(36),
     FOREIGN KEY (courtId) REFERENCES Court(id),
-    FOREIGN KEY (customerId) REFERENCES Customer(userId)
+    FOREIGN KEY (customerId) REFERENCES Customer(id)
 );
 
 CREATE TABLE CourtTimeBooking (
 	id CHAR(36) PRIMARY KEY,
     bookingId CHAR(36),
-    courtTimeId CHAR(36),
+    courtTimeSlotId CHAR(36),
     FOREIGN KEY (bookingId) REFERENCES Booking(id),
-    FOREIGN KEY (courtTimeId) REFERENCES CourtTime(id)
+    FOREIGN KEY (courtTimeSlotId) REFERENCES CourtTimeSlot(id)
 );
 
 CREATE TABLE Feedback (
     id CHAR(36) PRIMARY KEY,
-    rating FLOAT,
+    rating FLOAT(10),
     comment VARCHAR(100),
     courtId CHAR(36),
-    customerId CHAR(36),
     bookingId CHAR(36),
+    customerId CHAR(36),
+    FOREIGN KEY (bookingId) REFERENCES Booking(id),
     FOREIGN KEY (courtId) REFERENCES Court(id),
-    FOREIGN KEY (customerId) REFERENCES Customer(userId),
-    FOREIGN KEY (bookingId) REFERENCES Booking(id)
+    FOREIGN KEY (customerId) REFERENCES Customer(id)
 );
 
 CREATE TABLE Cancellation (
@@ -126,5 +125,3 @@ CREATE TABLE Cancellation (
     bookingId CHAR(36),
     FOREIGN KEY (bookingId) REFERENCES Booking(id)
 );
-
-
