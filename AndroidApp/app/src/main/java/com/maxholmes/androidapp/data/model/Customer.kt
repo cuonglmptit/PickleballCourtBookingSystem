@@ -4,9 +4,7 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class Court(
+data class Customer(
     var id: String,
-    var courtNumber: Int,
-    var description: String?,
-    var courtClusterId: String
+    var userId: String
 ) : Parcelable

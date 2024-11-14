@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <ImageView
+        android:id="@+id/courtClusterImage"
+        android:layout_width="0dp"
+        android:layout_height="200dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/image_court_1"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/courtNameTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        tools:text="Sân pickleball 123"
+        android:textSize="@dimen/sp_18"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/courtClusterImage"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/courtDescriptionTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        tools:text="Sân pickle ball top 1 thế giới"
+        android:textSize="@dimen/sp_18"
+        android:textStyle="normal"
+        app:layout_constraintTop_toBottomOf="@id/courtNameTextView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <ImageView
+        android:id="@+id/addressIcon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/ic_location"
+        app:layout_constraintTop_toBottomOf="@id/courtDescriptionTextView"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="@dimen/dp_10"/>
+
+    <TextView
+        android:id="@+id/addressCourtTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        tools:text="Ngách 88, ngõ 389 Trương Định, Tân Mai, Hoàng Mai, Hà Nội"
+        app:layout_constraintTop_toTopOf="@id/addressIcon"
+        app:layout_constraintStart_toEndOf="@id/addressIcon"
+        android:layout_marginStart="@dimen/dp_10"
+        />
+
+    <ImageView
+        android:id="@+id/phoneIcon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/ic_phone"
+        app:layout_constraintTop_toBottomOf="@id/addressCourtTextView"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="@dimen/dp_10"/>
+
+    <TextView
+        android:id="@+id/phoneNumberTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        tools:text="0123456789"
+        app:layout_constraintTop_toTopOf="@id/phoneIcon"
+        app:layout_constraintStart_toEndOf="@id/phoneIcon"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="@dimen/dp_10" />
+
+    <ImageView
+        android:id="@+id/clockIcon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/ic_working_time_clock"
+        app:layout_constraintTop_toBottomOf="@id/phoneIcon"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="@dimen/dp_10" />
+
+    <TextView
+        android:id="@+id/workingTimeTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        tools:text="05:00 - 22:00"
+        app:layout_constraintTop_toTopOf="@id/clockIcon"
+        app:layout_constraintStart_toEndOf="@id/clockIcon"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="@dimen/dp_10" />
+
+    <ImageView
+        android:id="@+id/starIcon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/ic_star_filled"
+        app:layout_constraintTop_toBottomOf="@id/clockIcon"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="@dimen/dp_10"/>
+
+    <TextView
+        android:id="@+id/starValueTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        tools:text="0"
+        android:textSize="16sp"
+        app:layout_constraintTop_toTopOf="@id/starIcon"
+        app:layout_constraintStart_toEndOf="@id/starIcon"
+        app:layout_goneMarginStart="@dimen/dp_10" />
+
+    <com.google.android.material.button.MaterialButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
