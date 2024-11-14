@@ -4,125 +4,107 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.widget.Toast
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.maxholmes.androidapp.R
 import com.maxholmes.androidapp.data.model.Court
-import com.maxholmes.androidapp.data.repository.CourtRepository
+import com.maxholmes.androidapp.data.model.CourtCluster
+import com.maxholmes.androidapp.data.repository.CourtClusterRepository
 import com.maxholmes.androidapp.databinding.FragmentHomeBinding
-import com.maxholmes.androidapp.screen.home.adapter.CourtAdapter
+import com.maxholmes.androidapp.screen.detail.court.CourtDetailFragment
+import com.maxholmes.androidapp.screen.home.adapter.CourtClusterAdapter
 import com.maxholmes.androidapp.utils.OnItemRecyclerViewClickListener
 import com.maxholmes.androidapp.utils.base.BaseFragment
+import java.time.LocalTime
 
 class HomeFragment :
     BaseFragment<FragmentHomeBinding>(),
     HomeContract.View,
-    OnItemRecyclerViewClickListener<Court> {
+    OnItemRecyclerViewClickListener<CourtCluster> {
     private lateinit var mHomePresenter: HomePresenter
-    private val mCourtAdapter: CourtAdapter by lazy { CourtAdapter() }
+    private val mCourtClusterAdapter: CourtClusterAdapter by lazy { CourtClusterAdapter() }
 
     override fun inflateViewBinding(inflater: LayoutInflater): FragmentHomeBinding {
         return FragmentHomeBinding.inflate(inflater)
     }
 
     override fun initView() {
-        viewBinding.recyclerViewCourt.apply {
-            layoutManager = GridLayoutManager(context, 2)
-            adapter = mCourtAdapter
+        viewBinding.recyclerViewCourtCluster.apply {
+            layoutManager = GridLayoutManager(context, 1)
+            adapter = mCourtClusterAdapter
         }
-        mCourtAdapter.registerItemRecyclerViewClickListener(this)
+        mCourtClusterAdapter.registerItemRecyclerViewClickListener(this)
         setupBottomNavigation()
     }
 
     override fun initData() {
         mHomePresenter =
             HomePresenter(
-                mCourtRepository = CourtRepository()
+                mCourtClusterRepository = CourtClusterRepository()
             )
         mHomePresenter.setView(this)
 
-        val fakeCourts = mutableListOf(
-            Court(
+        val fakeCourtClusters = mutableListOf(
+            CourtCluster(
                 id = "1",
-                name = "Sân bóng 1",
-                description = "Sân bóng đá mini, chất lượng cao.",
-                length = 30f,
-                width = 15f,
-                addressId = "abc123",
-                courtOwnerId = "abc123",
-                imageUrl = "https://cdn.coinranking.com/rk4RKHOuW/eth.png"
+                name = "Sân Pickleball Hoàn Kiếm",
+                description = "Sân chơi Pickleball tại trung tâm Hà Nội, khu vực Hoàn Kiếm.",
+                openingTime = LocalTime.of(5, 0),
+                closingTime = LocalTime.of(22, 0),
+                addressId = "Hoàn Kiếm, Hà Nội",
+                courtOwnerId = "d1e0c764-fbb9-47ab-836d-0645f94ffb80",
+                imageUrl = "https://picsum.photos/200"
             ),
-            Court(
+            CourtCluster(
                 id = "2",
-                name = "Sân bóng 2",
-                description = "Sân bóng đá với mặt cỏ nhân tạo.",
-                length = 30f,
-                width = 15f,
-                addressId = "abc123",
-                courtOwnerId = "abc123",
-                imageUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTYq54MAgogO9JkyTDaeTJj887VQ_ymqbayTw&s"
+                name = "Sân Pickleball Ba Đình",
+                description = "Sân chơi Pickleball ở quận Ba Đình, gần các khu vực công sở.",
+                openingTime = LocalTime.of(5, 0),
+                closingTime = LocalTime.of(22, 0),
+                addressId = "Ba Đình, Hà Nội",
+                courtOwnerId = "f7a7f935-22b4-4db1-b7e3-0fa240c1dbf6",
+                imageUrl = "https://picsum.photos/200"
             ),
-            Court(
+            CourtCluster(
                 id = "3",
-                name = "Sân bóng 3",
-                description = "Sân bóng đá cỏ tự nhiên, rộng rãi.",
-                length = 40f,
-                width = 20f,
-                addressId = "abc123",
-                courtOwnerId = "abc123",
-                imageUrl = "https://pickleballsuperstore.com/cdn/shop/articles/pickleball_court_dimensions_top_1000x.jpg"
+                name = "Sân Pickleball Tây Hồ",
+                description = "Sân chơi Pickleball nằm tại quận Tây Hồ, gần Hồ Tây.",
+                openingTime = LocalTime.of(5, 0),
+                closingTime = LocalTime.of(22, 0),
+                addressId = "Tây Hồ, Hà Nội",
+                courtOwnerId = "4c8f233d-d741-49d4-9d8b-ea91a6c4b408",
+                imageUrl = "https://picsum.photos/200"
             ),
-            Court(
+            CourtCluster(
                 id = "4",
-                name = "Sân bóng 4",
-                description = "Sân bóng đá cỏ tự nhiên, chất lượng cao, phù hợp cho các giải đấu.",
-                length = 50f,
-                width = 25f,
-                addressId = "xyz456",
-                courtOwnerId = "xyz456",
-                imageUrl = "https://5.imimg.com/data5/SELLER/Default/2024/2/393520434/WI/DO/BJ/37460891/pickle-ball-court-500x500.jpg"
+                name = "Sân Pickleball Cầu Giấy",
+                description = "Sân chơi Pickleball tại quận Cầu Giấy, khu vực gần các trung tâm thể thao.",
+                openingTime = LocalTime.of(5, 0),
+                closingTime = LocalTime.of(22, 0),
+                addressId = "Cầu Giấy, Hà Nội",
+                courtOwnerId = "3a29c019-e85b-48ec-b30d-4097bcba8157",
+                imageUrl = "https://picsum.photos/200"
             ),
-            Court(
+            CourtCluster(
                 id = "5",
-                name = "Sân bóng 5",
-                description = "Sân bóng đá mini với mặt cỏ nhân tạo, khu vực chờ thoải mái.",
-                length = 28f,
-                width = 14f,
-                addressId = "xyz456",
-                courtOwnerId = "xyz456",
-                imageUrl = "https://5.imimg.com/data5/SELLER/Default/2024/6/426038716/EO/HA/VW/32771573/pickle-ball-court-500x500.jpg"
+                name = "Sân Pickleball Long Biên",
+                description = "Sân chơi Pickleball tại quận Long Biên, không gian rộng rãi, thoáng mát.",
+                openingTime = LocalTime.of(5, 0),
+                closingTime = LocalTime.of(22, 0),
+                addressId = "Long Biên, Hà Nội",
+                courtOwnerId = "a72b0891-25c3-4e93-8f8f-e2f6002052fc",
+                imageUrl = "https://picsum.photos/200"
             ),
-            Court(
+            CourtCluster(
                 id = "6",
-                name = "Sân bóng 6",
-                description = "Sân bóng đá cỏ tự nhiên, với sân chơi cho trẻ em bên cạnh.",
-                length = 35f,
-                width = 18f,
-                addressId = "xyz456",
-                courtOwnerId = "xyz456",
-                imageUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT9xZM4zlE4uWhBAB4EOv59pqLDqk5OXZUIEA&s"
-            ),
-//            Court(
-//                id = "7",
-//                name = "Sân bóng 7",
-//                description = "Sân bóng đá với mặt cỏ nhân tạo, tiện nghi đầy đủ cho đội bóng.",
-//                length = 32f,
-//                width = 16f,
-//                addressId = "xyz456",
-//                courtOwnerId = "xyz456",
-//                imageUrl = "https://example.com/images/court7.jpg"
-//            ),
-//            Court(
-//                id = "8",
-//                name = "Sân bóng 8",
-//                description = "Sân bóng đá lớn, có thể tổ chức các giải đấu chuyên nghiệp.",
-//                length = 55f,
-//                width = 30f,
-//                addressId = "xyz456",
-//                courtOwnerId = "xyz456",
-//                imageUrl = "https://example.com/images/court8.jpg"
-//            )
+                name = "Sân Pickleball Thanh Xuân",
+                description = "Sân Pickleball hiện đại tại quận Thanh Xuân, dễ dàng di chuyển từ các khu vực trung tâm.",
+                openingTime = LocalTime.of(5, 0),
+                closingTime = LocalTime.of(22, 0),
+                addressId = "Thanh Xuân, Hà Nội",
+                courtOwnerId = "d9577f56-c4a9-493b-87b5-b2b45511e462",
+                imageUrl = "https://picsum.photos/200"
+            )
         )
-        mCourtAdapter.updateData(fakeCourts)
+        mCourtClusterAdapter.updateData(fakeCourtClusters)
     }
 
 //    override fun onGetCourtSuccess(courts: MutableList<Court>) {
@@ -133,14 +115,14 @@ class HomeFragment :
         Toast.makeText(context, exception?.message, Toast.LENGTH_SHORT).show()
     }
 
-    override fun onItemClick(item: Court?) {
+    override fun onItemClick(item: CourtCluster?) {
         if (item != null) {
             val bundle =
                 Bundle().apply {
                     putParcelable("COURT", item)
                 }
 //            parentFragmentManager.beginTransaction()
-//                .replace(R.id.layoutContainer, DetailFragment.newInstance(item))
+//                .replace(R.id.layoutContainer, CourtDetailFragment.newInstance(item))
 //                .addToBackStack(null)
 //                .commit()
         } else {

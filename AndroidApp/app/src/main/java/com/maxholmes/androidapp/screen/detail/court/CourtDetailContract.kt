@@ -1,12 +1,9 @@
-package com.maxholmes.androidapp.screen.home
+package com.maxholmes.androidapp.screen.detail.court
 
-
-import com.maxholmes.androidapp.data.model.Court
 import com.maxholmes.androidapp.utils.base.BasePresenter
 
-class HomeContract {
+class CourtDetailContract {
     interface View {
-//        fun onGetCourtSuccess(courts: MutableList<CourtCluster>)
 
         fun onError(exception: Exception?)
     }

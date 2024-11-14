@@ -44,6 +44,8 @@ CREATE TABLE CourtOwner (
 CREATE TABLE CourtCluster (
     id CHAR(36) PRIMARY KEY,
     name VARCHAR(255),
+    openingTime TIME,
+    closeingTime TIME,
     description VARCHAR(255),
     addressId CHAR(36),
     courtOwnerId CHAR(36),
@@ -79,6 +81,7 @@ CREATE TABLE CourtTimeSlot (
     date DATE,
     time TIME,
     isAvailable INT,
+    price DOUBLE,
     courtId CHAR(36),
     FOREIGN KEY (courtId) REFERENCES Court(id)
 );

@@ -10,6 +10,14 @@
     <string name="notification">Notification</string>
     <string name="user">User</string>
     <string name="search_hint">Enter content to search</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="all_court">All Court</string>
+    <string name="favourite_court">Favourite Court</string>
+    <string name="near_you">Near You</string>
+    <string name="popular_court_cluster">Popular</string>
+    <string name="highly_rated">Rated</string>
+    <string name="select_day">Select Day</string>
+    <string name="booking_court">Booking Court</string>"
+    <string name="select_court">Select Court</string>
+    <string name="select_time_slot">Select Time Slot</string>
+    <string name="book_court">Book Court</string>
 </resources>

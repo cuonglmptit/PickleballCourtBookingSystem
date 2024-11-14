@@ -1,8 +1,8 @@
 package com.maxholmes.androidapp.screen.home
 
-import com.maxholmes.androidapp.data.repository.CourtRepository
+import com.maxholmes.androidapp.data.repository.CourtClusterRepository
 
-class HomePresenter internal constructor(private val mCourtRepository: CourtRepository) :
+class HomePresenter internal constructor(private val mCourtClusterRepository: CourtClusterRepository) :
     HomeContract.Presenter {
     private var mView: HomeContract.View? = null
 

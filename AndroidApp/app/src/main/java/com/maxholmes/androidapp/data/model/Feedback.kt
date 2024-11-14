@@ -4,9 +4,11 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class Court(
+data class Feedback(
     var id: String,
-    var courtNumber: Int,
-    var description: String?,
-    var courtClusterId: String
+    var rating: Float,
+    var comment: String?,
+    var courtId: String,
+    var bookingId: String,
+    var customerId: String
 ) : Parcelable
