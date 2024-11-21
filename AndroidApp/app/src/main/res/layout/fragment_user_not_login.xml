@@ -37,9 +37,9 @@
 
         <ImageView
             android:id="@+id/profile"
-            android:layout_width="@dimen/dp_50"
-            android:layout_height="@dimen/dp_50"
-            android:src="@drawable/ic_user"
+            android:layout_width="@dimen/dp_70"
+            android:layout_height="@dimen/dp_70"
+            android:src="@drawable/ic_account_circle"
             app:layout_constraintTop_toBottomOf="@id/settings"
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginStart="@dimen/dp_10"
@@ -50,9 +50,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Đăng nhập"
-            app:layout_constraintTop_toBottomOf="@+id/settings"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/btnRegister"
-            android:layout_marginTop="@dimen/dp_20"
+            android:layout_marginBottom="@dimen/dp_10"
             android:layout_marginEnd="@dimen/dp_10" />
 
         <Button
@@ -60,66 +60,35 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Đăng ký"
-            app:layout_constraintTop_toBottomOf="@+id/settings"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginEnd="@dimen/dp_10"
-            android:layout_marginTop="@dimen/dp_20" />
+            android:layout_marginBottom="@dimen/dp_10" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <ImageView
-        android:id="@+id/iconBooking"
-        android:layout_width="@dimen/dp_50"
-        android:layout_height="@dimen/dp_50"
-        android:src="@drawable/ic_booking"
-        app:layout_constraintTop_toBottomOf="@+id/topBar"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="@dimen/dp_25"
-        android:layout_marginStart="@dimen/dp_10" />
-
-    <ImageView
-        android:id="@+id/iconCompleted"
-        android:layout_width="@dimen/dp_50"
-        android:layout_height="@dimen/dp_50"
-        android:src="@drawable/ic_completed"
-        app:layout_constraintTop_toBottomOf="@+id/topBar"
-        app:layout_constraintStart_toEndOf="@+id/iconBooking"
-        app:layout_constraintEnd_toStartOf="@+id/iconHistory"
-        android:layout_marginStart="@dimen/dp_20"
-        android:layout_marginEnd="@dimen/dp_20"
-        android:layout_marginTop="@dimen/dp_25"/>
-
-    <ImageView
-        android:id="@+id/iconHistory"
-        android:layout_width="@dimen/dp_50"
-        android:layout_height="@dimen/dp_50"
-        android:src="@drawable/ic_history"
-        app:layout_constraintTop_toBottomOf="@+id/topBar"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="@dimen/dp_25"
-        android:layout_marginEnd="@dimen/dp_10" />
-
-    <TextView
-        android:id="@+id/helpText"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/optionsRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Trợ giúp &amp; hỗ trợ"
-        android:padding="@dimen/dp_20"
-        android:background="@android:color/holo_blue_light"
-        app:layout_constraintTop_toBottomOf="@+id/iconBooking"
+        android:layout_height="0dp"
+        android:padding="@dimen/dp_16"
+        app:layout_constraintTop_toBottomOf="@id/topBar"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigationView"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:gravity="center" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/dp_72"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:menu="@menu/bottom_navigation_menu"
-        app:labelVisibilityMode="unlabeled" />
+        app:itemIconSize="@dimen/dp_35"
+        android:background="@color/grey400"
+        app:itemIconTint="@color/custom_color_button_nav"
+        app:itemTextColor="@color/black"
+        app:labelVisibilityMode="labeled" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

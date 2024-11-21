@@ -1,9 +1,9 @@
-package com.maxholmes.androidapp.screen.detail.court
+package com.maxholmes.androidapp.screen.detail.courtcluster
 
 import com.maxholmes.androidapp.data.repository.CourtClusterRepository
 import com.maxholmes.androidapp.screen.home.HomeContract
 
-class CourtDetailPresenter (private val mCourtRepository: CourtClusterRepository) :
+class CourtClusterDetailPresenter (private val mCourtRepository: CourtClusterRepository) :
     HomeContract.Presenter {
         private var mView: HomeContract.View? = null
 

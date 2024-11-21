@@ -118,9 +118,4 @@
         app:layout_constraintStart_toEndOf="@id/starIcon"
         app:layout_goneMarginStart="@dimen/dp_10" />
 
-    <com.google.android.material.button.MaterialButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        />
-
 </androidx.constraintlayout.widget.ConstraintLayout>
