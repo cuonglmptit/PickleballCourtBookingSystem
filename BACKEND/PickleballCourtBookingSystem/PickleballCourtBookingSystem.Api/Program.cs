@@ -25,8 +25,15 @@ builder.Services.AddCors(options =>
 
 //Cấu hình Dependency Injection(DI) cho project
 builder.Services.AddScoped<IDbContext, MySqlDbContext>();
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<ICourtRepository, CourtRepository>();
+builder.Services.AddScoped<IAddressService, AddressService>();
+builder.Services.AddScoped<IRoleService, RoleService>();
+builder.Services.AddScoped<IAdminService, AdminService>();
+builder.Services.AddScoped<ICustomerService, CustomerService>();
+builder.Services.AddScoped<ICourtOwnerService, CourtOwnerService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ICourtService, CourtService>();
+builder.Services.AddScoped<ICourtClusterService,CourtClusterService>();
+builder.Services.AddScoped<IImageCourtUrlService, ImageCourtUrlService>();
 builder.Services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
 builder.Services.AddScoped(typeof(IBaseService<>), typeof(BaseService<>));
 
