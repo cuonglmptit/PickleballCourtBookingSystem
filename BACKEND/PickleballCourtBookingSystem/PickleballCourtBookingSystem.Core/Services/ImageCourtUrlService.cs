@@ -6,7 +6,7 @@ namespace PickleballCourtBookingSystem.Core.Services;
 
 public class ImageCourtUrlService : BaseService<ImageCourtUrl>, IImageCourtUrlService
 {
-    public ImageCourtUrlService(IBaseRepository<ImageCourtUrl> repository) : base(repository)
+    public ImageCourtUrlService(IImageCourtUrlRepository repository) : base(repository)
     {
         
     }

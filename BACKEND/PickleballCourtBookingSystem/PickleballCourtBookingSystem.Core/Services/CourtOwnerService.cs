@@ -6,7 +6,7 @@ namespace PickleballCourtBookingSystem.Core.Services;
 
 public class CourtOwnerService : BaseService<CourtOwner>, ICourtOwnerService
 {
-    public CourtOwnerService(IBaseRepository<CourtOwner> repository) : base(repository)
+    public CourtOwnerService(ICourtOwnerRepository repository) : base(repository)
     {
         
     }

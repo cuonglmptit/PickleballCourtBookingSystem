@@ -6,7 +6,7 @@ namespace PickleballCourtBookingSystem.Core.Services;
 
 public class RoleService : BaseService<Role>, IRoleService
 {
-    public RoleService(IBaseRepository<Role> repository) : base(repository)
+    public RoleService(IRoleRepository repository) : base(repository)
     {
         
     }

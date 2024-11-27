@@ -7,7 +7,7 @@ namespace PickleballCourtBookingSystem.Core.Services
 {
 public class CourtClusterService : BaseService<CourtCluster>, ICourtClusterService
 {
-    public CourtClusterService(IBaseRepository<CourtCluster> repository): base(repository)
+    public CourtClusterService(ICourtClusterRepository repository): base(repository)
     {
         
     }
