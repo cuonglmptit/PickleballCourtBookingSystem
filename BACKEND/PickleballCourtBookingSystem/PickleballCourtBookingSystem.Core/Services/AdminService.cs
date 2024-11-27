@@ -6,7 +6,7 @@ namespace PickleballCourtBookingSystem.Core.Services;
 
 public class AdminService : BaseService<Admin>, IAdminService
 {
-    public AdminService(IBaseRepository<Admin> repository) : base(repository)
+    public AdminService(IAdminRepository repository) : base(repository)
     {
         
     }

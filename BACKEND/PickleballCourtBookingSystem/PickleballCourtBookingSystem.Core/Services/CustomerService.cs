@@ -6,7 +6,7 @@ namespace PickleballCourtBookingSystem.Core.Services;
 
 public class CustomerService : BaseService<Customer>, ICustomerService
 {
-    public CustomerService(IBaseRepository<Customer> repository) : base(repository)
+    public CustomerService(ICustomerRepository repository) : base(repository)
     {
         
     }

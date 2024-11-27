@@ -6,7 +6,7 @@ namespace PickleballCourtBookingSystem.Core.Services;
 
 public class AddressService : BaseService<Address>, IAddressService
 {
-    public AddressService(IBaseRepository<Address> repository) : base(repository)
+    public AddressService(IAddressRepository repository) : base(repository)
     {
         
     }

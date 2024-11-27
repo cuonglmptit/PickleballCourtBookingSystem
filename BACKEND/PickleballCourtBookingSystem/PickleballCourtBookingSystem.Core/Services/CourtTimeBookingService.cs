@@ -1,15 +1,13 @@
 using PickleballCourtBookingSystem.Api.Models;
-using PickleballCourtBookingSystem.Core.DTOs;
 using PickleballCourtBookingSystem.Core.Interfaces.Infrastructure;
 using PickleballCourtBookingSystem.Core.Interfaces.Services;
 
 namespace PickleballCourtBookingSystem.Core.Services;
 
-public class UserService : BaseService<User>, IUserService
+public class CourtTimeBookingService : BaseService<CourtTimeBooking>, ICourtTimeBookingService
 {
-    public UserService(IUserRepository repository) : base(repository)
+    public CourtTimeBookingService(ICourtTimeBookingRepository repository) : base(repository)
     {
         
     }
-    
 }
