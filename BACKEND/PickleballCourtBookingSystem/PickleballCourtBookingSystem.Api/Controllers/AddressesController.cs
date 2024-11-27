@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using PickleballCourtBookingSystem.Api.Models;
 using PickleballCourtBookingSystem.Core.Interfaces.Infrastructure;
+using PickleballCourtBookingSystem.Core.Interfaces.Services;
 using PickleballCourtBookingSystem.Infrastructure.Repository;
 
 namespace PickleballCourtBookingSystem.Api.Controllers
@@ -10,30 +11,69 @@ namespace PickleballCourtBookingSystem.Api.Controllers
     [ApiController]
     public class AddressesController : ControllerBase
     {
-        IBaseRepository<Address> _repository;
-        public AddressesController(IBaseRepository<Address> repository)
+        private readonly IAddressService _addressService;
+        public AddressesController(IAddressService addressService)
         {
-            _repository = repository;
+            _addressService = addressService;
         }
 
         [HttpGet]
         public IActionResult GetAllAddress()
         {
-            IEnumerable<Address> addresses = _repository.GetAll();
-            return Ok(addresses);
+            var result = _addressService.GetAllService();
+            if (result.Success)
+            {
+                return Ok(result.Data);
+            }
+            return BadRequest();
+        }
+        
+        [HttpGet("{id}")]
+        public IActionResult GetAddressById(Guid id)
+        {
+            var result = _addressService.GetByIdService(id);
+            if (result.Success)
+            {
+                return Ok(result.Data);
+            }
+
+            return BadRequest();
         }
 
         [HttpPost]
         public IActionResult PostAddress([FromBody] Address address)
         {
-            if (_repository.Insert(address) > 0)
+            address.Id = Guid.NewGuid();
+            var result = _addressService.InsertService(address);
+            if (result.Success)
             {
-                return StatusCode(201);
+                return Ok(result.StatusCode);
             }
-            else
+
+            return BadRequest();
+        }
+
+        [HttpPut]
+        public IActionResult UpdateAddress([FromBody] Address address, Guid id)
+        {
+            var result = _addressService.UpdateCustomFieldService(address, id);
+            if (result.Success)
             {
-                return BadRequest();
+                return Ok(result.StatusCode);
             }
+
+            return BadRequest();
+        }
+        
+        [HttpDelete("{id}")]
+        public IActionResult DeleteAddress(Guid id)
+        {
+            var result = _addressService.DeleteService(id);
+            if (result.Success)
+            {
+                return Ok(result.StatusCode);
+            }
+            return BadRequest();
         }
 
     }

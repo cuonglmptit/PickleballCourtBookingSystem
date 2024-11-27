@@ -1,52 +1,79 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Dapper;
-using MySqlConnector;
 using PickleballCourtBookingSystem.Api.Models;
 using PickleballCourtBookingSystem.Core.Interfaces.Infrastructure;
+using PickleballCourtBookingSystem.Core.Interfaces.Services;
 using PickleballCourtBookingSystem.Infrastructure.Repository;
 
 namespace PickleballCourtBookingSystem.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UsersController : ControllerBase
+    public class UseresController : ControllerBase
     {
-
-        IUserRepository _userRepository;
-
-        #region Constructors
-        /// <summary>
-        /// Constructor của user controller
-        /// Author: CuongLM (07/08/2024)
-        /// </summary>
-        /// <param name="userRepository">DI tự tiêm</param>
-        /// <param name="userService">DI tự tiêm</param>
-        public UsersController(IUserRepository userRepository)
+        private readonly IUserService _userService;
+        public UseresController(IUserService userService)
         {
-            _userRepository = userRepository;
+            _userService = userService;
         }
-        #endregion
 
         [HttpGet]
-        public IActionResult GetAll()
+        public IActionResult GetAllUser()
         {
-            IEnumerable<User> users = _userRepository.GetAll();
-            return Ok(users);
+            var result = _userService.GetAllService();
+            if (result.Success)
+            {
+                return Ok(result.Data);
+            }
+            return BadRequest();
+        }
+        
+        [HttpGet("{id}")]
+        public IActionResult GetUserById(Guid id)
+        {
+            var result = _userService.GetByIdService(id);
+            if (result.Success)
+            {
+                return Ok(result.Data);
+            }
+
+            return BadRequest();
         }
 
         [HttpPost]
-        public IActionResult AddUser([FromBody] User user)
+        public IActionResult PostUser([FromBody] User user)
         {
-            if (_userRepository.Insert(user) > 0)
+            user.Id = Guid.NewGuid();
+            var result = _userService.InsertService(user);
+            if (result.Success)
             {
-                return StatusCode(201);
-            }
-            else
-            {
-                return BadRequest();
+                return Ok(result.StatusCode);
             }
 
+            return BadRequest();
+        }
+
+        [HttpPut]
+        public IActionResult UpdateUser([FromBody] User user, Guid id)
+        {
+            var result = _userService.UpdateCustomFieldService(user, id);
+            if (result.Success)
+            {
+                return Ok(result.StatusCode);
+            }
+
+            return BadRequest();
+        }
+        
+        [HttpDelete("{id}")]
+        public IActionResult DeleteUser(Guid id)
+        {
+            var result = _userService.DeleteService(id);
+            if (result.Success)
+            {
+                return Ok(result.StatusCode);
+            }
+            return BadRequest();
         }
 
     }

@@ -25,7 +25,8 @@ namespace PickleballCourtBookingSystem.Core.Interfaces.Services
         /// <param name="id">Id của bản ghi</param>
         /// <returns>ServiceResult với Sucess = true nếu xóa thành công và ngược lại nếu thất bại</returns>
         ServiceResult UpdateService(T entity, Guid id);
-
+        ServiceResult UpdateCustomFieldService(T entity, Guid id);
+        
         /// <summary>
         /// Xóa 1 bản ghi
         /// </summary>
@@ -39,7 +40,11 @@ namespace PickleballCourtBookingSystem.Core.Interfaces.Services
         /// <param name="ids">Dãy các employee id</param>
         /// <returns>ServiceResult với Sucess = true nếu xóa thành công và ngược lại nếu thất bại</returns>
         ServiceResult DeleteAnyService(List<Guid> ids);
-
+        
+        ServiceResult GetAllService();
+        
+        ServiceResult GetByIdService(Guid id);
+        
         #endregion
     }
 }

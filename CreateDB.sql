@@ -8,6 +8,11 @@ CREATE TABLE Address (
     street VARCHAR(50)
 );
 
+CREATE TABLE Role (
+    id CHAR(36) PRIMARY KEY,
+    roleName VARCHAR(15)
+);
+
 CREATE TABLE User (
     id CHAR(36) PRIMARY KEY,
     code INT UNIQUE,
@@ -19,21 +24,13 @@ CREATE TABLE User (
     isActive INT,
     avatarUrl VARCHAR(255),
     addressId CHAR(36),
-    FOREIGN KEY (addressId) REFERENCES Address(id)
-);
-
-CREATE TABLE Role (
-    id CHAR(36) PRIMARY KEY,
-    roleName VARCHAR(15)
-);
-
-CREATE TABLE UserRole (
-    id CHAR(36) PRIMARY KEY,
-    userId CHAR(36),
     roleId CHAR(36),
-    FOREIGN KEY (userId) REFERENCES User(id),
+    FOREIGN KEY (addressId) REFERENCES Address(id),
     FOREIGN KEY (roleId) REFERENCES Role(id)
 );
+
+
+
 
 CREATE TABLE CourtOwner (
     id CHAR(36) PRIMARY KEY,
