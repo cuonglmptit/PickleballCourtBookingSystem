@@ -1,0 +1,65 @@
+Address:
+{
+  "city": "Lai Châu",
+  "district": "Tân Uyên",
+  "ward": "Thân Thuộc",
+  "street": "Đường Hoàng Minh Đức"
+}
+
+{
+  "city": "Lào Cai",
+  "district": "Phố Mới",
+  "ward": "Hoàng Minh Đức",
+  "street": "Đường Hoàng Minh Đức"
+}
+
+Role:
+{
+  "roleName": "admin"
+}
+
+{
+  "roleName": "courtowner"
+}
+
+{
+  "roleName": "customer"
+}
+
+
+User:
+{
+  "code": 179,
+  "username": "max",
+  "password": "123",
+  "name": "Hoàng Minh Đức",
+  "email": "maxholmes221b@gmail.com",
+  "phoneNumber": "0375677759",
+  "isActive": 1,
+  "avatarUrl": "https://example.com",
+  "addressId": "6d7f66e0-e83e-46cb-8c70-96e8de6e7192",
+  "roleId": "443911f7-0234-42b5-9ce3-2fc43cb32a10"
+}
+
+{
+  "code": 139,
+  "username": "cuonglm",
+  "password": "123",
+  "name": "Lê Mạnh Cường",
+  "email": "cle139@gmail.com",
+  "phoneNumber": "0862200319",
+  "isActive": 1,
+  "avatarUrl": "https://example.com",
+  "addressId": "2d112240-9285-4932-8d7f-b6f19eb969d9",
+  "roleId": "beb28088-ad6a-49c4-9000-f9b836d1dc9b"
+}
+
+Admin:
+{
+  "userId": "4c538528-376a-4dfd-a85d-b0dcae1155ca"
+}
+
+Customer:
+{
+  "userId": "fa2b7b86-a926-406b-9980-7eaea4665bbf"
+}
