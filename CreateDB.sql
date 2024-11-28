@@ -101,8 +101,10 @@ CREATE TABLE Booking (
     amount DOUBLE,
     paymentStatus INT,
     courtId CHAR(36),
+    courtClusterId CHAR(36),
     customerId CHAR(36),
     FOREIGN KEY (courtId) REFERENCES Court(id),
+    FOREIGN KEY (courtClusterId) REFERENCES CourtCluster(id),
     FOREIGN KEY (customerId) REFERENCES Customer(id)
 );
 
@@ -118,11 +120,11 @@ CREATE TABLE Feedback (
     id CHAR(36) PRIMARY KEY,
     rating FLOAT(10),
     comment VARCHAR(100),
-    courtId CHAR(36),
+    courtClusterId CHAR(36),
     bookingId CHAR(36),
     customerId CHAR(36),
     FOREIGN KEY (bookingId) REFERENCES Booking(id),
-    FOREIGN KEY (courtId) REFERENCES Court(id),
+    FOREIGN KEY (courtClusterId) REFERENCES CourtCluster(id),
     FOREIGN KEY (customerId) REFERENCES Customer(id)
 );
 
@@ -130,5 +132,6 @@ CREATE TABLE Cancellation (
     id CHAR(36) PRIMARY KEY,
     timeCancel DATETIME,
     bookingId CHAR(36),
+    reason VARCHAR(255),
     FOREIGN KEY (bookingId) REFERENCES Booking(id)
 );

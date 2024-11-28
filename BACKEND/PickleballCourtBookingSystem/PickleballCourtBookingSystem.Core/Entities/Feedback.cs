@@ -7,7 +7,7 @@ namespace PickleballCourtBookingSystem.Api.Models
         public float? Rating { get; set; }
         public string? Comment { get; set; }
         public Guid? CustomerId { get; set; }
-        public Guid? CourtId { get; set; }
+        public Guid? CourtClusterId { get; set; }
         public Guid? BookingId { get; set; }
     }
 }
