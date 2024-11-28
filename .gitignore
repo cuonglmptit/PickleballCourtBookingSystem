@@ -26,3 +26,4 @@
 *.hprof
 *.bak*
 /BACKEND/PickleballCourtBookingSystem/PickleballCourtBookingSystem.Api/appsettings.json
+.UML.*
