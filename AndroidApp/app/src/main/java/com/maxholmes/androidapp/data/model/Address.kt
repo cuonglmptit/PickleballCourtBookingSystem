@@ -4,9 +4,10 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-class Address (
+data class Address(
     var id: String,
     var city: String,
     var district: String,
+    var ward: String,
     var street: String
-): Parcelable
+) : Parcelable

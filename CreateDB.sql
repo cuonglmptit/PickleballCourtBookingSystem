@@ -9,7 +9,7 @@ CREATE TABLE Address (
 );
 
 CREATE TABLE Role (
-    id CHAR(36) PRIMARY KEY,
+    id INT PRIMARY KEY AUTO_INCREMENT,
     roleName VARCHAR(15)
 );
 
@@ -99,6 +99,7 @@ CREATE TABLE Booking (
     id CHAR(36) PRIMARY KEY,
     timeBooking TIMESTAMP,
     amount DOUBLE,
+    status INT,
     paymentStatus INT,
     courtId CHAR(36),
     courtClusterId CHAR(36),

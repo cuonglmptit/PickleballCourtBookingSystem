@@ -14,5 +14,6 @@ data class User(
     var phoneNumber: String?,
     var isActive: Int,
     var avatarUrl: String?,
-    var addressId: String
+    var addressId: String,
+    var roleId: String
 ) : Parcelable

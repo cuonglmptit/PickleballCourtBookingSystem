@@ -13,18 +13,6 @@ Address:
   "street": "Đường Hoàng Minh Đức"
 }
 
-Role:
-{
-  "roleName": "admin"
-}
-
-{
-  "roleName": "courtowner"
-}
-
-{
-  "roleName": "customer"
-}
 
 
 User:
@@ -38,7 +26,7 @@ User:
   "isActive": 1,
   "avatarUrl": "https://example.com",
   "addressId": "6d7f66e0-e83e-46cb-8c70-96e8de6e7192",
-  "roleId": "443911f7-0234-42b5-9ce3-2fc43cb32a10"
+  "roleId": 1
 }
 
 {
@@ -51,7 +39,7 @@ User:
   "isActive": 1,
   "avatarUrl": "https://example.com",
   "addressId": "2d112240-9285-4932-8d7f-b6f19eb969d9",
-  "roleId": "beb28088-ad6a-49c4-9000-f9b836d1dc9b"
+  "roleId": 3
 }
 
 Admin:

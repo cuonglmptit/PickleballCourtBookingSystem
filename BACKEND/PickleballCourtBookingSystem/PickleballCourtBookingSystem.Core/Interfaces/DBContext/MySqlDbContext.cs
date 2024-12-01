@@ -287,17 +287,80 @@ public int Update<T>(T entity, Guid entityId)
             return true;
         }
 
-        public T? FindByKeyword<T>(string? keyword, string columnName)
+        public IEnumerable<T> SearchByKeyword<T>(string? keyword, string columnName)
         {
             var className = typeof(T).Name;
+            var newkeyword = "%" + keyword + "%";
             //Tạo câu lệnh SQL
             var sqlCommand = $"SELECT * FROM {className} WHERE {columnName} LIKE @keyword";
             var parameters = new DynamicParameters();
             //Thêm keyword chính là giá trị muốn tìm trong cột
-            parameters.Add("@keyword", keyword);
+            parameters.Add("@keyword", newkeyword);
+            var result = Connection.Query<T>(sql: sqlCommand, param: parameters);
 
+            return result;
+        }
+        
+        public IEnumerable<T> SearchByKeywordMultipleColumns<T>(string? keyword, List<string> listColumnName)
+        {
+            var className = typeof(T).Name;
+            var newKeyword = "%" + keyword + "%";
+            var conditions = new List<string>();
+            for (int i = 0; i < listColumnName.Count; i++)
+            {
+                string columnName = listColumnName[i];
+                conditions.Add($"{columnName} LIKE @keyword");
+            }
+            var whereClause = string.Join(" OR ", conditions);
+            var sqlCommand = $"SELECT * FROM {className} WHERE {whereClause}";
+            var parameters = new DynamicParameters();
+            for (int i = 0; i < listColumnName.Count; i++)
+            {
+                parameters.Add("@keyword", newKeyword);
+            }
+            var result = Connection.Query<T>(sql: sqlCommand, param: parameters);
+            return result;
+        }
+        
+        public IEnumerable<T> FindByColumnValue<T>(object? value, string columnName)
+        {
+            if (value == null)
+            {
+                throw new ArgumentNullException(nameof(value), "Value cannot be null");
+            }
+            if (value is not (int or string))
+            {
+                throw new ArgumentException("Value must be of type int or string", nameof(value));
+            }
+            var className = typeof(T).Name;
+            //Tạo câu lệnh SQL
+            var sqlCommand = $"SELECT * FROM {className} WHERE {columnName} = @keyword";
+            var parameters = new DynamicParameters();
+            //Thêm keyword chính là giá trị muốn tìm trong cột
+            parameters.Add("@keyword", value);
+
+            var result = Connection.Query<T>(sql: sqlCommand, param: parameters);
+
+            return result;
+        }
+
+        public T? FindFirstByColumnvalue<T>(object? value, string columnName)
+        {
+            if (value == null)
+            {
+                throw new ArgumentNullException(nameof(value), "Value cannot be null");
+            }
+            if (value is not (int or string))
+            {
+                throw new ArgumentException("Value must be of type int or string", nameof(value));
+            }
+            var className = typeof(T).Name;
+            //Tạo câu lệnh SQL
+            var sqlCommand = $"SELECT * FROM {className} WHERE {columnName} = @keyword";
+            var parameters = new DynamicParameters();
+            //Thêm keyword chính là giá trị muốn tìm trong cột
+            parameters.Add("@keyword", value);
             var result = Connection.QueryFirstOrDefault<T>(sql: sqlCommand, param: parameters);
-
             return result;
         }
 

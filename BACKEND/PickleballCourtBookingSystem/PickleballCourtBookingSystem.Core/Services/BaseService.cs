@@ -80,6 +80,20 @@ namespace PickleballCourtBookingSystem.Core.Services
             }
         }
 
+        public ServiceResult InsertManyService(List<T> entities)
+        {
+            try
+            {
+                var res = baseRepository.InsertMany(entities);
+                return CreateServiceResult(Success: res > 0, StatusCode: res > 0 ? 201 : 400);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return CreateServiceResult(Success: false, StatusCode: 500, UserMsg: "Có lỗi xảy ra khi thêm đối tượng.", DevMsg: ex.Message);
+            }
+        }
+
         public virtual ServiceResult UpdateService(T entity, Guid id)
         {
             try

@@ -37,6 +37,7 @@ namespace PickleballCourtBookingSystem.Core.Interfaces.DBContext
         /// <returns>Số bản ghi bị ảnh hưởng</returns>
         int Insert<T>(T entity);
 
+        int InsertMany<T>(List<T> entities);
         /// <summary>
         /// Update dữ liệu
         /// Author: CuongLM (04/08/2024)
@@ -75,13 +76,20 @@ namespace PickleballCourtBookingSystem.Core.Interfaces.DBContext
         bool IsUniqueValueExistsInColumn<T>(T entity, string columnName);
 
         /// <summary>
-        /// Lấy ra bản ghi theo keyword tương ứng với cột
-        /// Author: CuongLM (04/08/2024)
+        /// Lấy ra bản ghi chứa giá trị keyword tương ứng với cột.
         /// </summary>
-        /// <param name="entityId"></param>
-        /// <returns>Thực thể của class muốn lấy, null - Nếu không có</returns>
-        T? FindByKeyword<T>(string? keyword, string columnName);
-
+        /// <typeparam name="T">Kiểu dữ liệu của bản ghi cần tìm.</typeparam>
+        /// <param name="keyword">Từ khóa cần tìm trong cột.</param>
+        /// <param name="columnName">Tên của cột để thực hiện tìm kiếm.</param>
+        /// <returns>Thực thể của class muốn lấy; trả về null nếu không tìm thấy bản ghi nào.</returns>
+        /// <remarks>
+        /// Author: CuongLM (04/08/2024)
+        /// </remarks>
+        IEnumerable<T> SearchByKeyword<T>(string? keyword, string columnName);
+        IEnumerable<T> SearchByKeywordMultipleColumns<T>(string? keyword, List<string> columnName);
+        
+        public IEnumerable<T> FindByColumnValue<T>(object? value, string columnName);
+        T? FindFirstByColumnvalue<T>(object? keyword, string columnName);
         /// <summary>
         /// Tìm ra giá trị lớn nhất của cột mà kết thúc bằng số
         /// Author: CuongLM (08/08/2024)

@@ -9,7 +9,7 @@ data class CourtCluster(
     var id: String,
     var name: String,
     var openingTime: LocalTime,
-    var closingTime: LocalTime,
+    var closeingTime: LocalTime,
     var description: String?,
     var addressId: String,
     var courtOwnerId: String,

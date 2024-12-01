@@ -2,14 +2,12 @@ package com.maxholmes.androidapp.data.model
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
+import java.time.LocalDateTime
 
 @Parcelize
-data class Feedback(
+data class Cancellation(
     var id: String,
-    var rating: Float,
-    var comment: String?,
-    var courtId: String,
-    var courtClusterId: String,
+    var timeCancel: LocalDateTime,
     var bookingId: String,
-    var customerId: String
+    var reason: String
 ) : Parcelable

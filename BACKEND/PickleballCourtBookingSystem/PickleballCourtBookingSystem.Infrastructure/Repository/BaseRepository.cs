@@ -44,12 +44,26 @@ public class BaseRepository<T> : IBaseRepository<T> where T : class
         return dbContext.DeleteAny<T>(ids);
     }
 
-    public virtual T? FindByKeyword(string? keyword, string columnName)
+    public virtual IEnumerable<T> SearchByKeyword(string? keyword, string columnName)
     {
-        return dbContext.FindByKeyword<T>(keyword, columnName);
+        return dbContext.SearchByKeyword<T>(keyword, columnName);
     }
 
-    public virtual string? FindLargestValueEndsWithNumberInColumn<T>(string columnName)
+    public virtual IEnumerable<T> SearchByKeywordMultipleColumns(string? keyword, List<string> columnName)
+    {
+        return dbContext.SearchByKeywordMultipleColumns<T>(keyword, columnName);
+    }
+
+    public virtual IEnumerable<T> FindByColumnValue(object? value, string columnName)
+    {
+        return dbContext.FindByColumnValue<T>(value, columnName);
+    }
+    public virtual T? FindFirstByColumnValue(object? keyword, string columnName)
+    {
+        return dbContext.FindFirstByColumnvalue<T>(keyword, columnName);
+    }
+
+    public virtual string? FindLargestValueEndsWithNumberInColumn(string columnName)
     {
         return dbContext.FindLargestValueEndsWithNumberInColumn<T>(columnName);
     }
@@ -76,7 +90,12 @@ public class BaseRepository<T> : IBaseRepository<T> where T : class
 
     public virtual int Insert(T entity)
     {
-        return dbContext.Insert<T>(entity);
+        return dbContext.Insert(entity);
+    }
+
+    public int InsertMany(List<T> entities)
+    {
+        return dbContext.InsertMany(entities);
     }
 
     public virtual bool IsUniqueValueExistsInColumn(T entity, string columnName)

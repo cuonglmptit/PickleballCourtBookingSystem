@@ -17,7 +17,7 @@ namespace PickleballCourtBookingSystem.Core.Interfaces.Services
         /// <param name="entity"></param>
         /// <returns>ServiceResult với Sucess = true nếu xóa thành công và ngược lại nếu thất bại</returns>
         ServiceResult InsertService(T entity);
-
+        ServiceResult InsertManyService(List<T> entities);
         /// <summary>
         /// Update 1 bản ghi
         /// </summary>
