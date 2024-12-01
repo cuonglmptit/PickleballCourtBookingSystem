@@ -8,6 +8,6 @@ public class AddressRepository : BaseRepository<Address>, IAddressRepository
 {
     public AddressRepository(IDbContext dbContext) : base(dbContext)
     {
-        
     }
+    
 }

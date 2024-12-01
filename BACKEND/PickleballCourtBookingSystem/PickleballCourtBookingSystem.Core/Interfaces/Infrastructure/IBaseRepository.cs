@@ -27,6 +27,8 @@ namespace PickleballCourtBookingSystem.Core.Interfaces.Infrastructure
         /// Author: CuongLM (04/08/2024)
         int Insert(T entity);
 
+        int InsertMany(List<T> entities);
+
         /// <summary>
         /// Update dữ liệu
         /// </summary>
@@ -67,14 +69,16 @@ namespace PickleballCourtBookingSystem.Core.Interfaces.Infrastructure
         /// <param name="entityId"></param>
         /// <returns>Thực thể của class muốn lấy, null - Nếu không có</returns>
         /// Author: CuongLM (04/08/2024)
-        T? FindByKeyword(string? keyword, string columnName);
-
+        IEnumerable<T> SearchByKeyword(string? keyword, string columnName);
+        IEnumerable<T> SearchByKeywordMultipleColumns(string? keyword, List<string> columnName);
+        IEnumerable<T> FindByColumnValue(object? value, string columnName);
+        T? FindFirstByColumnValue(object? keyword, string columnName);
         /// <summary>
         /// Tìm ra giá trị lớn nhất của cột mà kết thúc bằng số
         /// </summary>
         /// <param name="columnName">Tên của cột cần tìm</param>
         /// <returns>Giá trị lớn nhất, null nếu không có</returns>
-        string? FindLargestValueEndsWithNumberInColumn<T>(string columnName);
+        string? FindLargestValueEndsWithNumberInColumn(string columnName);
         
         /// <summary>
         /// Lấy ra các thực thể, order theo cột được chỉ định

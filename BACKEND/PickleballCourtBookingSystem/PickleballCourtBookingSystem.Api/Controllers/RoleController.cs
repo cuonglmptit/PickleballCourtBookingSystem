@@ -9,10 +9,10 @@ namespace PickleballCourtBookingSystem.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class RoleesController : ControllerBase
+    public class RoleController : ControllerBase
     {
         private readonly IRoleService _roleService;
-        public RoleesController(IRoleService roleService)
+        public RoleController(IRoleService roleService)
         {
             _roleService = roleService;
         }
@@ -27,8 +27,9 @@ namespace PickleballCourtBookingSystem.Api.Controllers
             }
             return BadRequest();
         }
-        
+
         [HttpGet("{id}")]
+        
         public IActionResult GetRoleById(Guid id)
         {
             var result = _roleService.GetByIdService(id);
@@ -39,42 +40,6 @@ namespace PickleballCourtBookingSystem.Api.Controllers
 
             return BadRequest();
         }
-
-        [HttpPost]
-        public IActionResult PostRole([FromBody] Role role)
-        {
-            role.Id = Guid.NewGuid();
-            var result = _roleService.InsertService(role);
-            if (result.Success)
-            {
-                return Ok(result.StatusCode);
-            }
-
-            return BadRequest();
-        }
-
-        [HttpPut]
-        public IActionResult UpdateRole([FromBody] Role role, Guid id)
-        {
-            var result = _roleService.UpdateCustomFieldService(role, id);
-            if (result.Success)
-            {
-                return Ok(result.StatusCode);
-            }
-
-            return BadRequest();
-        }
         
-        [HttpDelete("{id}")]
-        public IActionResult DeleteRole(Guid id)
-        {
-            var result = _roleService.DeleteService(id);
-            if (result.Success)
-            {
-                return Ok(result.StatusCode);
-            }
-            return BadRequest();
-        }
-
     }
 }

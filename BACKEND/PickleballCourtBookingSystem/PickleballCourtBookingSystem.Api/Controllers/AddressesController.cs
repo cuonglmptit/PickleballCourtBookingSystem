@@ -76,5 +76,17 @@ namespace PickleballCourtBookingSystem.Api.Controllers
             return BadRequest();
         }
 
+        [HttpGet("search")]
+        public IActionResult SearchAddress([FromQuery] string query)
+        {
+            var result = _addressService.SearchAddress(query);
+            if (result.Success)
+            {
+                return Ok(result.Data);
+            }
+
+            return BadRequest();
+        }
+
     }
 }

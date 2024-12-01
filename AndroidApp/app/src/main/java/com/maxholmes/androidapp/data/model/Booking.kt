@@ -11,5 +11,6 @@ data class Booking(
     var amount: Double,
     var paymentStatus: Int,
     var courtId: String,
+    var courtClusterId: String,
     var customerId: String
 ) : Parcelable

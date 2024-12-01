@@ -41,10 +41,9 @@ namespace PickleballCourtBookingSystem.Api.Controllers
         }
 
         [HttpPost]
-        public IActionResult PostBooking([FromBody] Booking booking)
+        public IActionResult AddBooking([FromBody] User user, List<CourtTimeSlot> courtTimeSlots, Court court)
         {
-            booking.Id = Guid.NewGuid();
-            var result = _bookingService.InsertService(booking);
+            var result = _bookingService.AddBooking(user, courtTimeSlots, court);
             if (result.Success)
             {
                 return Ok(result.StatusCode);
@@ -52,7 +51,7 @@ namespace PickleballCourtBookingSystem.Api.Controllers
 
             return BadRequest();
         }
-
+        
         [HttpPut]
         public IActionResult UpdateBooking([FromBody] Booking booking, Guid id)
         {
