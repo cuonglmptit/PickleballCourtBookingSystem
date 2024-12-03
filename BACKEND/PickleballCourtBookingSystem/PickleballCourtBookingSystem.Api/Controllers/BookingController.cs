@@ -51,7 +51,7 @@ namespace PickleballCourtBookingSystem.Api.Controllers
                 return Ok(result.StatusCode);
             }
 
-            return BadRequest();
+            return BadRequest(new { success = false, statusCode = result.StatusCode, userMessage = result.UserMsg, developerMessage = result.DevMsg });
         }
         
         [HttpPut]

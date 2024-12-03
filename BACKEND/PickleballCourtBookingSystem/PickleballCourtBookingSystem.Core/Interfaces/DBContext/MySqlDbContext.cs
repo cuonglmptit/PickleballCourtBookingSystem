@@ -324,10 +324,12 @@ public int Update<T>(T entity, Guid entityId)
             {
                 throw new ArgumentNullException(nameof(value), "Value cannot be null");
             }
-            if (value is not (int or string))
-            {
-                throw new ArgumentException("Value must be of type int or string", nameof(value));
-            }
+            // if (value is not (int or string))
+            // {
+            //     throw new ArgumentException("Value must be of type int or string", nameof(value));
+            // }
+
+            // var newValue = value.ToString();
             var className = typeof(T).Name;
             //Tạo câu lệnh SQL
             var sqlCommand = $"SELECT * FROM {className} WHERE {columnName} = @keyword";
@@ -340,19 +342,20 @@ public int Update<T>(T entity, Guid entityId)
             return result;
         }
 
-        public T? FindFirstByColumnvalue<T>(object? value, string columnName)
+        public T? FindFirstByColumnvalue<T>(string? value, string columnName)
         {
             if (value == null)
             {
                 throw new ArgumentNullException(nameof(value), "Value cannot be null");
             }
-            if (value is not (int or string))
-            {
-                throw new ArgumentException("Value must be of type int or string", nameof(value));
-            }
+            // if (value is not (int or string))
+            // {
+            //     throw new ArgumentException("Value must be of type int or string", nameof(value));
+            // }
             var className = typeof(T).Name;
             //Tạo câu lệnh SQL
             var sqlCommand = $"SELECT * FROM {className} WHERE {columnName} = @keyword";
+            Console.WriteLine("hhh" + sqlCommand);
             var parameters = new DynamicParameters();
             //Thêm keyword chính là giá trị muốn tìm trong cột
             parameters.Add("@keyword", value);

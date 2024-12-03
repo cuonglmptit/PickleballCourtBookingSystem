@@ -1,3 +1,4 @@
+using Dapper;
 using PickleballCourtBookingSystem.Api.Models;
 using PickleballCourtBookingSystem.Core.Entities;
 using PickleballCourtBookingSystem.Core.Interfaces.DBContext;
@@ -7,20 +8,26 @@ namespace PickleballCourtBookingSystem.Infrastructure.Repository;
 
 public class RoleRepository : BaseRepository<Role>, IRoleRepository
 {
-    
-    private readonly IDbContext _dbContext;
     public RoleRepository(IDbContext dbContext) : base(dbContext)
     {
     }
 
-    public Role? GetRoleByUser(User user)
+    public Role? GetById(int? roleId)
     {
-        var roleId = user.RoleId;
-        return _dbContext.FindFirstByColumnvalue<Role>(roleId, "Id");
-    }
+        // return _dbContext.FindFirstByColumnvalue<Role>(roleId.ToString(), "Id");
+        
 
-    public Role? GetById(int roleId)
-    {
-        return _dbContext.FindFirstByColumnvalue<Role>(roleId, "Id");
+        //Tạo câu lệnh SQL
+        var sqlCommand = $"SELECT * FROM {className} WHERE Id = @entityId";
+
+        //Tạo dynamic param và add param
+        var parameters = new DynamicParameters();
+        parameters.Add("@entityId", roleId);
+
+        //Thực thi câu lệnh
+        var res = dbContext.Connection.QueryFirstOrDefault<Role>(sql: sqlCommand, param: parameters);
+
+        //Trả về kết quả
+        return res;
     }
 }

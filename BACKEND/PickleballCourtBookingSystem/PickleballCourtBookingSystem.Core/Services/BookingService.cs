@@ -37,12 +37,13 @@ public class BookingService : BaseService<Booking>, IBookingService
             {
                 return CreateServiceResult(false, StatusCode: 400, UserMsg: "Request error", DevMsg: "Request error");
             }
-
+            
             var roleServiceResult = _roleService.GetUserRoleByUserId(userId);
             if (!roleServiceResult.Success)
             {
                 return roleServiceResult;
             }
+            
 
             var courtServiceResult = _courtService.GetByIdService(courtId);
             if (!courtServiceResult.Success)
@@ -55,7 +56,7 @@ public class BookingService : BaseService<Booking>, IBookingService
             foreach (var courtTimeSlotId in courtTimeSlotIds)
             {
                 var courtTimeSlot = (CourtTimeSlot)_courtTimeSlotService.GetByIdService(courtTimeSlotId).Data!;
-                if (courtTimeSlot.CourtId == court.Id)
+                if (courtTimeSlot.CourtId != court.Id)
                 {
                     return CreateServiceResult(false, StatusCode: 400, UserMsg: "Request error",
                         DevMsg: "Request error");
@@ -80,6 +81,7 @@ public class BookingService : BaseService<Booking>, IBookingService
                     amount += courtTimeSlot.Price.Value;
                 }
             }
+            
 
             var customerServiceResult = _customerService.GetCustomerByUserIdService(userId);
             if (!customerServiceResult.Success)
@@ -116,9 +118,19 @@ public class BookingService : BaseService<Booking>, IBookingService
                     BookingId = booking.Id,
                     CourtTimeSlotId = courtTimeSlotId
                 };
+                var courtTimeSlot = new CourtTimeSlot
+                {
+                    IsAvailable = 0
+                };
+                var resultUpdateCourtTimeSlot =
+                    _courtTimeSlotService.UpdateCustomFieldService(courtTimeSlot, courtTimeSlotId);
+                if (!resultUpdateCourtTimeSlot.Success)
+                {
+                    return resultUpdateCourtTimeSlot;
+                }
                 listCourtTimeBooking.Add(courtTimeBooking);
             }
-
+            
             var resultAddCourtTimeBooking = _courtTimeBookingService.InsertManyService(listCourtTimeBooking);
             if (resultAddCourtTimeBooking.Success)
             {

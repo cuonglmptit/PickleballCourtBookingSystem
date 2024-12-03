@@ -72,7 +72,7 @@ namespace PickleballCourtBookingSystem.Core.Interfaces.Infrastructure
         IEnumerable<T> SearchByKeyword(string? keyword, string columnName);
         IEnumerable<T> SearchByKeywordMultipleColumns(string? keyword, List<string> columnName);
         IEnumerable<T> FindByColumnValue(object? value, string columnName);
-        T? FindFirstByColumnValue(object? keyword, string columnName);
+        T? FindFirstByColumnValue(string? keyword, string columnName);
         /// <summary>
         /// Tìm ra giá trị lớn nhất của cột mà kết thúc bằng số
         /// </summary>
