@@ -58,7 +58,7 @@ public class BaseRepository<T> : IBaseRepository<T> where T : class
     {
         return dbContext.FindByColumnValue<T>(value, columnName);
     }
-    public virtual T? FindFirstByColumnValue(object? keyword, string columnName)
+    public virtual T? FindFirstByColumnValue(string? keyword, string columnName)
     {
         return dbContext.FindFirstByColumnvalue<T>(keyword, columnName);
     }

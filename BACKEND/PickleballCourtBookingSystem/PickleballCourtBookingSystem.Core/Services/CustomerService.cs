@@ -20,7 +20,7 @@ public class CustomerService : BaseService<Customer>, ICustomerService
         {
             return CreateServiceResult(Success: false, StatusCode: 400, UserMsg: "User id is null");
         }
-        var customer = _customerRepository.FindFirstByColumnValue(userId, "userId");
+        var customer = _customerRepository.FindFirstByColumnValue(userId.ToString(), "userId");
         if (customer != null)
         {
             return CreateServiceResult(Success: true, StatusCode: 200, Data: customer);
