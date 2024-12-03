@@ -145,3 +145,13 @@ CourtTimeSlot:
     "courtId": "f3814f04-90e1-485a-8086-bb65e7cf26cc"
   }
 ]
+
+Booking:
+{
+  "userId": "fa2b7b86-a926-406b-9980-7eaea4665bbf",
+  "courtTimeSlotsIds": [
+    "091bea7b-92e2-440b-9ed1-fa64f89ba1f4",
+    "1c64a2d2-5a2b-4df9-b911-2558a8aeb7b3"
+  ],
+  "courtId": "f3814f04-90e1-485a-8086-bb65e7cf26cc"
+}

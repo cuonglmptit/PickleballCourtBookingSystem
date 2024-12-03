@@ -18,7 +18,7 @@ public class CourtTimeSlotRepository : BaseRepository<CourtTimeSlot>, ICourtTime
         var timeNow = TimeZoneInfo.ConvertTime(DateTime.Now, TimeZoneInfo.Local);
         var date = timeNow.Date;
         var time = timeNow.TimeOfDay;
-        var sqlCommand = $"SELECT * FROM {className} WHERE courtId = @courtId AND (date > @date OR (date = @date AND time > @time))";
+        var sqlCommand = $"SELECT * FROM {className} WHERE courtId = @courtId AND isAvailable = 1 AND (date > @date OR (date = @date AND time > @time))";
         var parameters = new DynamicParameters();
         parameters.Add("@courtId", courtId);
         parameters.Add("@date", date);
