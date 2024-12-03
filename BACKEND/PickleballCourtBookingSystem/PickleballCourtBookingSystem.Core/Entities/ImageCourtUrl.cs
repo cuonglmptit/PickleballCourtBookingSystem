@@ -1,4 +1,4 @@
-namespace PickleballCourtBookingSystem.Api.Models
+namespace PickleballCourtBookingSystem.Core.Entities
 
 {
     public class ImageCourtUrl

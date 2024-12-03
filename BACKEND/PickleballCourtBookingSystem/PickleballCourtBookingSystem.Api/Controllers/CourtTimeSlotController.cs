@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PickleballCourtBookingSystem.Api.Models;
+using PickleballCourtBookingSystem.Core.Entities;
 using PickleballCourtBookingSystem.Core.Interfaces.Infrastructure;
 using PickleballCourtBookingSystem.Core.Interfaces.Services;
 using PickleballCourtBookingSystem.Infrastructure.Repository;
@@ -9,10 +10,10 @@ namespace PickleballCourtBookingSystem.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CourtTimeSlotesController : ControllerBase
+    public class CourtTimeSlotController : ControllerBase
     {
         private readonly ICourtTimeSlotService _courtTimeSlotService;
-        public CourtTimeSlotesController(ICourtTimeSlotService courtTimeSlotService)
+        public CourtTimeSlotController(ICourtTimeSlotService courtTimeSlotService)
         {
             _courtTimeSlotService = courtTimeSlotService;
         }
@@ -40,11 +41,32 @@ namespace PickleballCourtBookingSystem.Api.Controllers
             return BadRequest();
         }
 
-        [HttpPost]
+        [HttpPost("single")]
         public IActionResult PostCourtTimeSlot([FromBody] CourtTimeSlot courtTimeSlot)
         {
             courtTimeSlot.Id = Guid.NewGuid();
             var result = _courtTimeSlotService.InsertService(courtTimeSlot);
+            if (result.Success)
+            {
+                return Ok(result.StatusCode);
+            }
+
+            return BadRequest();
+        }
+        
+        [HttpPost("multiple")]
+        public IActionResult PostManyCourtTimeSlot([FromBody] List<CourtTimeSlot> courtTimeSlots)
+        {
+            foreach (var courtTimeSlot in courtTimeSlots)
+            {
+                courtTimeSlot.Id = Guid.NewGuid();
+            }
+
+            foreach (var courtTimeSlot in courtTimeSlots)
+            {
+                Console.WriteLine(courtTimeSlot.Id);
+            }
+            var result = _courtTimeSlotService.InsertManyService(courtTimeSlots);
             if (result.Success)
             {
                 return Ok(result.StatusCode);
@@ -72,6 +94,17 @@ namespace PickleballCourtBookingSystem.Api.Controllers
             if (result.Success)
             {
                 return Ok(result.StatusCode);
+            }
+            return BadRequest();
+        }
+        
+        [HttpGet("getCourtTimeSlot")]
+        public IActionResult GetCourtTimeSlot([FromQuery] Guid courtId)
+        {
+            var result = _courtTimeSlotService.GetCourtTimeSlot(courtId);
+            if (result.Success)
+            {
+                return Ok(result.Data);
             }
             return BadRequest();
         }

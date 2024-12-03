@@ -29,6 +29,20 @@ User:
   "roleId": 1
 }
 
+User:
+{
+  "code": 100,
+  "username": "max1",
+  "password": "123",
+  "name": "Hoàng Minh Đức",
+  "email": "maxholmes221@gmail.com",
+  "phoneNumber": "0375677758",
+  "isActive": 1,
+  "avatarUrl": "https://example.com",
+  "addressId": "6d7f66e0-e83e-46cb-8c70-96e8de6e7192",
+  "roleId": 2
+}
+
 {
   "code": 139,
   "username": "cuonglm",
@@ -51,3 +65,83 @@ Customer:
 {
   "userId": "fa2b7b86-a926-406b-9980-7eaea4665bbf"
 }
+
+CourtOwner:
+{
+  "userId": "d8fe6eb7-d60b-42c5-9cf7-789abd25fbda"
+}
+
+CourtCluster:
+{
+  "name": "Sân của Đức",
+  "description": "",
+  "addressId": "6d7f66e0-e83e-46cb-8c70-96e8de6e7192",
+  "courtOwnerId": "4aeab0f2-27f3-482f-a2eb-07875b741a9a"
+}
+
+Court:
+{
+  "courtNumber": 1,
+  "description": "",
+  "courtClusterId": "7ab447f8-2df9-4924-8fdc-2c7e17ed155f"
+}
+
+CourtTimeSlot:
+[
+  {
+    "date": "2024-12-10",
+    "time": "08:00:00",
+    "isAvailable": 1,
+    "price": 50.0,
+    "courtId": "f3814f04-90e1-485a-8086-bb65e7cf26cc"
+  },
+  {
+    "date": "2024-12-10",
+    "time": "10:00:00",
+    "isAvailable": 0,
+    "price": 45.0,
+    "courtId": "f3814f04-90e1-485a-8086-bb65e7cf26cc"
+  },
+  {
+    "date": "2024-12-11",
+    "time": "14:00:00",
+    "isAvailable": 1,
+    "price": 60.0,
+    "courtId": "f3814f04-90e1-485a-8086-bb65e7cf26cc"
+  },
+  {
+    "date": "2024-12-12",
+    "time": "16:00:00",
+    "isAvailable": 1,
+    "price": 55.0,
+    "courtId": "f3814f04-90e1-485a-8086-bb65e7cf26cc"
+  },
+  {
+    "date": "2024-12-13",
+    "time": "18:00:00",
+    "isAvailable": 0,
+    "price": 65.0,
+    "courtId": "f3814f04-90e1-485a-8086-bb65e7cf26cc"
+  },
+  {
+    "date": "2024-12-14",
+    "time": "20:00:00",
+    "isAvailable": 1,
+    "price": 70.0,
+    "courtId": "f3814f04-90e1-485a-8086-bb65e7cf26cc"
+  },
+  {
+    "date": "2024-12-15",
+    "time": "08:00:00",
+    "isAvailable": 0,
+    "price": 50.0,
+    "courtId": "f3814f04-90e1-485a-8086-bb65e7cf26cc"
+  },
+  {
+    "date": "2024-12-16",
+    "time": "10:00:00",
+    "isAvailable": 1,
+    "price": 45.0,
+    "courtId": "f3814f04-90e1-485a-8086-bb65e7cf26cc"
+  }
+]

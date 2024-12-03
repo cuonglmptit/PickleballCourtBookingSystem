@@ -1,4 +1,4 @@
-namespace PickleballCourtBookingSystem.Api.Models
+namespace PickleballCourtBookingSystem.Core.Entities
 
 {
     public class Court
@@ -7,6 +7,5 @@ namespace PickleballCourtBookingSystem.Api.Models
         public int? CourtNumber { get; set; }
         public string? Description { get; set; }
         public Guid? CourtClusterId { get; set; }
-        public Boolean? IsActive { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 using PickleballCourtBookingSystem.Api.Models;
 using PickleballCourtBookingSystem.Core.DTOs;
+using PickleballCourtBookingSystem.Core.Entities;
 using PickleballCourtBookingSystem.Core.Interfaces.Infrastructure;
 using PickleballCourtBookingSystem.Core.Interfaces.Services;
 
@@ -27,84 +28,113 @@ public class BookingService : BaseService<Booking>, IBookingService
         _timeService = timeService;
     }
 
-    public ServiceResult AddBooking(User user, List<CourtTimeSlot> courtTimeSlots, Court court)
+    public ServiceResult AddBooking(Guid userId, List<Guid> courtTimeSlotIds, Guid courtId)
     {
-        if (user.Id == Guid.Empty || user.Id == null || courtTimeSlots.Count == 0 || court.Id == Guid.Empty ||
-            court.Id == null)
+        try
         {
-            return CreateServiceResult(false, StatusCode: 400, UserMsg: "Request error", DevMsg: "Request error");
-        }
-        var roleServiceResult = _roleService.GetUserRoleByUser(user);
-        if (!roleServiceResult.Success)
-        {
-            return roleServiceResult;
-        }
-        var courtServiceResult = _courtService.GetByIdService(court.Id.Value);
-        if (!courtServiceResult.Success)
-        {
-            return courtServiceResult;
-        }
-        var courtCheck = (Court) courtServiceResult.Data!;
-        if (courtCheck.CourtClusterId != court.CourtClusterId)
-        {
-            return CreateServiceResult(false, StatusCode: 400, UserMsg: "Request error", DevMsg: "Request error");
-        }
-        var Amount = 0.00;
-        foreach (var courtTimeSlot in courtTimeSlots)
-        {
-            if (courtTimeSlot.CourtId != court.Id)
+            if (userId == Guid.Empty || courtTimeSlotIds.Count == 0 || courtId == Guid.Empty ||
+                courtTimeSlotIds.Contains(Guid.Empty))
             {
-                return CreateServiceResult(Success: false, StatusCode: 400, UserMsg: "Court Time Slot khong phai cua Court", DevMsg: "Court Time Slot khong phai cua Court");
+                return CreateServiceResult(false, StatusCode: 400, UserMsg: "Request error", DevMsg: "Request error");
             }
-            var courtTimeSlotServiceResult = _courtTimeSlotService.CheckTimeSlotAvailableAndCheckPrice(courtTimeSlot);
-            if (!courtTimeSlotServiceResult.Success)
-            {
-                return courtTimeSlotServiceResult;
-            }
-            if (courtTimeSlot.Price.HasValue)
-            {
-                Amount += courtTimeSlot.Price.Value;
-            }
-        }
 
-        var customerServiceResult = _customerService.GetCustomerByUserIdService(user.Id);
-        if (!customerServiceResult.Success)
-        {
-            return customerServiceResult;
-        }
+            var roleServiceResult = _roleService.GetUserRoleByUserId(userId);
+            if (!roleServiceResult.Success)
+            {
+                return roleServiceResult;
+            }
 
-        var customer = (Customer)customerServiceResult.Data!;
-        var customerId = customer.Id;
-        var booking = new Booking();
-        booking.Id = Guid.NewGuid();
-        booking.CourtId = court.Id;
-        booking.CustomerId = customerId;
-        booking.CourtClusterId = court.CourtClusterId;
-        booking.TimeBooking = _timeService.GetCurrentTime();
-        booking.Status = 0;
-        booking.PaymentStatus = 0;
-        booking.Amount = Amount;
-        var listCourtTimeBooking = new List<CourtTimeBooking>();
-        var resultAddBooking = _bookingRepository.Insert(booking);
-        if (resultAddBooking == 0)
-        {
-            return CreateServiceResult(Success: false, StatusCode: 500, UserMsg: "Failed to add booking", DevMsg: "Failed to add booking");
-        }
-        foreach (var courtTimeSlot in courtTimeSlots)
-        {
-            var courtTimeBooking = new CourtTimeBooking();
-            courtTimeBooking.Id = Guid.NewGuid();
-            courtTimeBooking.BookingId = booking.Id;
-            courtTimeBooking.CourtTimeSlotId = courtTimeSlot.Id;
-            listCourtTimeBooking.Add(courtTimeBooking);
-        }
-        var resultAddCourtTimeBooking = _courtTimeBookingService.InsertManyService(listCourtTimeBooking);
-        if (!resultAddCourtTimeBooking.Success)
-        {
+            var courtServiceResult = _courtService.GetByIdService(courtId);
+            if (!courtServiceResult.Success)
+            {
+                return courtServiceResult;
+            }
+
+            var court = (Court)courtServiceResult.Data!;
+            var amount = 0.00;
+            foreach (var courtTimeSlotId in courtTimeSlotIds)
+            {
+                var courtTimeSlot = (CourtTimeSlot)_courtTimeSlotService.GetByIdService(courtTimeSlotId).Data!;
+                if (courtTimeSlot.CourtId == court.Id)
+                {
+                    return CreateServiceResult(false, StatusCode: 400, UserMsg: "Request error",
+                        DevMsg: "Request error");
+                }
+
+                if (courtTimeSlot.IsAvailable == 0)
+                {
+                    return CreateServiceResult(false, StatusCode: 400, UserMsg: "Lich san da bi dang ky",
+                        DevMsg: "Lich san da bi dang ky");
+                }
+
+                if (courtTimeSlot.Date != null && courtTimeSlot.Time != null &&
+                    courtTimeSlot.Date.Value + courtTimeSlot.Time.Value < _timeService.GetCurrentTime())
+                {
+                    return CreateServiceResult(false, StatusCode: 400,
+                        UserMsg: "Ban dang ky san vao thoi gian trong qua khu",
+                        DevMsg: "Thoi gian dang ky san o qua khu");
+                }
+
+                if (courtTimeSlot.Price.HasValue)
+                {
+                    amount += courtTimeSlot.Price.Value;
+                }
+            }
+
+            var customerServiceResult = _customerService.GetCustomerByUserIdService(userId);
+            if (!customerServiceResult.Success)
+            {
+                return customerServiceResult;
+            }
+
+            var customer = (Customer)customerServiceResult.Data!;
+            var customerId = customer.Id;
+            var booking = new Booking
+            {
+                Id = Guid.NewGuid(),
+                CourtId = court.Id,
+                CustomerId = customerId,
+                CourtClusterId = court.CourtClusterId,
+                TimeBooking = _timeService.GetCurrentTime(),
+                Status = 0,
+                PaymentStatus = 0,
+                Amount = amount
+            };
+            var listCourtTimeBooking = new List<CourtTimeBooking>();
+            var resultAddBooking = _bookingRepository.Insert(booking);
+            if (resultAddBooking == 0)
+            {
+                return CreateServiceResult(Success: false, StatusCode: 500, UserMsg: "Failed to add booking",
+                    DevMsg: "Failed to add booking");
+            }
+
+            foreach (var courtTimeSlotId in courtTimeSlotIds)
+            {
+                var courtTimeBooking = new CourtTimeBooking
+                {
+                    Id = Guid.NewGuid(),
+                    BookingId = booking.Id,
+                    CourtTimeSlotId = courtTimeSlotId
+                };
+                listCourtTimeBooking.Add(courtTimeBooking);
+            }
+
+            var resultAddCourtTimeBooking = _courtTimeBookingService.InsertManyService(listCourtTimeBooking);
+            if (resultAddCourtTimeBooking.Success)
+            {
+                return CreateServiceResult(Success: true, StatusCode: 201, UserMsg: "Tao booking thanh cong",
+                    DevMsg: "Success to add booking");
+
+            }
+
             var resultRemoveBooking = _bookingRepository.Delete(booking.Id.Value);
             return resultAddCourtTimeBooking;
         }
-        return CreateServiceResult(Success: true, StatusCode: 201, UserMsg: "Tao booking thanh cong", DevMsg: "Success to add booking");
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return CreateServiceResult(Success: false, StatusCode: 500, UserMsg: "Failed to add booking", DevMsg: e.Message);
+        }
     }
 
     public ServiceResult CancelBooking(Booking booking)
