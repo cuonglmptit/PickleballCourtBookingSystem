@@ -1,4 +1,5 @@
 using PickleballCourtBookingSystem.Api.Models;
+using PickleballCourtBookingSystem.Core.Entities;
 using PickleballCourtBookingSystem.Core.Interfaces.Infrastructure;
 using PickleballCourtBookingSystem.Core.Interfaces.Services;
 

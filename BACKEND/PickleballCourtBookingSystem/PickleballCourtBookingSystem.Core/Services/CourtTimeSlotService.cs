@@ -1,5 +1,6 @@
 using PickleballCourtBookingSystem.Api.Models;
 using PickleballCourtBookingSystem.Core.DTOs;
+using PickleballCourtBookingSystem.Core.Entities;
 using PickleballCourtBookingSystem.Core.Interfaces.Infrastructure;
 using PickleballCourtBookingSystem.Core.Interfaces.Services;
 
@@ -7,32 +8,38 @@ namespace PickleballCourtBookingSystem.Core.Services;
 
 public class CourtTimeSlotService : BaseService<CourtTimeSlot>, ICourtTimeSlotService
 {
-    public CourtTimeSlotService(ICourtTimeSlotRepository repository) : base(repository)
+    private readonly ICourtTimeSlotRepository _courtTimeSlotRepository;
+    public CourtTimeSlotService(ICourtTimeSlotRepository repository, ICourtTimeSlotRepository courtTimeSlotRepository) : base(repository)
     {
-        
+        _courtTimeSlotRepository = courtTimeSlotRepository;
     }
 
-    public ServiceResult CheckTimeSlotAvailableAndCheckPrice(CourtTimeSlot courtTimeSlot)
+    public ServiceResult GetCourtTimeSlotsByCourtId(Guid courtId)
     {
-        var courtTimeSlotCheck = baseRepository.GetById(courtTimeSlot.Id);
-        if (courtTimeSlotCheck == null)
+        try
         {
-            return CreateServiceResult(false, StatusCode: 404, UserMsg: "Course time slot not found", DevMsg: "Course time slot not found");
+            var res = _courtTimeSlotRepository.FindByColumnValue(courtId, "CourtId");
+            return CreateServiceResult(Success: true, StatusCode: 200, Data: res);
         }
-        if (courtTimeSlotCheck.Price == null || courtTimeSlot.Price == null)
+        catch (Exception e)
         {
-            return CreateServiceResult(false, StatusCode: 404, UserMsg: "Course time slot not found", DevMsg: "Course time slot not found");
+            Console.WriteLine(e);
+            throw;
         }
-
-        if (courtTimeSlot.Price.HasValue && courtTimeSlotCheck.Price.HasValue)
-        {
-            var roundedPriceCheck = (decimal) Math.Round(courtTimeSlotCheck.Price.Value, 2);
-            var roundedPriceInput = (decimal) Math.Round(courtTimeSlot.Price.Value, 2);
-            if (courtTimeSlotCheck.IsAvailable == 1 && roundedPriceInput == roundedPriceCheck)
-            {
-                return CreateServiceResult(true, StatusCode: 200, Data: true);
-            }
-        }
-        return CreateServiceResult(false, StatusCode: 200, UserMsg: "Course time slot is not available", DevMsg: "Course time slot is not available", Data: false);
     }
+
+    public ServiceResult GetCourtTimeSlot(Guid? courtId)
+    {
+        try
+        {
+            var res = _courtTimeSlotRepository.FindCourtTimeSlots(courtId);
+            return CreateServiceResult(Success: true, StatusCode: 200, Data: res);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+    
 }

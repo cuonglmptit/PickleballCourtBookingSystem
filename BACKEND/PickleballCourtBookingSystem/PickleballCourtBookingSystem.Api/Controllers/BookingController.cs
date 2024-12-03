@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using PickleballCourtBookingSystem.Api.DTOs;
 using PickleballCourtBookingSystem.Api.Models;
+using PickleballCourtBookingSystem.Core.Entities;
 using PickleballCourtBookingSystem.Core.Interfaces.Infrastructure;
 using PickleballCourtBookingSystem.Core.Interfaces.Services;
 using PickleballCourtBookingSystem.Infrastructure.Repository;
@@ -41,9 +43,9 @@ namespace PickleballCourtBookingSystem.Api.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddBooking([FromBody] User user, List<CourtTimeSlot> courtTimeSlots, Court court)
+        public IActionResult AddBooking([FromBody] AddBookingRequest request)
         {
-            var result = _bookingService.AddBooking(user, courtTimeSlots, court);
+            var result = _bookingService.AddBooking(request.UserId, request.CourtTimeSlotsIds, request.CourtId);
             if (result.Success)
             {
                 return Ok(result.StatusCode);

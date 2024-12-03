@@ -111,19 +111,16 @@ public class MySqlDbContext : IDbContext
         return res;
     }
 
-    // insert nhieu phan tu, neu loi thi them paramindex
+    // insert nhieu phan tu, neu loi thi them paramindex (Co loi that, phai them index vao)
     public int InsertMany<T>(List<T> entities)
     {
         var className = typeof(T).Name;
-
         var propListName = String.Empty;
-
         var valuesList = new List<string>();
-
         var parameters = new DynamicParameters();
-
         var properties = typeof(T).GetProperties();
 
+        // Xây dựng danh sách các cột (property names)
         foreach (var property in properties)
         {
             var propName = property.Name;
@@ -132,39 +129,38 @@ public class MySqlDbContext : IDbContext
                 propListName += $"{propName},";
             }
         }
-        
         propListName = propListName.TrimEnd(',');
 
-        foreach (var entity in entities)
+        // Xử lý từng entity
+        for (var i = 0; i < entities.Count; i++)
         {
+            var entity = entities[i];
             var propListValueForOne = String.Empty;
 
             foreach (var property in properties)
             {
                 var propName = property.Name;
-                var propValue = property.GetValue(entity);
-
                 if (!Attribute.IsDefined(property, typeof(NotInQuery)))
                 {
-                    propListValueForOne += $"@{propName},";
-                    parameters.Add($"@{propName}", propValue);
+                    var paramKey = $"@{propName}_{i}";
+                    propListValueForOne += $"{paramKey},";
+                    parameters.Add(paramKey, property.GetValue(entity));
                 }
             }
-            
+
             propListValueForOne = propListValueForOne.TrimEnd(',');
-            
             valuesList.Add($"({propListValueForOne})");
         }
-        
-        var allValues = string.Join(",", valuesList);
-        
-        var sqlCommand = $"INSERT INTO {className}({propListName}) VALUES {allValues}";
-        
-        var res = Connection.Execute(sql: sqlCommand, param: parameters);
 
+        // Ghép nối tất cả các giá trị
+        var allValues = string.Join(",", valuesList);
+        var sqlCommand = $"INSERT INTO {className}({propListName}) VALUES {allValues}";
+
+        // Thực thi lệnh SQL
+        var res = Connection.Execute(sql: sqlCommand, param: parameters);
         return res;
-        
     }
+
 
 public int Update<T>(T entity, Guid entityId)
         {
