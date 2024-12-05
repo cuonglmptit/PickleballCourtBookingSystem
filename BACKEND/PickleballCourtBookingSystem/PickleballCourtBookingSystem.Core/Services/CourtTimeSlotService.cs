@@ -61,31 +61,29 @@ public class CourtTimeSlotService : BaseService<CourtTimeSlot>, ICourtTimeSlotSe
             foreach (var courtId in courtIds)
             {
                 var courtTimeSlotsCheck = _courtTimeSlotRepository.FindCourtTimeSlotsByCourtId(courtId, timeNow.Date, timeNow.TimeOfDay);
-                var timeCheck = new HashSet<DateTime>();
-                foreach (var courtTimeSlot in courtTimeSlotsCheck)
-                {
-                    if (courtTimeSlot.Date.HasValue && courtTimeSlot.Time.HasValue)
-                    {
-                        var courtSlotDate = (DateTime) courtTimeSlot.Date;
-                        var courtSlotTimeOfDay = (TimeSpan) courtTimeSlot.Time;
-                        var courtSlotTime = courtSlotDate.Add(courtSlotTimeOfDay);
-                        timeCheck.Add(courtSlotTime);
-                    }
-                }
             
                 foreach (var date in dates)
                 {
-                    if (date < timeNow.Date)
+                    if (date.Date < timeNow.Date)
                     {
                         return CreateServiceResult(Success: false, StatusCode: 400, UserMsg: "Ngay truyen vao khong hop le (thoi diem trong qua khu)", DevMsg: "Ngay truyen vao khong hop le");
                     }
                     foreach (var courtPrice in prices)
                     {
                         if (!courtPrice.Time.HasValue) continue;
-                        var createTime = date.Add(courtPrice.Time.Value);
-                        Console.WriteLine("Thoi gian them " + createTime);
-                        if (!timeCheck.Contains(createTime))
+                        var check = true;
+                        foreach (var courtTimeSlotCheck in courtTimeSlotsCheck)
                         {
+                            if ((courtTimeSlotCheck.Date == date.Date && courtTimeSlotCheck.Time == courtPrice.Time &&
+                                courtTimeSlotCheck.CourtId == courtId) || (date.Date == courtTimeSlotCheck.Date && courtPrice.Time < timeNow.TimeOfDay))
+                            {
+                                check = false;
+                            }
+                        }
+                        Console.WriteLine("nnn" + check);
+                        if (check)
+                        {
+                            Console.WriteLine("mmm" + date + courtPrice.Time + courtId);
                             courtTimeSlots.Add(new CourtTimeSlot
                             {
                                 Id = Guid.NewGuid(),
@@ -98,6 +96,11 @@ public class CourtTimeSlotService : BaseService<CourtTimeSlot>, ICourtTimeSlotSe
                         }
                     }
                 }
+            }
+
+            if (courtTimeSlots.Count == 0)
+            {
+                return CreateServiceResult(Success: true, StatusCode: 201);
             }
             var res = baseRepository.InsertMany(courtTimeSlots);
             return CreateServiceResult(Success: res > 0, StatusCode: res > 0 ? 201 : 400);
