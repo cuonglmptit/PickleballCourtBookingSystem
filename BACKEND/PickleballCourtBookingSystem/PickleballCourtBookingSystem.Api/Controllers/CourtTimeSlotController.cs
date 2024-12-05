@@ -61,11 +61,6 @@ namespace PickleballCourtBookingSystem.Api.Controllers
             {
                 courtTimeSlot.Id = Guid.NewGuid();
             }
-
-            foreach (var courtTimeSlot in courtTimeSlots)
-            {
-                Console.WriteLine(courtTimeSlot.Id);
-            }
             var result = _courtTimeSlotService.InsertManyService(courtTimeSlots);
             if (result.Success)
             {
@@ -101,7 +96,7 @@ namespace PickleballCourtBookingSystem.Api.Controllers
         [HttpGet("getCourtTimeSlot")]
         public IActionResult GetCourtTimeSlot([FromQuery] Guid courtId)
         {
-            var result = _courtTimeSlotService.GetCourtTimeSlot(courtId);
+            var result = _courtTimeSlotService.GetAvailableCourtTimeSlotsByCourtId(courtId);
             if (result.Success)
             {
                 return Ok(result.Data);

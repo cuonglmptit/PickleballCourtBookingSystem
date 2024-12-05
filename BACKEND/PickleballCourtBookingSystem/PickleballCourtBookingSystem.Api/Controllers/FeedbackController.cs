@@ -10,10 +10,10 @@ namespace PickleballCourtBookingSystem.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class FeedbackesController : ControllerBase
+    public class FeedbackController : ControllerBase
     {
         private readonly IFeedbackService _feedbackService;
-        public FeedbackesController(IFeedbackService feedbackService)
+        public FeedbackController(IFeedbackService feedbackService)
         {
             _feedbackService = feedbackService;
         }

@@ -13,11 +13,8 @@ public class CourtTimeSlotRepository : BaseRepository<CourtTimeSlot>, ICourtTime
     public CourtTimeSlotRepository(IDbContext dbContext) : base(dbContext)
     {
     }
-    public IEnumerable<CourtTimeSlot> FindCourtTimeSlots(Guid? courtId)
+    public IEnumerable<CourtTimeSlot> FindAvailableCourtTimeSlotsByCourtId(Guid? courtId, DateTime date, TimeSpan time)
     {
-        var timeNow = TimeZoneInfo.ConvertTime(DateTime.Now, TimeZoneInfo.Local);
-        var date = timeNow.Date;
-        var time = timeNow.TimeOfDay;
         var sqlCommand = $"SELECT * FROM {className} WHERE courtId = @courtId AND isAvailable = 1 AND (date > @date OR (date = @date AND time > @time))";
         var parameters = new DynamicParameters();
         parameters.Add("@courtId", courtId);
@@ -26,5 +23,26 @@ public class CourtTimeSlotRepository : BaseRepository<CourtTimeSlot>, ICourtTime
         var result = dbContext.Connection.Query<CourtTimeSlot>(sql: sqlCommand, param: parameters);
         return result;
     }
+    
+    public IEnumerable<CourtTimeSlot> FindAvailableCourtTimeSlotsForTimeRange(DateTime date, TimeSpan startTime, TimeSpan endTime)
+    {
+        var sqlCommand = $"SELECT * FROM {className} WHERE isAvailable = 1 AND date = @date AND time >= @startTime AND time < @endTime ORDER BY time";
+        var parameters = new DynamicParameters();
+        parameters.Add("@date", date);
+        parameters.Add("@startTime", startTime);
+        parameters.Add("@endTime", endTime);
+        var result = dbContext.Connection.Query<CourtTimeSlot>(sql: sqlCommand, param: parameters);
+        return result;
+    }
 
+    public IEnumerable<CourtTimeSlot> FindCourtTimeSlotsByCourtId(Guid? courtId, DateTime date, TimeSpan time)
+    {
+        var sqlCommand = $"SELECT * FROM {className} WHERE courtId = @courtId AND (date > @date OR (date = @date AND time > @time))";
+        var parameters = new DynamicParameters();
+        parameters.Add("@courtId", courtId);
+        parameters.Add("@date", date);
+        parameters.Add("@time", time);
+        var result = dbContext.Connection.Query<CourtTimeSlot>(sql: sqlCommand, param: parameters);
+        return result;
+    }
 }

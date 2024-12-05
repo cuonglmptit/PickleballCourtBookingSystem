@@ -11,10 +11,10 @@ namespace PickleballCourtBookingSystem.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BookingesController : ControllerBase
+    public class BookingController : ControllerBase
     {
         private readonly IBookingService _bookingService;
-        public BookingesController(IBookingService bookingService)
+        public BookingController(IBookingService bookingService)
         {
             _bookingService = bookingService;
         }

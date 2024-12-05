@@ -39,6 +39,7 @@ builder.Services.AddScoped<IBookingRepository, BookingRepository>();
 builder.Services.AddScoped<ICourtTimeBookingRepository, CourtTimeBookingRepository>();
 builder.Services.AddScoped<ICancellationRepository, CancellationRepository>();
 builder.Services.AddScoped<IFeedbackRepository, FeedbackRepository>();
+builder.Services.AddScoped<ICourtPriceRepository, CourtPriceRepository>();
 builder.Services.AddScoped<IAddressService, AddressService>();
 builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<IAdminService, AdminService>();
@@ -54,6 +55,7 @@ builder.Services.AddScoped<ICourtTimeBookingService, CourtTimeBookingService>();
 builder.Services.AddScoped<ICancellationService, CancellationService>();
 builder.Services.AddScoped<IFeedbackService, FeedbackService>();
 builder.Services.AddScoped<ITimeService, TimeService>();
+builder.Services.AddScoped<ICourtPriceService, CourtPriceService>();
 builder.Services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
 builder.Services.AddScoped(typeof(IBaseService<>), typeof(BaseService<>));
 
