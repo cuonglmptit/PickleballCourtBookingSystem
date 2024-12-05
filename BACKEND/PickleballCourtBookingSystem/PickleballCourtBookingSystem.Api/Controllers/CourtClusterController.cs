@@ -77,6 +77,18 @@ namespace PickleballCourtBookingSystem.Api.Controllers
             return BadRequest();
         }
 
+        [HttpPost("AutoCreateCourtTimeSlot")]
+        public IActionResult AutoCreateCourtTimeSlot([FromBody] AutoAddCourtTimeSlotRequest request)
+        {
+            var result = _courtClusterService.AddTimeSlotsWithDefaultPrice(request.CourtClusterId, request.Dates);
+            if (result.Success)
+            {
+                return Ok(result.StatusCode);
+            }
+
+            return BadRequest(new { success = false, statusCode = result.StatusCode, userMessage = result.UserMsg, developerMessage = result.DevMsg });
+        }
+
         [HttpPut]
         public IActionResult UpdateCourtCluster([FromBody] CourtCluster courtCluster, Guid id)
         {

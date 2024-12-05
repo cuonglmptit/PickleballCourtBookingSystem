@@ -51,40 +51,61 @@ public class CourtTimeSlotService : BaseService<CourtTimeSlot>, ICourtTimeSlotSe
         }
     }
 
-    // public ServiceResult AddCourtTimeSlotWithDefaultPrice(Guid courtId, List<DateTime> dates, Dictionary<string, double> prices)
-    // {
-    //     try
-    //     {
-    //         var timeNow = TimeZoneInfo.ConvertTime(DateTime.Now, TimeZoneInfo.Local);
-    //         var date = timeNow.Date;
-    //         var time = timeNow.TimeOfDay;
-    //         var courtTimeSlotsCheck = _courtTimeSlotRepository.FindCourtTimeSlotsByCourtId(courtId, date, time);
-    //         var timeCheck = new HashSet<DateTime>();
-    //         foreach (var courtTimeSlot in courtTimeSlotsCheck)
-    //         {
-    //             if (courtTimeSlot.Date.HasValue && courtTimeSlot.Time.HasValue)
-    //             {
-    //                 var dateTemp = (DateTime) courtTimeSlot.Date;
-    //                 var timeTemp = (TimeSpan) courtTimeSlot.Time;
-    //                 dateTemp = dateTemp.Add(timeTemp);
-    //                 timeCheck.Add(dateTemp);
-    //             }
-    //         }
-    //         
-    //         
-    //         
-    //         foreach (var courtTimeSlot in courtTimeSlots)
-    //         {
-    //             courtTimeSlot.Id = 
-    //         }
-    //         
-    //         var res = baseRepository.InsertMany(courtTimeSlots);
-    //         return CreateServiceResult(Success: res > 0, StatusCode: res > 0 ? 201 : 400);
-    //     }
-    //     catch (Exception e)
-    //     {
-    //         Console.WriteLine(e);
-    //         return CreateServiceResult(Success: false, StatusCode: 404, UserMsg: "Them du lieu court time slot bi loi", DevMsg: "Them du lieu bi loi");
-    //     }
-    // }
+    public ServiceResult AddCourtTimeSlotWithDefaultPrice(List<Guid> courtIds, IEnumerable<DateTime> dates, IEnumerable<CourtPrice> prices)
+    {
+        try
+        {
+            
+            var timeNow = TimeZoneInfo.ConvertTime(DateTime.Now, TimeZoneInfo.Local);
+            var courtTimeSlots = new List<CourtTimeSlot>();
+            foreach (var courtId in courtIds)
+            {
+                var courtTimeSlotsCheck = _courtTimeSlotRepository.FindCourtTimeSlotsByCourtId(courtId, timeNow.Date, timeNow.TimeOfDay);
+                var timeCheck = new HashSet<DateTime>();
+                foreach (var courtTimeSlot in courtTimeSlotsCheck)
+                {
+                    if (courtTimeSlot.Date.HasValue && courtTimeSlot.Time.HasValue)
+                    {
+                        var courtSlotDate = (DateTime) courtTimeSlot.Date;
+                        var courtSlotTimeOfDay = (TimeSpan) courtTimeSlot.Time;
+                        var courtSlotTime = courtSlotDate.Add(courtSlotTimeOfDay);
+                        timeCheck.Add(courtSlotTime);
+                    }
+                }
+            
+                foreach (var date in dates)
+                {
+                    if (date < timeNow.Date)
+                    {
+                        return CreateServiceResult(Success: false, StatusCode: 400, UserMsg: "Ngay truyen vao khong hop le (thoi diem trong qua khu)", DevMsg: "Ngay truyen vao khong hop le");
+                    }
+                    foreach (var courtPrice in prices)
+                    {
+                        if (!courtPrice.Time.HasValue) continue;
+                        var createTime = date.Add(courtPrice.Time.Value);
+                        Console.WriteLine("Thoi gian them " + createTime);
+                        if (!timeCheck.Contains(createTime))
+                        {
+                            courtTimeSlots.Add(new CourtTimeSlot
+                            {
+                                Id = Guid.NewGuid(),
+                                Date = date,
+                                Time = courtPrice.Time,
+                                IsAvailable = 1,
+                                Price = courtPrice.Price,
+                                CourtId = courtId
+                            });
+                        }
+                    }
+                }
+            }
+            var res = baseRepository.InsertMany(courtTimeSlots);
+            return CreateServiceResult(Success: res > 0, StatusCode: res > 0 ? 201 : 400);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return CreateServiceResult(Success: false, StatusCode: 404, UserMsg: "Them du lieu court time slot bi loi", DevMsg: "Them du lieu bi loi");
+        }
+    }
 }

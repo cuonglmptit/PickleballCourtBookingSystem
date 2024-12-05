@@ -78,7 +78,7 @@ public class BaseRepository<T> : IBaseRepository<T> where T : class
         return dbContext.GetAllOrderByColumn<T>(columnName, DESC);
     }
 
-    public virtual T? GetById(Guid? entityId)
+    public virtual T? GetById(Guid entityId)
     {
         return dbContext.GetById<T>(entityId);
     }

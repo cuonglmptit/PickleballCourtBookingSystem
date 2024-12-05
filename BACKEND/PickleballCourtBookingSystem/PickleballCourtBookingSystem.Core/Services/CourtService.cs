@@ -29,13 +29,15 @@ public class CourtService : BaseService<Court>, ICourtService
             foreach (var group in groupByCourt)
             {
                 if (group.Count() != totalHour) continue;
-                var court = _courtRepository.GetById(group.Key);
-                if (court == null)
+                if (group.Key.HasValue)
                 {
-                    return CreateServiceResult(Success: false, StatusCode: 404, UserMsg: "Court not found", DevMsg: $"Court not found with id {group.Key}");
+                    var court = _courtRepository.GetById(group.Key.Value);
+                    if (court == null)
+                    {
+                        return CreateServiceResult(Success: false, StatusCode: 404, UserMsg: "Court not found", DevMsg: $"Court not found with id {group.Key}");
+                    }
+                    listCourt.Add(court);
                 }
-
-                listCourt.Add(court);
             }
 
             return CreateServiceResult(Success: true, StatusCode: 200, Data: listCourt);
@@ -74,6 +76,20 @@ public class CourtService : BaseService<Court>, ICourtService
             }
 
             return CreateServiceResult(Success: true, StatusCode: 200, Data: listCourt);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return CreateServiceResult(Success: false, StatusCode: 500, UserMsg: "Error", DevMsg: e.Message);
+        }
+    }
+
+    public ServiceResult GetCourtsByCourtClusterId(Guid courtClusterId)
+    {
+        try
+        {
+            var result = _courtRepository.GetCoursByCourtClusterId(courtClusterId);
+            return CreateServiceResult(Success: true, StatusCode: 200, Data: result);
         }
         catch (Exception e)
         {

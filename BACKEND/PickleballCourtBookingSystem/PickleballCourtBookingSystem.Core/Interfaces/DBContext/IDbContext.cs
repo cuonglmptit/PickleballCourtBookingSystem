@@ -27,7 +27,7 @@ namespace PickleballCourtBookingSystem.Core.Interfaces.DBContext
         /// </summary>
         /// <param name="entityId"></param>
         /// <returns>Thực thể của class muốn lấy, null - Nếu không có</returns>
-        T? GetById<T>(Guid? entityId);
+        T? GetById<T>(Guid entityId);
 
         /// <summary>
         /// Insert dữ liệu
