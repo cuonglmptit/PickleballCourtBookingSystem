@@ -13,8 +13,8 @@ CREATE INDEX idx_court_courtClusterId ON Court(courtClusterId);
 
 CREATE INDEX idx_imageCourtURL_courtClusterId ON ImageCourtURL(courtClusterId);
 
-CREATE INDEX idx_courtTimeSlot_courtId ON CourtTimeSlot(courtId);
 CREATE INDEX idx_isAvailable_date_time ON CourtTimeSlot(isAvailable, date, time);
+CREATE INDEX idx_combined ON CourtTimeSlot(courtId, isAvailable, date, time);
 
 CREATE INDEX idx_customer_userId ON Customer(userId);
 

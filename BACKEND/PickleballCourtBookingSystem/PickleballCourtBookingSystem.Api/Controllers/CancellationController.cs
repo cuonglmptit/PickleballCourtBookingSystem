@@ -10,10 +10,10 @@ namespace PickleballCourtBookingSystem.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CancellationesController : ControllerBase
+    public class CancellationController : ControllerBase
     {
         private readonly ICancellationService _cancellationService;
-        public CancellationesController(ICancellationService cancellationService)
+        public CancellationController(ICancellationService cancellationService)
         {
             _cancellationService = cancellationService;
         }

@@ -155,3 +155,98 @@ Booking:
   ],
   "courtId": "f3814f04-90e1-485a-8086-bb65e7cf26cc"
 }
+
+CourtPrice:
+[
+    {
+        "time": "05:00:00",
+        "price": 150000,
+        "courtClusterId": "7ab447f8-2df9-4924-8fdc-2c7e17ed155f"
+    },
+    {
+        "time": "06:00:00",
+        "price": 150000,
+        "courtClusterId": "7ab447f8-2df9-4924-8fdc-2c7e17ed155f"
+    },
+    {
+        "time": "07:00:00",
+        "price": 150000,
+        "courtClusterId": "7ab447f8-2df9-4924-8fdc-2c7e17ed155f"
+    },
+    {
+        "time": "08:00:00",
+        "price": 150000,
+        "courtClusterId": "7ab447f8-2df9-4924-8fdc-2c7e17ed155f"
+    },
+    {
+        "time": "09:00:00",
+        "price": 200000,
+        "courtClusterId": "7ab447f8-2df9-4924-8fdc-2c7e17ed155f"
+    },
+    {
+        "time": "10:00:00",
+        "price": 150000,
+        "courtClusterId": "7ab447f8-2df9-4924-8fdc-2c7e17ed155f"
+    },
+    {
+        "time": "11:00:00",
+        "price": 150000,
+        "courtClusterId": "7ab447f8-2df9-4924-8fdc-2c7e17ed155f"
+    },
+    {
+        "time": "12:00:00",
+        "price": 150000,
+        "courtClusterId": "7ab447f8-2df9-4924-8fdc-2c7e17ed155f"
+    },
+    {
+        "time": "13:00:00",
+        "price": 150000,
+        "courtClusterId": "7ab447f8-2df9-4924-8fdc-2c7e17ed155f"
+    },
+    {
+        "time": "14:00:00",
+        "price": 150000,
+        "courtClusterId": "7ab447f8-2df9-4924-8fdc-2c7e17ed155f"
+    },
+    {
+        "time": "15:00:00",
+        "price": 150000,
+        "courtClusterId": "7ab447f8-2df9-4924-8fdc-2c7e17ed155f"
+    },
+    {
+        "time": "16:00:00",
+        "price": 150000,
+        "courtClusterId": "7ab447f8-2df9-4924-8fdc-2c7e17ed155f"
+    },
+    {
+        "time": "17:00:00",
+        "price": 200000,
+        "courtClusterId": "7ab447f8-2df9-4924-8fdc-2c7e17ed155f"
+    },
+    {
+        "time": "18:00:00",
+        "price": 200000,
+        "courtClusterId": "7ab447f8-2df9-4924-8fdc-2c7e17ed155f"
+    },
+    {
+        "time": "19:00:00",
+        "price": 200000,
+        "courtClusterId": "7ab447f8-2df9-4924-8fdc-2c7e17ed155f"
+    },
+    {
+        "time": "20:00:00",
+        "price": 200000,
+        "courtClusterId": "7ab447f8-2df9-4924-8fdc-2c7e17ed155f"
+    },
+    {
+        "time": "21:00:00",
+        "price": 200000,
+        "courtClusterId": "7ab447f8-2df9-4924-8fdc-2c7e17ed155f"
+    },
+    {
+        "time": "22:00:00",
+        "price": 150000,
+        "courtClusterId": "7ab447f8-2df9-4924-8fdc-2c7e17ed155f"
+    }
+]
+

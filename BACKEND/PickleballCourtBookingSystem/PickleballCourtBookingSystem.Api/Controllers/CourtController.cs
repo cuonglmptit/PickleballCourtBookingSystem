@@ -10,18 +10,18 @@ namespace PickleballCourtBookingSystem.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UseresController : ControllerBase
+    public class CourtController : ControllerBase
     {
-        private readonly IUserService _userService;
-        public UseresController(IUserService userService)
+        private readonly ICourtService _courtService;
+        public CourtController(ICourtService courtService)
         {
-            _userService = userService;
+            _courtService = courtService;
         }
 
         [HttpGet]
-        public IActionResult GetAllUser()
+        public IActionResult GetAllCourt()
         {
-            var result = _userService.GetAllService();
+            var result = _courtService.GetAllService();
             if (result.Success)
             {
                 return Ok(result.Data);
@@ -30,9 +30,9 @@ namespace PickleballCourtBookingSystem.Api.Controllers
         }
         
         [HttpGet("{id}")]
-        public IActionResult GetUserById(Guid id)
+        public IActionResult GetCourtById(Guid id)
         {
-            var result = _userService.GetByIdService(id);
+            var result = _courtService.GetByIdService(id);
             if (result.Success)
             {
                 return Ok(result.Data);
@@ -42,10 +42,10 @@ namespace PickleballCourtBookingSystem.Api.Controllers
         }
 
         [HttpPost]
-        public IActionResult PostUser([FromBody] User user)
+        public IActionResult PostCourt([FromBody] Court court)
         {
-            user.Id = Guid.NewGuid();
-            var result = _userService.InsertService(user);
+            court.Id = Guid.NewGuid();
+            var result = _courtService.InsertService(court);
             if (result.Success)
             {
                 return Ok(result.StatusCode);
@@ -55,9 +55,9 @@ namespace PickleballCourtBookingSystem.Api.Controllers
         }
 
         [HttpPut]
-        public IActionResult UpdateUser([FromBody] User user, Guid id)
+        public IActionResult UpdateCourt([FromBody] Court court, Guid id)
         {
-            var result = _userService.UpdateCustomFieldService(user, id);
+            var result = _courtService.UpdateCustomFieldService(court, id);
             if (result.Success)
             {
                 return Ok(result.StatusCode);
@@ -67,9 +67,9 @@ namespace PickleballCourtBookingSystem.Api.Controllers
         }
         
         [HttpDelete("{id}")]
-        public IActionResult DeleteUser(Guid id)
+        public IActionResult DeleteCourt(Guid id)
         {
-            var result = _userService.DeleteService(id);
+            var result = _courtService.DeleteService(id);
             if (result.Success)
             {
                 return Ok(result.StatusCode);

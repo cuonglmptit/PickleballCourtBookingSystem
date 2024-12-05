@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using PickleballCourtBookingSystem.Api.DTOs;
 using PickleballCourtBookingSystem.Api.Models;
 using PickleballCourtBookingSystem.Core.Entities;
 using PickleballCourtBookingSystem.Core.Interfaces.Infrastructure;
@@ -10,10 +11,10 @@ namespace PickleballCourtBookingSystem.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CourtClusteresController : ControllerBase
+    public class CourtClusterController : ControllerBase
     {
         private readonly ICourtClusterService _courtClusterService;
-        public CourtClusteresController(ICourtClusterService courtClusterService)
+        public CourtClusterController(ICourtClusterService courtClusterService)
         {
             _courtClusterService = courtClusterService;
         }
@@ -27,6 +28,28 @@ namespace PickleballCourtBookingSystem.Api.Controllers
                 return Ok(result.Data);
             }
             return BadRequest();
+        }
+        
+        [HttpGet("getCourtClusterForTimeRange")]
+        public IActionResult GetCourtClusterForTime([FromBody] TimeRangeRequest timeRangeRequest)
+        {
+            var result = _courtClusterService.GetCourtClustersForTimeRange(timeRangeRequest.Date, timeRangeRequest.StartTime, timeRangeRequest.EndTime);
+            if (result.Success)
+            {
+                return Ok(result.Data);
+            }
+            return BadRequest(new { success = false, statusCode = result.StatusCode, userMessage = result.UserMsg, developerMessage = result.DevMsg });
+        }
+        
+        [HttpGet("getCourtClusterAvailableForTime")]
+        public IActionResult GetAvailableCourtClusterForTime([FromBody] TimeRangeRequest timeRangeRequest)
+        {
+            var result = _courtClusterService.GetAvailableCourtClusterForTime(timeRangeRequest.Date, timeRangeRequest.StartTime, timeRangeRequest.EndTime);
+            if (result.Success)
+            {
+                return Ok(result.Data);
+            }
+            return BadRequest(new { success = false, statusCode = result.StatusCode, userMessage = result.UserMsg, developerMessage = result.DevMsg });
         }
         
         [HttpGet("{id}")]

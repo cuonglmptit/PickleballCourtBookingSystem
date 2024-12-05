@@ -4,9 +4,9 @@ using PickleballCourtBookingSystem.Core.Interfaces.Infrastructure;
 
 namespace PickleballCourtBookingSystem.Infrastructure.Repository;
 
-public class AdminRepository : BaseRepository<Admin>, IAdminRepository
+public class CourtPriceRepository : BaseRepository<CourtPrice>, ICourtPriceRepository
 {
-    public AdminRepository(IDbContext dbContext) : base(dbContext)
+    public CourtPriceRepository(IDbContext dbContext) : base(dbContext)
     {
         
     }

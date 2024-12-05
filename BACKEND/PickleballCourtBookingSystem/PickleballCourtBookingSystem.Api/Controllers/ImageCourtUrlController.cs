@@ -10,10 +10,10 @@ namespace PickleballCourtBookingSystem.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ImageCourtUrlesController : ControllerBase
+    public class ImageCourtUrlController : ControllerBase
     {
         private readonly IImageCourtUrlService _imageCourtUrlService;
-        public ImageCourtUrlesController(IImageCourtUrlService imageCourtUrlService)
+        public ImageCourtUrlController(IImageCourtUrlService imageCourtUrlService)
         {
             _imageCourtUrlService = imageCourtUrlService;
         }
