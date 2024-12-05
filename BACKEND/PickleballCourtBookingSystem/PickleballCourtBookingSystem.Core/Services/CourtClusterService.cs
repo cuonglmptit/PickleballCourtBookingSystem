@@ -11,10 +11,14 @@ public class CourtClusterService : BaseService<CourtCluster>, ICourtClusterServi
 {
     private readonly ICourtClusterRepository _courtClusterRepository;
     private readonly ICourtService _courtService;
-    public CourtClusterService(ICourtClusterRepository repository, ICourtClusterRepository courtClusterRepository, ICourtService courtService): base(repository)
+    private readonly ICourtPriceService _courtPriceService;
+    private readonly ICourtTimeSlotService _courtTimeSlotService;
+    public CourtClusterService(ICourtClusterRepository repository, ICourtClusterRepository courtClusterRepository, ICourtService courtService, ICourtPriceService courtPriceService, ICourtTimeSlotService courtTimeSlotService): base(repository)
     {
         _courtClusterRepository = courtClusterRepository;
         _courtService = courtService;
+        _courtPriceService = courtPriceService;
+        _courtTimeSlotService = courtTimeSlotService;
     }
 
     public ServiceResult GetCourtClustersForTimeRange(DateTime date, TimeSpan startTime, TimeSpan endTime)
@@ -81,6 +85,44 @@ public class CourtClusterService : BaseService<CourtCluster>, ICourtClusterServi
                 listCourtCluster.Add(courtCluster);
             }
             return CreateServiceResult(Success: true, StatusCode: 200, Data: listCourtCluster);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return CreateServiceResult(Success: false, StatusCode: 500, UserMsg: "Error", DevMsg: e.Message);
+        }
+    }
+
+    public ServiceResult AddTimeSlotsWithDefaultPrice(Guid courtClusterId, List<DateTime> dates)
+    {
+        try
+        {
+            if (dates.Count == 0)
+            {
+                return CreateServiceResult(Success: false, StatusCode: 400, UserMsg: "Danh sach ngay khong duoc de trong", DevMsg: "Danh sach ngay khong duoc de trong");
+            }
+            var resultListCourtPrice = _courtPriceService.GetCourtPricesByCourtClusterId(courtClusterId);
+            if (!resultListCourtPrice.Success)
+            {
+                return resultListCourtPrice;
+            }
+
+            var resultListCourt = _courtService.GetCourtsByCourtClusterId(courtClusterId);
+            if (!resultListCourt.Success)
+            {
+                return resultListCourt;
+            }
+            var listCourtPrice = (IEnumerable<CourtPrice>) resultListCourtPrice.Data!;
+            var listCourt = (IEnumerable<Court>) resultListCourt.Data!;
+            var courtIds = new List<Guid>();
+            foreach (var court in listCourt)
+            {
+                if(!court.Id.HasValue) return CreateServiceResult(Success: false, StatusCode: 500, UserMsg: "Error", DevMsg: "courtClusterId trong court la null");
+                courtIds.Add(court.Id.Value);
+            }
+            var result = _courtTimeSlotService.AddCourtTimeSlotWithDefaultPrice(courtIds, dates, listCourtPrice);
+            return result;
+
         }
         catch (Exception e)
         {

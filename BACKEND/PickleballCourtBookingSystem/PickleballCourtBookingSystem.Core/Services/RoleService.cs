@@ -19,7 +19,12 @@ public class RoleService : BaseService<Role>, IRoleService
 
     public ServiceResult GetUserRoleByUserId(Guid? userId)
     {
-        var user = _userRepository.GetById(userId);
+        if (userId == null)
+        {
+            return CreateServiceResult(Success: false, StatusCode: 400, UserMsg: "userId khong duoc null",
+                DevMsg: "user id khong duoc null");
+        }
+        var user = _userRepository.GetById(userId.Value);
         Console.WriteLine(userId);
         if (user == null)
         {

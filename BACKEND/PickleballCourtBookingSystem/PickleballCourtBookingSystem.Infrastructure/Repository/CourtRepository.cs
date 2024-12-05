@@ -1,11 +1,6 @@
 ﻿using PickleballCourtBookingSystem.Api.Models;
 using PickleballCourtBookingSystem.Core.Interfaces.DBContext;
 using PickleballCourtBookingSystem.Core.Interfaces.Infrastructure;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using PickleballCourtBookingSystem.Core.Entities;
 
 namespace PickleballCourtBookingSystem.Infrastructure.Repository
@@ -15,6 +10,11 @@ namespace PickleballCourtBookingSystem.Infrastructure.Repository
         public CourtRepository(IDbContext dbContext) : base(dbContext)
         {
 
+        }
+        
+        public IEnumerable<Court> GetCoursByCourtClusterId(Guid courtClusterId)
+        {
+            return dbContext.FindByColumnValue<Court>(courtClusterId, "courtClusterId");
         }
     }
 }

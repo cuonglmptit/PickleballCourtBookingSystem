@@ -10,4 +10,9 @@ public class CourtPriceRepository : BaseRepository<CourtPrice>, ICourtPriceRepos
     {
         
     }
+
+    public IEnumerable<CourtPrice> GetCourtPricesByCourtClusterId(Guid courtClusterId)
+    {
+        return dbContext.FindByColumnValue<CourtPrice>(courtClusterId, "courtClusterId");
+    }
 }

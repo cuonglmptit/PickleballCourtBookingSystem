@@ -42,7 +42,7 @@ public class MySqlDbContext : IDbContext
         return res;
     }
 
-    public T? GetById<T>(Guid? entityId)
+    public T? GetById<T>(Guid entityId)
     {
         var className = typeof(T).Name;
 
