@@ -22,6 +22,11 @@ public class CourtService : BaseService<Court>, ICourtService
     {
         try
         {
+            var resultGetCourtTimeSlot = _courtTimeSlotService.GetAvailableCourtTimeSlotForTimeRange(date, startTime, endTime);
+            if (resultGetCourtTimeSlot.Data == null)
+            {
+                return resultGetCourtTimeSlot;
+            }
             var totalHour = (int)(endTime - startTime).TotalHours;
             var listCourtTimeSlot = (IEnumerable<CourtTimeSlot>)_courtTimeSlotService.GetAvailableCourtTimeSlotForTimeRange(date, startTime, endTime).Data!;
             var groupByCourt = listCourtTimeSlot.GroupBy(c => c.CourtId);
@@ -40,6 +45,10 @@ public class CourtService : BaseService<Court>, ICourtService
                 }
             }
 
+            if (listCourt.Count == 0)
+            {
+                CreateServiceResult(Success: false, StatusCode: 404, UserMsg: "Khong co san thoa man yeu cau", DevMsg: "Khong co san thoa man yeu cau");
+            }
             return CreateServiceResult(Success: true, StatusCode: 200, Data: listCourt);
         }
         catch (Exception e)
@@ -53,6 +62,11 @@ public class CourtService : BaseService<Court>, ICourtService
     {
         try
         {
+            var resultGetCourtTimeSlot = _courtTimeSlotService.GetAvailableCourtTimeSlotForTimeRange(date, startTime, endTime);
+            if (resultGetCourtTimeSlot.Data == null)
+            {
+                return resultGetCourtTimeSlot;
+            }
             var listCourtTimeSlot = (IEnumerable<CourtTimeSlot>)_courtTimeSlotService.GetAvailableCourtTimeSlotForTimeRange(date, startTime, endTime).Data!;
             var courtIds = new HashSet<Guid>();
             foreach (var courtTimeSlot in listCourtTimeSlot)
