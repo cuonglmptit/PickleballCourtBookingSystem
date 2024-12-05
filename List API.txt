@@ -1,0 +1,16 @@
+1. Lấy dữ liệu CourtTimeSlot - GET
+/api/CourtTimeSlot/getCourtTimeSlot
+- query: string courtId
+- Trả về list courtTimeSlot của sân có sẵn và trong thời điểm tương lai.
+2. Thêm Booking - POST
+/api/Booking
+body: string userId, list<string> courtTimeSlotsIds, string courtId
+- Thêm booking mới.
+3. Tìm cụm sân có sẵn đủ slot khoảng thời gian cần chọn - GET
+/api/CourtCluster/getCourtClusterForTimeRange
+- body: Date date, startTime Time, endTime Time
+- Trả về các cụm sân thỏa mãn yêu cầu.
+4. Tìm cụm sân có sẵn có slot khoảng thời gian cần chọn - GET
+http://localhost:5039/api/CourtCluster/getCourtClusterAvailableForTime
+- body: Date date, startTime Time, endTime Time
+- Trả về các cụm sân thỏa mãn yêu cầu.

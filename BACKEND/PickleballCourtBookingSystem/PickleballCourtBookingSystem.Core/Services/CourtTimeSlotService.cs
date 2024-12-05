@@ -21,8 +21,12 @@ public class CourtTimeSlotService : BaseService<CourtTimeSlot>, ICourtTimeSlotSe
             var timeNow = TimeZoneInfo.ConvertTime(DateTime.Now, TimeZoneInfo.Local);
             var date = timeNow.Date;
             var time = timeNow.TimeOfDay;
-            var res = _courtTimeSlotRepository.FindAvailableCourtTimeSlotsByCourtId(courtId, date, time);
-            return CreateServiceResult(Success: true, StatusCode: 200, Data: res);
+            var result = _courtTimeSlotRepository.FindAvailableCourtTimeSlotsByCourtId(courtId, date, time);
+            if (result.ToList().Count == 0)
+            {
+                return CreateServiceResult(Success: true, StatusCode: 200, UserMsg: "Khong co du lieu trong khoang thoi gian da chon", DevMsg: "KHong co du lieu trong khoang thoi gian da chon");
+            }
+            return CreateServiceResult(Success: true, StatusCode: 200, Data: result);
         }
         catch (Exception e)
         {
@@ -36,12 +40,16 @@ public class CourtTimeSlotService : BaseService<CourtTimeSlot>, ICourtTimeSlotSe
         try
         {
             var timeNow = TimeZoneInfo.ConvertTime(DateTime.Now, TimeZoneInfo.Local);
-            if (timeNow.Date < date || (timeNow.Date == date && (startTime < timeNow.TimeOfDay || endTime < timeNow.TimeOfDay)) || (startTime > endTime))
+            if (date.Date < timeNow.Date || (timeNow.Date == date && (startTime < timeNow.TimeOfDay || endTime < timeNow.TimeOfDay)) || (startTime > endTime))
             {
                 return CreateServiceResult(Success: false, StatusCode: 400, UserMsg: "Ngay gio truyen vao khong hop le (thoi diem trong qua khu hoac gio bat dau nho hon gio ket thuc)", DevMsg: "Ngay gio truyen vao khong hop le");
             }
             var time = timeNow.TimeOfDay;
             var result = _courtTimeSlotRepository.FindAvailableCourtTimeSlotsForTimeRange(date, startTime, endTime);
+            if (result.ToList().Count == 0)
+            {
+                return CreateServiceResult(Success: false, StatusCode: 404, UserMsg: "Khong co du lieu trong khoang thoi gian da chon", DevMsg: "KHong co du lieu trong khoang thoi gian da chon");
+            }
             return CreateServiceResult(Success: true, StatusCode: 200, Data: result);
         }
         catch (Exception e)
@@ -80,10 +88,8 @@ public class CourtTimeSlotService : BaseService<CourtTimeSlot>, ICourtTimeSlotSe
                                 check = false;
                             }
                         }
-                        Console.WriteLine("nnn" + check);
                         if (check)
                         {
-                            Console.WriteLine("mmm" + date + courtPrice.Time + courtId);
                             courtTimeSlots.Add(new CourtTimeSlot
                             {
                                 Id = Guid.NewGuid(),
@@ -100,7 +106,7 @@ public class CourtTimeSlotService : BaseService<CourtTimeSlot>, ICourtTimeSlotSe
 
             if (courtTimeSlots.Count == 0)
             {
-                return CreateServiceResult(Success: true, StatusCode: 201);
+                return CreateServiceResult(Success: true, StatusCode: 201, UserMsg: "Khong them du lieu gi", DevMsg: "Khong them du lieu gi");
             }
             var res = baseRepository.InsertMany(courtTimeSlots);
             return CreateServiceResult(Success: res > 0, StatusCode: res > 0 ? 201 : 400);

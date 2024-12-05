@@ -25,6 +25,11 @@ public class CourtClusterService : BaseService<CourtCluster>, ICourtClusterServi
     {
         try
         {
+            var resultGetCourt = _courtService.GetCourtForTimeRange(date, startTime, endTime);
+            if (!resultGetCourt.Success || resultGetCourt.Data == null)
+            {
+                return resultGetCourt;
+            }
             var listCourt = (List<Court>) _courtService.GetCourtForTimeRange(date, startTime, endTime).Data!;
             var listCourtCluster = new List<CourtCluster>();
             var courtClusterIds = new HashSet<Guid>();
@@ -61,6 +66,11 @@ public class CourtClusterService : BaseService<CourtCluster>, ICourtClusterServi
     {
         try
         {
+            var resultGetCourt = _courtService.GetCourtForTimeRange(date, startTime, endTime);
+            if (!resultGetCourt.Success ||resultGetCourt.Data == null)
+            {
+                return resultGetCourt;
+            }
             var listCourt = (List<Court>) _courtService.GetAvailableCourtsForTime(date, startTime, endTime).Data!;
             var listCourtCluster = new List<CourtCluster>();
             var courtClusterIds = new HashSet<Guid>();
