@@ -13,12 +13,14 @@ public class CourtClusterService : BaseService<CourtCluster>, ICourtClusterServi
     private readonly ICourtService _courtService;
     private readonly ICourtPriceService _courtPriceService;
     private readonly ICourtTimeSlotService _courtTimeSlotService;
-    public CourtClusterService(ICourtClusterRepository repository, ICourtClusterRepository courtClusterRepository, ICourtService courtService, ICourtPriceService courtPriceService, ICourtTimeSlotService courtTimeSlotService): base(repository)
+    private readonly IAddressService _addressService;
+    public CourtClusterService(ICourtClusterRepository repository, ICourtClusterRepository courtClusterRepository, ICourtService courtService, ICourtPriceService courtPriceService, ICourtTimeSlotService courtTimeSlotService, IAddressService addressService): base(repository)
     {
         _courtClusterRepository = courtClusterRepository;
         _courtService = courtService;
         _courtPriceService = courtPriceService;
         _courtTimeSlotService = courtTimeSlotService;
+        _addressService = addressService;
     }
 
     public ServiceResult GetCourtClustersForTimeRange(DateTime date, TimeSpan startTime, TimeSpan endTime)
@@ -102,6 +104,35 @@ public class CourtClusterService : BaseService<CourtCluster>, ICourtClusterServi
             return CreateServiceResult(Success: false, StatusCode: 500, UserMsg: "Error", DevMsg: e.Message);
         }
     }
+    
+    public ServiceResult SearchCourtClusterWithFilters(string? cityName, string? courtClusterName,
+        DateTime? date, TimeSpan? startTime, TimeSpan? endTime)
+    {
+        try
+        {
+            var timeNow = TimeZoneInfo.ConvertTime(DateTime.Now, TimeZoneInfo.Local);
+            var dateCheck = date ?? timeNow.Date;
+            var startTimeCheck = startTime ?? timeNow.TimeOfDay;
+            var endTimeCheck = endTime ?? DateTime.Today.AddDays(1).AddTicks(-1).TimeOfDay;
+            if (dateCheck < timeNow.Date || (timeNow.Date == dateCheck && (startTimeCheck < timeNow.TimeOfDay || endTimeCheck < timeNow.TimeOfDay)) || (startTimeCheck > endTimeCheck))
+            {
+                return CreateServiceResult(Success: false, StatusCode: 400, UserMsg: "Ngay gio truyen vao khong hop le (thoi diem trong qua khu hoac gio bat dau nho hon gio ket thuc)", DevMsg: "Ngay gio truyen vao khong hop le");
+            }
+            var result = (List<CourtCluster>) _courtClusterRepository.SearchCourtClusterWithFilters(cityName, courtClusterName, dateCheck, startTimeCheck, endTimeCheck);
+            Console.WriteLine("aaa" + result.Count);
+            
+            if (result.Count == 0)
+            {
+                return CreateServiceResult(Success: true, StatusCode: 200, UserMsg: "Khong co cum san san thoa man dieu kien", DevMsg: "Khong co san thoa man dieu kien");
+            }
+            return CreateServiceResult(Success: true, StatusCode: 200, Data: result);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return CreateServiceResult(Success: false, StatusCode: 500, UserMsg: "Query loi", DevMsg: "Loi");
+        }
+    }
 
     public ServiceResult AddTimeSlotsWithDefaultPrice(Guid courtClusterId, List<DateTime> dates)
     {
@@ -121,6 +152,12 @@ public class CourtClusterService : BaseService<CourtCluster>, ICourtClusterServi
             if (!resultListCourt.Success)
             {
                 return resultListCourt;
+            }
+
+            if (resultListCourt.Data == null)
+            {
+                return CreateServiceResult(Success: false, StatusCode: 400,
+                    UserMsg: "Cum san khong co san nao", DevMsg: "Cum san khong co san nao");
             }
             var listCourtPrice = (IEnumerable<CourtPrice>) resultListCourtPrice.Data!;
             var listCourt = (IEnumerable<Court>) resultListCourt.Data!;

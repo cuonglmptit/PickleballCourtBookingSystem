@@ -28,4 +28,19 @@ public class AddressService : BaseService<Address>, IAddressService
             return CreateServiceResult(Success: false, StatusCode: 500, DevMsg: e.Message);
         }
     }
+    
+    public ServiceResult SearchAddressByCity(string query)
+    {
+        
+        try
+        {
+            var listAddressColumn =  new List<string>{"city"};
+            var address = _addressRepository.SearchByKeywordMultipleColumns(query, listAddressColumn);
+            return CreateServiceResult(Success: true, StatusCode:200, Data: address);
+        }
+        catch (Exception e)
+        {
+            return CreateServiceResult(Success: false, StatusCode: 500, DevMsg: e.Message);
+        }
+    }
 }
