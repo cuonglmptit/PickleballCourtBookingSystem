@@ -10,4 +10,7 @@ public interface ICourtClusterService: IBaseService<CourtCluster>
     public ServiceResult GetAvailableCourtClusterForTime(DateTime date, TimeSpan startTime, TimeSpan endTime);
 
     public ServiceResult AddTimeSlotsWithDefaultPrice(Guid courtClusterId, List<DateTime> dates);
+
+    public ServiceResult SearchCourtClusterWithFilters(string? cityName, string? courtClusterName,
+        DateTime? date, TimeSpan? startTime, TimeSpan? endTime);
 }

@@ -51,6 +51,22 @@ namespace PickleballCourtBookingSystem.Api.Controllers
             }
             return BadRequest(new { success = false, statusCode = result.StatusCode, userMessage = result.UserMsg, developerMessage = result.DevMsg });
         }
+
+        [HttpGet("SearchCourtClusterWithFiler")]
+        public IActionResult SearchCourtClusterWithFiler([FromQuery] string? cityName, [FromQuery] string? courtClusterName, [FromQuery] DateTime? date,
+            [FromQuery] TimeSpan? startTime, [FromQuery] TimeSpan? endTime)
+        {
+            var result = _courtClusterService.SearchCourtClusterWithFilters(cityName, courtClusterName, date, startTime, endTime);
+            if (result.Success)
+            {
+                if (result.Data == null)
+                {
+                    return Ok(result);
+                }
+                return Ok(result.Data);
+            }
+            return BadRequest(new { success = false, statusCode = result.StatusCode, userMessage = result.UserMsg, developerMessage = result.DevMsg });
+        }
         
         [HttpGet("{id}")]
         public IActionResult GetCourtClusterById(Guid id)

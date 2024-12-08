@@ -28,7 +28,7 @@ public class CourtService : BaseService<Court>, ICourtService
                 return resultGetCourtTimeSlot;
             }
             var totalHour = (int)(endTime - startTime).TotalHours;
-            var listCourtTimeSlot = (IEnumerable<CourtTimeSlot>)_courtTimeSlotService.GetAvailableCourtTimeSlotForTimeRange(date, startTime, endTime).Data!;
+            var listCourtTimeSlot = (IEnumerable<CourtTimeSlot>)resultGetCourtTimeSlot.Data!;
             var groupByCourt = listCourtTimeSlot.GroupBy(c => c.CourtId);
             var listCourt = new List<Court>();
             foreach (var group in groupByCourt)
@@ -67,7 +67,7 @@ public class CourtService : BaseService<Court>, ICourtService
             {
                 return resultGetCourtTimeSlot;
             }
-            var listCourtTimeSlot = (IEnumerable<CourtTimeSlot>)_courtTimeSlotService.GetAvailableCourtTimeSlotForTimeRange(date, startTime, endTime).Data!;
+            var listCourtTimeSlot = (IEnumerable<CourtTimeSlot>)resultGetCourtTimeSlot.Data!;
             var courtIds = new HashSet<Guid>();
             foreach (var courtTimeSlot in listCourtTimeSlot)
             {
@@ -102,7 +102,11 @@ public class CourtService : BaseService<Court>, ICourtService
     {
         try
         {
-            var result = _courtRepository.GetCoursByCourtClusterId(courtClusterId);
+            var result = (List<Court>) _courtRepository.GetCoursByCourtClusterId(courtClusterId);
+            if (result.Count == 0)
+            {
+                return CreateServiceResult(Success: true, StatusCode: 200, UserMsg: "Cum san khong co san nao", DevMsg: "Cum san khong co san nao");
+            }
             return CreateServiceResult(Success: true, StatusCode: 200, Data: result);
         }
         catch (Exception e)
