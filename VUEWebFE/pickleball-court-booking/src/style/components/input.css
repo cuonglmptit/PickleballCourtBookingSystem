@@ -1,0 +1,78 @@
+/* 
+    Remove các webkit/icon mặc định của các input
+*/
+input[type="text"]::-webkit-calendar-picker-indicator,
+input[type="email"]::-webkit-calendar-picker-indicator,
+input[type="number"]::-webkit-calendar-picker-indicator,
+input[type="search"]::-webkit-calendar-picker-indicator {
+    opacity: 0;
+    width: 16px;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    padding: 8px;
+    right: 0px;
+    opacity: 0;
+}
+
+input::-webkit-calendar-picker-indicator:hover {
+    cursor: pointer;
+}
+
+/* CSS cho div chứa input */
+.p-input-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    row-gap: 8px;
+}
+
+.p-input-container .input-label {
+    font-family: roboto-medium;
+    font-size: 14px;
+    color: #1F1F1F;
+    line-height: 20px;
+}
+
+.p-input-container input {
+    transition-duration: 0.33s;
+}
+
+.p-input-container .p-input {
+    position: relative;
+    height: 42px;
+    padding-left: 12px;
+    padding-right: 8px;
+    border-radius: 4px;
+    box-sizing: border-box;
+    border: 1px;
+    border-style: solid;
+    border-color: rgba(0, 0, 0, 0.3);
+    font-family: roboto-regular;
+    font-size: 14px;
+    line-height: 18px;
+    text-align: left;
+    outline: none;
+}
+
+/* CSS input có icon, trạng thái chuột */
+.p-input-container .p-input-icon {
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    padding-right: 36px;
+    min-width: 300px;
+}
+
+.p-input-container input:hover {
+    background-color: var(--topic-color-100);
+}
+
+.p-input-container input:focus {
+    border: 1px solid var(--topic-color-500);
+    background-color: white;
+    transition-duration: 0ms;
+    outline: 2px solid white;
+}

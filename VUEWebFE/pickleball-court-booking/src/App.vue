@@ -1,26 +1,32 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div class="containter">
+    <TheHeader />
+    <TheContent />
+  </div>
 </template>
-
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
+//Bước 1: import
+import TheHeader from "./components/layout/TheHeader.vue";
+import TheContent from "./components/layout/TheContent.vue";
+// import TheNav from "./components/layout/TheNav.vue";
 export default {
-  name: 'App',
+  name: "App",
   components: {
-    HelloWorld
-  }
-}
+    //Bước 2: register
+    TheHeader,
+    TheContent,
+  },
+};
 </script>
 
 <style>
-#app {
+/* #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
-}
+} */
+@import url("./style/main.css");
 </style>

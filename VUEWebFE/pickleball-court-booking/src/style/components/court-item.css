@@ -1,0 +1,51 @@
+.court-item {
+    width: 100%;
+    height: 360px;
+    box-sizing: border-box;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-radius: 4px;
+    box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
+    padding: 10px;
+}
+
+.court-item .court-thumbnail {
+    height: 70%;
+    width: 100%;
+    background-color: beige;
+    border-radius: 4px;
+}
+
+.court-item .court-thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.court-item .court-title {
+    font-size: 16px;
+    font-family: roboto-medium;
+}
+
+.court-item .court-brief {
+    color: rgba(0, 0, 0, 0.7);
+    font-family: roboto-medium;
+    display: -webkit-box;
+    /* 2 dòng max*/
+    -webkit-line-clamp: 2;
+    /* hướng vertical */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-right: 32px;
+    word-break: break-word;
+}
+
+.court-item button {
+    font-size: 16px;
+    font-family: roboto-medium;
+    min-height: 36px;
+}
