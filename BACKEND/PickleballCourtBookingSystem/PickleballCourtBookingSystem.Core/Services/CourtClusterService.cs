@@ -112,7 +112,7 @@ public class CourtClusterService : BaseService<CourtCluster>, ICourtClusterServi
         {
             var timeNow = TimeZoneInfo.ConvertTime(DateTime.Now, TimeZoneInfo.Local);
             var dateCheck = date ?? timeNow.Date;
-            var startTimeCheck = startTime ?? timeNow.TimeOfDay;
+            var startTimeCheck = startTime ?? TimeSpan.Zero;
             var endTimeCheck = endTime ?? DateTime.Today.AddDays(1).AddTicks(-1).TimeOfDay;
             if (dateCheck < timeNow.Date || (timeNow.Date == dateCheck && (startTimeCheck < timeNow.TimeOfDay || endTimeCheck < timeNow.TimeOfDay)) || (startTimeCheck > endTimeCheck))
             {
