@@ -75,6 +75,8 @@ CourtCluster:
 {
   "name": "Sân của Đức",
   "description": "",
+  "openingTime": "05:00:00",
+  "closingTime": "22:00:00",
   "addressId": "6d7f66e0-e83e-46cb-8c70-96e8de6e7192",
   "courtOwnerId": "4aeab0f2-27f3-482f-a2eb-07875b741a9a"
 }
