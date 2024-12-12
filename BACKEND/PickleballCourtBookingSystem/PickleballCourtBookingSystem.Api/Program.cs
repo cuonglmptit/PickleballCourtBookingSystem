@@ -3,11 +3,12 @@ using PickleballCourtBookingSystem.Core.Interfaces.Infrastructure;
 using PickleballCourtBookingSystem.Core.Interfaces.Services;
 using PickleballCourtBookingSystem.Core.Services;
 using PickleballCourtBookingSystem.Infrastructure.Repository;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
+Console.OutputEncoding = Encoding.UTF8;
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -47,7 +48,7 @@ builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<ICourtOwnerService, CourtOwnerService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICourtService, CourtService>();
-builder.Services.AddScoped<ICourtClusterService,CourtClusterService>();
+builder.Services.AddScoped<ICourtClusterService, CourtClusterService>();
 builder.Services.AddScoped<IImageCourtUrlService, ImageCourtUrlService>();
 builder.Services.AddScoped<ICourtTimeSlotService, CourtTimeSlotService>();
 builder.Services.AddScoped<IBookingService, BookingService>();

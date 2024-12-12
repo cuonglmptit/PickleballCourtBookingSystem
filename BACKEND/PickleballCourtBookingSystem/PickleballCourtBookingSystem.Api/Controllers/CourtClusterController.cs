@@ -52,7 +52,7 @@ namespace PickleballCourtBookingSystem.Api.Controllers
             return BadRequest(new { success = false, statusCode = result.StatusCode, userMessage = result.UserMsg, developerMessage = result.DevMsg });
         }
 
-        [HttpGet("SearchCourtClusterWithFiler")]
+        [HttpGet("SearchCourtClusterWithFilter")]
         public IActionResult SearchCourtClusterWithFiler([FromQuery] string? cityName, [FromQuery] string? courtClusterName, [FromQuery] DateTime? date,
             [FromQuery] TimeSpan? startTime, [FromQuery] TimeSpan? endTime)
         {
