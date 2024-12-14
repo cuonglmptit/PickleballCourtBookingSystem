@@ -29,7 +29,7 @@ namespace PickleballCourtBookingSystem.Api.Controllers
             }
             return BadRequest();
         }
-        
+
         [HttpGet("getCourtClusterForTimeRange")]
         public IActionResult GetCourtClusterForTime([FromBody] TimeRangeRequest timeRangeRequest)
         {
@@ -40,7 +40,7 @@ namespace PickleballCourtBookingSystem.Api.Controllers
             }
             return BadRequest(new { success = false, statusCode = result.StatusCode, userMessage = result.UserMsg, developerMessage = result.DevMsg });
         }
-        
+
         [HttpGet("getCourtClusterAvailableForTime")]
         public IActionResult GetAvailableCourtClusterForTime([FromBody] TimeRangeRequest timeRangeRequest)
         {
@@ -57,17 +57,17 @@ namespace PickleballCourtBookingSystem.Api.Controllers
             [FromQuery] TimeSpan? startTime, [FromQuery] TimeSpan? endTime)
         {
             var result = _courtClusterService.SearchCourtClusterWithFilters(cityName, courtClusterName, date, startTime, endTime);
+            Console.WriteLine(result);
             if (result.Success)
             {
-                if (result.Data == null)
+                if (result.Data != null)
                 {
-                    return Ok(result);
+                    return StatusCode(result.StatusCode, result);
                 }
-                return Ok(result.Data);
             }
-            return BadRequest(new { success = false, statusCode = result.StatusCode, userMessage = result.UserMsg, developerMessage = result.DevMsg });
+            return StatusCode(result.StatusCode);
         }
-        
+
         [HttpGet("{id}")]
         public IActionResult GetCourtClusterById(Guid id)
         {
@@ -116,7 +116,7 @@ namespace PickleballCourtBookingSystem.Api.Controllers
 
             return BadRequest();
         }
-        
+
         [HttpDelete("{id}")]
         public IActionResult DeleteCourtCluster(Guid id)
         {

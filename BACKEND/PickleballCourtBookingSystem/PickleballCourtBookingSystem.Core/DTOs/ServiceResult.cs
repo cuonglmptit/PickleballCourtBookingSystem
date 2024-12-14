@@ -26,5 +26,14 @@ namespace PickleballCourtBookingSystem.Core.DTOs
         /// Status code
         /// </summary>
         public int StatusCode { get; set; }
+
+        public override string ToString()
+        {
+            return $"Success: {Success}, " +
+                   $"DevMsg: {(string.IsNullOrEmpty(DevMsg) ? "N/A" : DevMsg)}, " +
+                   $"UserMsg: {(string.IsNullOrEmpty(UserMsg) ? "N/A" : UserMsg)}, " +
+                   $"StatusCode: {StatusCode}, " +
+                   $"Data: {(Data != null ? Data.ToString() : "N/A")}";
+        }
     }
 }

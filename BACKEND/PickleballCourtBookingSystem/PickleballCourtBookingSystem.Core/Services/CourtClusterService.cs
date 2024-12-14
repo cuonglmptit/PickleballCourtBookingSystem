@@ -138,7 +138,7 @@ namespace PickleballCourtBookingSystem.Core.Services
                     return CreateServiceResult(Success: false, StatusCode: 400, UserMsg: "Thời gian kết thúc lớn hơn thời gian bắt đầu", DevMsg: "Thời gian kết thúc lớn hơn thời gian bắt đầu");
                 }
                 var result = (List<CourtCluster>)_courtClusterRepository.SearchCourtClusterWithFilters(cityName, courtClusterName, dateCheck, startTimeCheck, endTimeCheck);
-                Console.WriteLine("SearchCourtClusterWithFilters kết quả: " + result.Count);
+                Console.WriteLine("service SearchCourtClusterWithFilters kết quả: " + result.Count);
 
                 if (result.Count == 0)
                 {

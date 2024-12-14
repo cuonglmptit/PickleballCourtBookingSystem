@@ -24,20 +24,19 @@ namespace PickleballCourtBookingSystem.Api.Controllers
             var result = _addressService.GetAllService();
             if (result.Success)
             {
-                return Ok(result.Data);
+                return StatusCode(result.StatusCode, result);
             }
             return BadRequest();
         }
-        
+
         [HttpGet("{id}")]
         public IActionResult GetAddressById(Guid id)
         {
             var result = _addressService.GetByIdService(id);
             if (result.Success)
             {
-                return Ok(result.Data);
+                return StatusCode(result.StatusCode, result);
             }
-
             return BadRequest();
         }
 
@@ -48,7 +47,7 @@ namespace PickleballCourtBookingSystem.Api.Controllers
             var result = _addressService.InsertService(address);
             if (result.Success)
             {
-                return Ok(result.StatusCode);
+                return StatusCode(result.StatusCode, result);
             }
 
             return BadRequest();
@@ -65,7 +64,7 @@ namespace PickleballCourtBookingSystem.Api.Controllers
 
             return BadRequest();
         }
-        
+
         [HttpDelete("{id}")]
         public IActionResult DeleteAddress(Guid id)
         {
