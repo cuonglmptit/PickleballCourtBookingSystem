@@ -3,13 +3,29 @@
     <input
       class="p-trans-input"
       type="text"
-      placeholder="Tên sân hoặc địa chỉ..."
+      :placeholder="placeholder"
+      :value="keyword"
+      @input="$emit('update:keyword', $event.target.value)"
     />
   </div>
 </template>
 
 <script>
-export default {};
+export default {
+  props: {
+    // Định nghĩa props tại đây
+    keyword: {
+      type: String, // keyword là chuỗi
+      required: true,
+    },
+    placeholder: {
+      type: String, // Đặt kiểu dữ liệu
+      required: false, // Không bắt buộc
+      default: "Nhập từ khóa...", // Giá trị mặc định
+    },
+  },
+  emits: ["update:keyword"],
+};
 </script>
 
 <style scoped>

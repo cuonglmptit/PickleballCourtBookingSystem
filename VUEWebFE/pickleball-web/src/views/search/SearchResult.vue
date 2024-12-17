@@ -8,7 +8,7 @@
         <div class="sort-container">
           <div class="sort-title">Sắp sếp theo</div>
           <div class="radio-container">
-            <input type="radio" name="sortType" id="default" />
+            <input type="radio" name="sortType" id="default" checked />
             <label for="default">Mặc định</label>
           </div>
           <div class="radio-container">
@@ -26,11 +26,11 @@
         </div>
       </div>
       <div class="result-part">
-        <CourtRsItem />
-        <CourtRsItem />
-        <CourtRsItem />
-        <CourtRsItem />
-        <CourtRsItem />
+        <CourtRsItem
+          v-for="(court, index) in searchResults"
+          :key="index"
+          :courtData="court"
+        />
       </div>
     </div>
   </div>
@@ -39,28 +39,68 @@
 <script>
 import SearchFrame from "./SearchFrame.vue";
 import CourtRsItem from "./CourtRsItem.vue";
+import { searchCourtClusters } from "../../scripts/apiService.js";
 export default {
   components: {
     SearchFrame,
     CourtRsItem,
   },
-  computed: {
-    searchData() {
-      return {
-        keyword: this.$route.query.keyword || "",
-        date: this.$route.query.date || "",
-      };
+  data() {
+    return {
+      searchData: {
+        courtClusterName: this.$route.query.courtClusterName || "",
+        date: this.$route.query.date || new Date().toISOString().split("T")[0],
+        startTime: this.$route.query.startTime || "",
+        endTime: this.$route.query.endTime || "",
+        cityName: this.$route.query.cityName || "",
+        forceUpdate: Date.now(),
+      },
+      searchResults: [], // dữ liệu kết quả tìm kiếm
+    };
+  },
+  watch: {
+    // Khi $route.query thay đổi thì sẽ tìm kiếm lại
+    "$route.query": {
+      handler() {
+        this.searchData = { ...this.$route.query, forceUpdate: Date.now() }; // Cập nhật lại dữ liệu tìm kiếm
+        this.fetchSearchResults(); // Gọi lại hàm tìm kiếm
+      },
+      immediate: true, // Gọi ngay khi component được khởi tạo
+      deep: true, // Theo dõi tất cả các thuộc tính trong query
     },
   },
+  methods: {
+    async fetchSearchResults() {
+      try {
+        // Tạo bản sao của searchData để tránh ảnh hưởng đến dữ liệu gốc
+        const searchQuery = { ...this.searchData };
+
+        // Nếu startTime là "Tất cả", xóa startTime và endTime khỏi searchQuery
+        if (searchQuery.startTime === "Tất cả") {
+          delete searchQuery.startTime;
+          delete searchQuery.endTime;
+        }
+        // Gửi request đến API với query parameters
+        const response = await searchCourtClusters(searchQuery);
+        this.searchResults = response.data;
+        console.log(response);
+      } catch (error) {
+        console.error("Lỗi khi tải kết quả tìm kiếm:", error);
+      }
+    },
+  },
+  mounted() {},
 };
 </script>
 
 <style scoped>
 .container {
   padding: 12px 224px 0 224px;
+  width: 100%;
 }
 .search-container {
   width: 100%;
+  min-width: fit-content;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -68,6 +108,8 @@ export default {
 .custom-search-f {
   height: 200px;
   width: 100%;
+  min-width: fit-content;
+  box-sizing: border-box;
 }
 
 /* css cho phần result */

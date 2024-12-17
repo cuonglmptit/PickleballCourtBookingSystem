@@ -114,8 +114,9 @@ namespace PickleballCourtBookingSystem.Core.Services
                 var dateCheck = date ?? timeNow.Date;
                 //Nếu ngày tìm lớn hơn ngày hôm nay thì thời gian bắt đầu sẽ là 00:00
                 //, nếu ngày tìm mà là hôm nay thì thời gian bắt đầu sẽ là hiện tại, 
+                Console.WriteLine("startTime truyen vao: " + startTime);
                 var startTimeCheck = startTime ?? TimeSpan.Zero;
-                if (dateCheck == timeNow.Date)
+                if (dateCheck.Date == timeNow.Date && !startTime.HasValue)
                 {
                     startTimeCheck = timeNow.TimeOfDay;
                 }
@@ -129,13 +130,16 @@ namespace PickleballCourtBookingSystem.Core.Services
                 {
                     Console.WriteLine(timeNow.Date == dateCheck);
                     Console.WriteLine(startTimeCheck < timeNow.TimeOfDay);
-                    Console.WriteLine("starttimecheck = "+startTimeCheck+" timeNow.TimeOfDay = "+timeNow.TimeOfDay);
                     Console.WriteLine(endTimeCheck < timeNow.TimeOfDay);
                     return CreateServiceResult(Success: false, StatusCode: 400, UserMsg: "Thời gian bắt đầu hoặc kết thúc truyền vào trong quá khứ", DevMsg: "Thời gian bắt đầu hoặc kết thúc truyền vào trong quá khứ");
                 }
                 if (startTimeCheck > endTimeCheck)
                 {
                     return CreateServiceResult(Success: false, StatusCode: 400, UserMsg: "Thời gian kết thúc lớn hơn thời gian bắt đầu", DevMsg: "Thời gian kết thúc lớn hơn thời gian bắt đầu");
+                }
+                if (dateCheck.Date < timeNow.Date)
+                {
+                    return CreateServiceResult(Success: false, StatusCode: 400, UserMsg: "Ngày truyền vào trong quá khứ", DevMsg: "Ngày truyền vào trong quá khứ");
                 }
                 var result = (List<CourtCluster>)_courtClusterRepository.SearchCourtClusterWithFilters(cityName, courtClusterName, dateCheck, startTimeCheck, endTimeCheck);
                 Console.WriteLine("service SearchCourtClusterWithFilters kết quả: " + result.Count);

@@ -2,36 +2,32 @@
   <div class="container">
     <div class="search-container p-search-background">
       <h1 class="search-sologan">Đặt sân nhanh, chiến ngay hôm nay!</h1>
-      <SearchFrame></SearchFrame>
+      <div class="search-frame-container">
+        <SearchFrame></SearchFrame>
+      </div>
     </div>
     <div class="informations">
       <div class="inf-container">
         <div class="inf-img p-icon-court-active-hori"></div>
+        <div class="des-title">Tìm kiếm và đặt sân</div>
         <div class="inf-des">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Aspernatur
-          illum deleniti tenetur autem, et aliquid maiores, hic aut similique
-          impedit voluptas enim, repudiandae minus provident qui perferendis
-          cumque beatae nemo.
+          Tìm kiếm sân phù hợp nhất với nhu cầu của bạn
         </div>
       </div>
       <div class="inf-separate"></div>
       <div class="inf-container">
         <div class="inf-img p-icon-calendar"></div>
+        <div class="des-title">Xem lịch đặt</div>
         <div class="inf-des">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Aspernatur
-          illum deleniti tenetur autem, et aliquid maiores, hic aut similique
-          impedit voluptas enim, repudiandae minus provident qui perferendis
-          cumque beatae nemo.
+          Xem lại những lịch đặt sân mà bạn đã thực hiện
         </div>
       </div>
       <div class="inf-separate"></div>
       <div class="inf-container">
         <div class="inf-img p-icon-dashboard1"></div>
+        <div class="des-title">Quản lý và thống kê</div>
         <div class="inf-des">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Aspernatur
-          illum deleniti tenetur autem, et aliquid maiores, hic aut similique
-          impedit voluptas enim, repudiandae minus provident qui perferendis
-          cumque beatae nemo.
+          Bạn là chủ sân và muốn dùng phần mềm quản lý? Đăng ký ngay để sử dụng! 
         </div>
       </div>
     </div>
@@ -67,7 +63,10 @@ export default {
   align-items: center;
   background-position: center;
 }
-
+.search-frame-container {
+  width: 70%;
+  min-width: fit-content;
+}
 .search-sologan {
   font-size: 32px;
   color: white;
@@ -93,6 +92,7 @@ export default {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  row-gap: 8px;
 }
 .inf-img {
   /* background-color: aquamarine; */
@@ -108,5 +108,11 @@ export default {
   height: 50%;
   flex-shrink: 0;
   background-color: black;
+}
+
+.des-title {
+  font-size: 24px;
+  font-family: roboto-medium;
+  text-align: center;
 }
 </style>

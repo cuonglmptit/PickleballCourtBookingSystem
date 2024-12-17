@@ -27,7 +27,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .p-pri-button {
   display: flex;
   justify-content: center;

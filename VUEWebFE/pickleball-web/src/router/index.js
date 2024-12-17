@@ -3,7 +3,7 @@ import HomeSearch from '../views/search/HomeSearch.vue';
 import SearchResult from '../views/search/SearchResult.vue';
 import MainLayout from '../views/layouts/MainLayout.vue';
 import EmptyLayout from '../views/layouts/EmptyLayout.vue';
-import CourtDetail from '../views/court/CourtDetail.vue';
+import CourtClusterDetail from '../views/court/CourtClusterDetail.vue';
 import NotFound from '../views/NotFound.vue';
 
 const routes = [
@@ -22,9 +22,9 @@ const routes = [
         component: SearchResult
       },
       {
-        path: '/court/:id',
-        name: 'court-detail',
-        component: CourtDetail
+        path: '/court-cluster/:id',
+        name: 'court-cluster-detail',
+        component: CourtClusterDetail
       },
     ],
   },

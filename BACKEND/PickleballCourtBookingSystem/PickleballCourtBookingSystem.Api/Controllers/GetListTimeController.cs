@@ -17,6 +17,6 @@ public class GetListTimeController : Controller
     public IActionResult GetListTime()
     {
         var result = _getListTimeService.GetListTime();
-        return Ok(result.Data);
+        return StatusCode(result.StatusCode, result);
     }
 }

@@ -3,14 +3,17 @@
     <input
       type="text"
       class="select-input"
-      v-model="searchText"
+      :value="modelValue"
+      @input="$emit('update:modelValue', $event.target.value)"
       :placeholder="placeHoder"
       @focus="toggleSuggestions(true)"
-      @blur="toggleSuggestions(false)"
+      @blur="handleBlur()"
       @keyup="inputKeyupHandler"
     />
     <div class="list-container" v-if="showSuggestions">
       <div
+        class="suggestion-row"
+        :ref="(el) => (suggestionRefs[index] = el)"
         v-for="(item, index) in filteredSuggestions"
         @mouseenter="highlight(index)"
         @mouseleave="highlight(-1)"
@@ -28,34 +31,61 @@ export default {
   name: "InputSelect",
   data() {
     return {
-      searchText: "", // Text nhập vào input
       selectedIndex: -1, // Chỉ số mục đang chọn
       showSuggestions: false, // Kiểm soát hiển thị danh sách gợi ý
-      suggestions: [
-        "Nhan vien 1",
-        "Nhan vien 2",
-        "Nhan vien 3",
-        "Nhan vien 4",
-        "A vien 5",
-        "A vien 6",
-        "B vien 7",
-        "C vien 8",
-        "D vien 9",
-      ], // Dữ liệu gốc
+      suggestionRefs: [], // Mảng chứa các tham chiếu của từng mục
     };
   },
   props: {
-    placeHoder: String,
+    placeHoder: {
+      type: String,
+      default: "Nhập...",
+    },
+    modelValue: {
+      type: String,
+      required: true,
+    },
+    suggestions: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
+  },
+  emits: {
+    "update:modelValue": null,
   },
   computed: {
     filteredSuggestions() {
       // Lọc danh sách dựa trên giá trị nhập vào
       return this.suggestions.filter((item) =>
-        item.toLowerCase().includes(this.searchText.toLowerCase())
+        item.toLowerCase().includes(this.modelValue.toLowerCase())
       );
     },
   },
   methods: {
+    handleBlur() {
+      try {
+        if (
+          this.selectedIndex >= 0 &&
+          this.selectedIndex <= this.suggestions.length
+        ) {
+          this.$emit("update:modelValue", this.suggestions[this.selectedIndex]);
+        } else {
+          // Kiểm tra xem giá trị hiện tại có nằm trong danh sách gợi ý không
+          if (!this.suggestions.includes(this.modelValue)) {
+            if (this.filteredSuggestions.length > 0) {
+              this.$emit("update:modelValue", this.filteredSuggestions[0]); // Gán giá trị đâu tiên của filteredSuggestion
+            } else {
+              this.$emit("update:modelValue", this.suggestions[0]); // Gán giá trị đâu tiên của filteredSuggestion
+            }
+          }
+        }
+        this.toggleSuggestions(false);
+        this.isManuallySelected = true;
+      } catch (error) {
+        console.log(error);
+      }
+    },
     highlight(index) {
       try {
         this.selectedIndex = index; // Đánh dấu mục đang hover
@@ -73,7 +103,7 @@ export default {
     },
     selectSuggestion(index) {
       try {
-        this.searchText = this.filteredSuggestions[index];
+        this.$emit("update:modelValue", this.filteredSuggestions[index]);
         this.showSuggestions = false; // Ẩn danh sách gợi ý
         this.selectedIndex = -1; // Reset chỉ số
       } catch (error) {
@@ -83,19 +113,43 @@ export default {
     inputKeyupHandler(event) {
       try {
         if (event.key === "ArrowUp") {
-          if (this.selectedIndex >= 0) {
+          if (this.selectedIndex > 0) {
             this.selectedIndex--;
+          } else {
+            this.selectedIndex = this.suggestions.length - 1;
           }
         } else if (event.key === "ArrowDown") {
           if (this.selectedIndex < this.filteredSuggestions.length - 1) {
             this.selectedIndex++;
           } else {
-            this.selectedIndex = -1;
+            this.selectedIndex = 0;
           }
         } else if (event.key === "Enter") {
           this.isManuallySelected = true;
-          this.searchText = this.filteredSuggestions[this.selectedIndex];
+          if (this.selectedIndex === -1) {
+            this.$emit("update:modelValue", "");
+          } else {
+            this.$emit(
+              "update:modelValue",
+              this.filteredSuggestions[this.selectedIndex]
+            );
+          }
           this.toggleSuggestions(false);
+        }
+        // Cuộn danh sách theo selectedIndex
+        this.scrollToSelected();
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    scrollToSelected() {
+      try {
+        const selectedElement = this.suggestionRefs[this.selectedIndex];
+        if (selectedElement) {
+          selectedElement.scrollIntoView({
+            behavior: "smooth",
+            block: "nearest",
+          });
         }
       } catch (error) {
         console.log(error);
@@ -103,7 +157,7 @@ export default {
     },
   },
   watch: {
-    searchText(newVal, oldVal) {
+    modelValue(newVal, oldVal) {
       if (this.isManuallySelected) {
         this.isManuallySelected = false; // Reset cờ
       } else {
@@ -123,13 +177,29 @@ export default {
   border: none;
   font-family: roboto-medium;
   font-size: 18px;
+  box-sizing: border-box;
+  width: 100%;
 }
 .list-container {
   width: 100%;
   position: absolute;
-  background-color: slategray;
+  background-color: white;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
+  max-height: 300px;
+  overflow: auto;
+  padding: 4px;
 }
+
+.suggestion-row {
+  padding: 4px;
+  font-size: 15px;
+  cursor: pointer;
+  border-radius: 2px;
+}
+
 .row-selected {
-  background-color: var(--topic-color-100);
+  background-color: var(--topic-color-200);
 }
 </style>

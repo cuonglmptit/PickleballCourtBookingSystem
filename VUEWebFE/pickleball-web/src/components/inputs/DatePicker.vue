@@ -1,10 +1,11 @@
 <template>
   <div class="datepicker-container">
-    <input 
-      v-model="selectedDate" 
-      class="datepk-custom" 
-      type="date" 
-      :min="minDate" 
+    <input
+      :value="date"
+      @input="$emit('update:date', $event.target.value)"
+      class="datepk-custom"
+      type="date"
+      :min="minDate"
       @change="checkDate"
     />
     <!-- Div thông báo dưới input khi ngày chọn nhỏ hơn hôm nay -->
@@ -16,25 +17,31 @@
 
 <script>
 export default {
+  props: {
+    date: {
+      type: String,
+      required: true,
+    },
+  },
+  emits: ['update:date'],
   data() {
-    const today = new Date().toISOString().split('T')[0];
+    const today = new Date().toISOString().split("T")[0];
     return {
-      selectedDate: today,
       minDate: today,
       showAlert: false, // Biến để điều khiển việc hiển thị thông báo
     };
   },
   methods: {
     checkDate() {
-      const selected = new Date(this.selectedDate);
+      const selected = new Date(this.date);
       const today = new Date(this.minDate);
       if (selected < today) {
         this.showAlert = true; // Hiển thị thông báo nếu ngày chọn nhỏ hơn hôm nay
       } else {
         this.showAlert = false; // Ẩn thông báo nếu ngày chọn hợp lệ
       }
-    }
-  }
+    },
+  },
 };
 </script>
 

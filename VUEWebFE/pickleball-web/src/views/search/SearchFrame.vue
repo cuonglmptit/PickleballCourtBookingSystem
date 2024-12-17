@@ -1,24 +1,41 @@
 <template>
   <div class="search">
     <div class="inputs-part">
-      <TranparentSearch />
+      <TranparentSearch
+        v-model:keyword="searchData.courtClusterName"
+        :placeholder="'Tên sân...'"
+      />
       <div class="filters">
         <div class="filter-container">
-          Khung giờ muốn đặt
+          Khung giờ muốn tìm
           <div class="filter-icon-c">
             <div class="f-icon p-icon-clock"></div>
-            <DropCheckboxes />
+            <InputSelect
+              v-model="searchData.startTime"
+              :suggestions="['Tất cả', ...timeSuggestionList]"
+              :placeHoder="'Giờ bắt đầu'"
+            />
+            <div class="separate"></div>
+            <InputSelect
+              v-if="searchData.startTime !== 'Tất cả'"
+              v-model="searchData.endTime"
+              :suggestions="filteredEndTimeList"
+              :placeHoder="'Giờ kết thúc'"
+            />
           </div>
         </div>
         <div class="filter-container">
           Ngày chơi
-          <DatePicker />
+          <DatePicker v-model:date="searchData.date" />
         </div>
         <div class="filter-container">
           Khu vực
           <div class="filter-icon-c">
             <div class="f-icon p-icon-location"></div>
-            <InputSelect :placeHoder="'Nhập khu vực'" />
+            <InputSelect
+              v-model="searchData.cityName"
+              :placeHoder="'Nhập khu vực'"
+            />
           </div>
         </div>
       </div>
@@ -36,34 +53,90 @@
 <script>
 import TranparentSearch from "../../components/inputs/TranparentSearch.vue";
 import DatePicker from "../../components/inputs/DatePicker.vue";
-import DropCheckboxes from "../../components/inputs/DropCheckboxes.vue";
+// import DropCheckboxes from "../../components/inputs/DropCheckboxes.vue";
 import InputSelect from "../../components/inputs/InputSelect.vue";
 import TriangleButton from "../../components/buttons/TriangleButton.vue";
+import { getListTime } from "../../scripts/apiService.js";
 export default {
   components: {
     TranparentSearch,
     DatePicker,
-    DropCheckboxes,
+    // DropCheckboxes,
     InputSelect,
     TriangleButton,
   },
+  async created() {
+    try {
+      const listTimeResposne = await getListTime();
+      this.timeSuggestionList = listTimeResposne.data;
+      console.log(this.timeSuggestionList);
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  watch: {
+    "searchData.startTime"(newStartTime) {
+      this.updateEndTimeList(newStartTime);
+      if (newStartTime === "Tất cả") {
+        this.searchData.endTime = ""; // Reset endTime nếu startTime là 'Tất cả'
+      } else {
+        this.updateEndTimeList(newStartTime);
+        // Kiểm tra xem endTime có lớn hơn startTime không, nếu không, reset endTime
+        if (
+          newStartTime &&
+          this.searchData.endTime &&
+          this.searchData.endTime <= newStartTime
+        ) {
+          this.searchData.endTime = ""; // Xóa giá trị endTime nếu không hợp lệ
+        }
+      }
+    },
+  },
   methods: {
     submitSearch() {
+      console.log("Dữ liệu tìm kiếm:", this.searchData);
+      this.searchData.forceUpdate = Date.now();
       this.$router.push({
         name: "search-result",
-        query: {
-          keyword: this.searchData.keyword,
-          date: this.searchData.date,
-        },
+        query: { ...this.searchData },
       });
+    },
+    updateEndTimeList(startTime) {
+      try {
+        if (startTime) {
+          // Lọc thời gian để chỉ giữ lại những thời gian lớn hơn startTime
+          this.filteredEndTimeList = this.timeSuggestionList.filter(
+            (time) => time > startTime
+          );
+        } else {
+          this.filteredEndTimeList = [...this.timeSuggestionList];
+        }
+      } catch (error) {
+        console.log(`err updateEndTimeList: ${error}`);
+      }
+    },
+  },
+  updated() {
+    // console.log(this.searchData);
+  },
+  props: {
+    initialData: {
+      type: Object,
+      default: () => ({
+        courtClusterName: "",
+        date: new Date().toISOString().split("T")[0],
+        startTime: "Tất cả",
+        endTime: "",
+        cityName: "",
+        forceUpdate: Date.now(),
+      }),
     },
   },
   data() {
     return {
-      searchData: {
-        keyword: "",
-        date: "",
-      },
+      searchData: { ...this.initialData },
+      timeSuggestionList: [],
+      filteredEndTimeList: [],
     };
   },
 };
@@ -72,13 +145,12 @@ export default {
 <style scoped>
 .search {
   background-color: white;
-  width: 70%;
+  width: 100%;
   height: 224px;
   border: 1px solid rgba(0, 0, 0, 0.3);
   border-radius: 4px;
   box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
   display: flex;
-  min-width: fit-content;
 }
 .inputs-part {
   width: 70%;
@@ -87,7 +159,7 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
-  min-width: fit-content;
+  /* min-width: fit-content; */
   padding: 0 36px;
 }
 .buttons-part {
@@ -97,7 +169,7 @@ export default {
   justify-content: center;
   align-items: center;
   width: 30%;
-  min-width: fit-content;
+  /* min-width: fit-content; */
   padding: 36px;
 }
 .search-btn-container {
@@ -124,13 +196,25 @@ export default {
 .filter-icon-c {
   display: flex;
   justify-content: start;
+  flex-wrap: nowrap;
   align-items: center;
   column-gap: 4px;
+  flex-shrink: 0;
 }
+
 .f-icon {
   width: 36px;
   height: 36px;
   background-repeat: no-repeat;
   background-size: 36px;
+  flex-shrink: 0;
+}
+
+.separate {
+  background-color: rgba(0, 0, 0, 0.6);
+  flex-shrink: 0;
+  width: 2px;
+  margin-right: 12px;
+  height: 60%;
 }
 </style>

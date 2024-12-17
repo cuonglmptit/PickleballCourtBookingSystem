@@ -58,14 +58,7 @@ namespace PickleballCourtBookingSystem.Api.Controllers
         {
             var result = _courtClusterService.SearchCourtClusterWithFilters(cityName, courtClusterName, date, startTime, endTime);
             Console.WriteLine(result);
-            if (result.Success)
-            {
-                if (result.Data != null)
-                {
-                    return StatusCode(result.StatusCode, result);
-                }
-            }
-            return StatusCode(result.StatusCode);
+            return StatusCode(result.StatusCode, result);
         }
 
         [HttpGet("{id}")]

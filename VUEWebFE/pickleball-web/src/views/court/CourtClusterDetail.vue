@@ -3,7 +3,7 @@
     <div class="left-part">
       <div class="left-top">
         <div class="choose-date">Chọn ngày và thời gian</div>
-        <DatePicker />
+        <DatePicker v-model:date="courtClusterSearchData.searchDate" />
       </div>
       <div class="left-mid">
         <table class="booking-table">
@@ -23,26 +23,19 @@
           </tbody>
         </table>
       </div>
-      <div class="left-form">
-
-      </div>
-      <div class="booking-form">
-
-      </div>
+      <div class="left-form"></div>
+      <div class="booking-form"></div>
     </div>
     <div class="right-part">
-      <div class="court-title">
-        Cụm sân hà đông 1
-      </div>
-      <div class="court-photos">
-
-      </div>
+      <div class="court-title">Cụm sân hà đông 1</div>
+      <div class="court-photos"></div>
       <div class="court-des">
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis laboriosam veniam distinctio ex reiciendis quis asperiores libero quidem quae, repellat temporibus sapiente quos impedit fugit architecto ad, dolor sit illum!
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis
+        laboriosam veniam distinctio ex reiciendis quis asperiores libero quidem
+        quae, repellat temporibus sapiente quos impedit fugit architecto ad,
+        dolor sit illum!
       </div>
-      <div class="google-maps">
-
-      </div>
+      <div class="google-maps"></div>
     </div>
   </div>
 </template>
@@ -68,6 +61,9 @@ export default {
         { id: 5, time: "11:30-13:00" },
       ],
       selectedSlots: [], // Lưu các ô đã chọn
+      courtClusterSearchData: {
+        searchDate: new Date().toISOString().split("T")[0],
+      },
     };
   },
 };
@@ -107,7 +103,7 @@ export default {
   align-items: center;
 }
 
-.left-mid{
+.left-mid {
   background-color: yellowgreen;
   height: calc(100% - 24px - 150px);
 }
@@ -127,8 +123,8 @@ export default {
   /* border-bottom: 1px solid #ddd; */
 }
 
-.booking-form{
-  width: calc(100% - 2*24px);
+.booking-form {
+  width: calc(100% - 2 * 24px);
   height: 150px;
   background-color: white;
   border: 1px solid var(--topic-color-200);
@@ -152,18 +148,18 @@ export default {
   justify-content: start;
 }
 
-.court-title{
+.court-title {
   font-family: roboto-medium;
   font-size: 24px;
 }
 
-.court-photos{
+.court-photos {
   height: 35%;
   width: 100%;
   background-color: whitesmoke;
 }
 
-.google-maps{
+.google-maps {
   background-color: wheat;
   height: 35%;
 }

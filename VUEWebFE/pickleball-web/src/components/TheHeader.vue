@@ -1,6 +1,6 @@
 <template>
   <div class="header p-long-banner banner">
-    <div class="logo p-logo"></div>
+    <router-link :to="{ name: 'home' }" class="logo p-logo"></router-link>
     <div class="menu-options">
       <div class="option">
         <PrimaryButton :isRouterLink="true" :to="{ name: 'home' }">
