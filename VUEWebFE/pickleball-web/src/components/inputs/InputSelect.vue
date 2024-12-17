@@ -10,7 +10,10 @@
       @blur="handleBlur()"
       @keyup="inputKeyupHandler"
     />
-    <div class="list-container" v-if="showSuggestions">
+    <div
+      class="list-container"
+      v-if="showSuggestions && filteredSuggestions.length > 0"
+    >
       <div
         class="suggestion-row"
         :ref="(el) => (suggestionRefs[index] = el)"

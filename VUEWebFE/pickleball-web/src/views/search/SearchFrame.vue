@@ -69,6 +69,7 @@ export default {
     try {
       const listTimeResposne = await getListTime();
       this.timeSuggestionList = listTimeResposne.data;
+      this.updateEndTimeList(this.searchData.startTime);
       console.log(this.timeSuggestionList);
     } catch (error) {
       console.log(error);
