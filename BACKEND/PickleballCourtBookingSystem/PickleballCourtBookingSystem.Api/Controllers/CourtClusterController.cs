@@ -114,12 +114,14 @@ namespace PickleballCourtBookingSystem.Api.Controllers
         public IActionResult DeleteCourtCluster(Guid id)
         {
             var result = _courtClusterService.DeleteService(id);
-            if (result.Success)
-            {
-                return Ok(result.StatusCode);
-            }
-            return BadRequest();
+            return StatusCode(result.StatusCode, result);
         }
 
+        [HttpGet("{id}/Courts")]
+        public IActionResult GetCourtsOfACourtCluster(Guid id)
+        {
+            var result = _courtClusterService.GetCourtsByClusterId(id);
+            return StatusCode(result.StatusCode, result);
+        }
     }
 }

@@ -1,4 +1,4 @@
-using PickleballCourtBookingSystem.Core.DTOs;
+﻿using PickleballCourtBookingSystem.Core.DTOs;
 using PickleballCourtBookingSystem.Core.Entities;
 using PickleballCourtBookingSystem.Core.Interfaces.Infrastructure;
 using PickleballCourtBookingSystem.Core.Interfaces.Services;
@@ -102,10 +102,10 @@ public class CourtService : BaseService<Court>, ICourtService
     {
         try
         {
-            var result = (List<Court>) _courtRepository.GetCoursByCourtClusterId(courtClusterId);
+            var result = (List<Court>) _courtRepository.GetCourtsByCourtClusterId(courtClusterId);
             if (result.Count == 0)
             {
-                return CreateServiceResult(Success: true, StatusCode: 200, UserMsg: "Cum san khong co san nao", DevMsg: "Cum san khong co san nao");
+                return CreateServiceResult(Success: true, StatusCode: 200, UserMsg: "Cụm sân không có cụm sân nào", DevMsg: "Cụm sân không có cụm sân nào");
             }
             return CreateServiceResult(Success: true, StatusCode: 200, Data: result);
         }

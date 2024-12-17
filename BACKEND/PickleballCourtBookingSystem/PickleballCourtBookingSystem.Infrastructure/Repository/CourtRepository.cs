@@ -11,10 +11,10 @@ namespace PickleballCourtBookingSystem.Infrastructure.Repository
         {
 
         }
-        
-        public IEnumerable<Court> GetCoursByCourtClusterId(Guid courtClusterId)
+
+        public IEnumerable<Court> GetCourtsByCourtClusterId(Guid courtClusterId)
         {
-            return dbContext.FindByColumnValue<Court>(courtClusterId, "courtClusterId");
+            return dbContext.FindByColumnValue<Court>(courtClusterId, nameof(Court.CourtClusterId));
         }
     }
 }

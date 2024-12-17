@@ -5,5 +5,5 @@ namespace PickleballCourtBookingSystem.Core.Interfaces.Infrastructure;
 
 public interface ICourtRepository : IBaseRepository<Court>
 {
-    public IEnumerable<Court> GetCoursByCourtClusterId(Guid courtClusterId);
+    public IEnumerable<Court> GetCourtsByCourtClusterId(Guid courtClusterId);
 }
