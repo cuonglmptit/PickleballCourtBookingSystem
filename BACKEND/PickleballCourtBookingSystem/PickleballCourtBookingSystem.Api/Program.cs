@@ -58,6 +58,7 @@ builder.Services.AddScoped<IFeedbackService, FeedbackService>();
 builder.Services.AddScoped<ITimeService, TimeService>();
 builder.Services.AddScoped<ICourtPriceService, CourtPriceService>();
 builder.Services.AddScoped<IGetListTimeService, GetListTimeService>();
+builder.Services.AddScoped<ILocationsService, LocationsService>();
 builder.Services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
 builder.Services.AddScoped(typeof(IBaseService<>), typeof(BaseService<>));
 
