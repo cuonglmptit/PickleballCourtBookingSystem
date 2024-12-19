@@ -1,9 +1,12 @@
-﻿using PickleballCourtBookingSystem.Core.Interfaces.DBContext;
+﻿using System.Security.Claims;
+using PickleballCourtBookingSystem.Core.Interfaces.DBContext;
 using PickleballCourtBookingSystem.Core.Interfaces.Infrastructure;
 using PickleballCourtBookingSystem.Core.Interfaces.Services;
 using PickleballCourtBookingSystem.Core.Services;
 using PickleballCourtBookingSystem.Infrastructure.Repository;
 using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +16,31 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        // ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        // ValidAudience = builder.Configuration["Jwt:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:secretKey"]))
+    };
+});
+
+// builder.Services.AddAuthorization(options =>
+// {
+//     options.AddPolicy("Admin", policy =>
+//         policy.RequireClaim(ClaimTypes.Role, "1"));
+//     options.AddPolicy("CourtOwner", policy =>
+//         policy.RequireClaim(ClaimTypes.Role, "2"));
+//     options.AddPolicy("Customer", policy =>
+//         policy.RequireClaim(ClaimTypes.Role, "3"));
+//     options.FallbackPolicy = options.DefaultPolicy;
+// });
 
 //Cấu hình allow origin
 builder.Services.AddCors(options =>
@@ -59,6 +87,7 @@ builder.Services.AddScoped<ITimeService, TimeService>();
 builder.Services.AddScoped<ICourtPriceService, CourtPriceService>();
 builder.Services.AddScoped<IGetListTimeService, GetListTimeService>();
 builder.Services.AddScoped<ILocationsService, LocationsService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
 builder.Services.AddScoped(typeof(IBaseService<>), typeof(BaseService<>));
 
@@ -76,6 +105,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors("AllowAllOrigins");
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
