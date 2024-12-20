@@ -4,6 +4,7 @@ using System.Text;
 using Dapper;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using PickleballCourtBookingSystem.Api.Models;
 using PickleballCourtBookingSystem.Core.DTOs;
 using PickleballCourtBookingSystem.Core.Interfaces.Infrastructure;
 using PickleballCourtBookingSystem.Core.Interfaces.Services;
@@ -48,11 +49,11 @@ public class AuthService : IAuthService
                 UserMsg: "Tài khoản hoặc mật khẩu đăng nhập không chính xác",
                 DevMsg: "Tài khoản hoặc mật khẩu đăng nhập không chính xác");
         }
-
+        var roleEnum = (RoleEnum)Enum.ToObject(typeof(RoleEnum), user.RoleId);
         var claims = new List<Claim>
         {
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Role, user.RoleId.ToString())
+            new Claim(ClaimTypes.Role, roleEnum.ToString())
         };
         var token = GenerateToken(claims);
         return CreateServiceResult(Success: true, StatusCode: 200, UserMsg: "Đăng nhập thành công",

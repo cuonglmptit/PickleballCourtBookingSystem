@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace PickleballCourtBookingSystem.Api.DTOs;
+namespace PickleballCourtBookingSystem.Api.DTOs.AuthDTOs;
 
 public class LoginRequest
 {
