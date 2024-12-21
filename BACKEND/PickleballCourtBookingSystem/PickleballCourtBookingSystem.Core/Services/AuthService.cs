@@ -16,6 +16,7 @@ public class AuthService : IAuthService
 
     private readonly IUserRepository _userRepository;
     private readonly IConfiguration _configuration;
+    private readonly IAddressService _addressService;
 
     private ServiceResult CreateServiceResult(bool Success, int StatusCode, string? UserMsg = null,
         string? DevMsg = null, object? Data = null)
@@ -29,16 +30,25 @@ public class AuthService : IAuthService
         return result;
     }
 
-    public AuthService(IConfiguration configuration, IUserRepository userRepository)
+    public AuthService(IConfiguration configuration, IUserRepository userRepository, IAddressService addressService)
     {
         _configuration = configuration;
         _userRepository = userRepository;
+        _addressService = addressService;
     }
 
-    public ServiceResult Register(string username, string password)
-    {
-        throw new NotImplementedException();
-    }
+    // public ServiceResult Register(string username, string password, string name, string phoneNumber, string email, int role)
+    // {
+    //     try
+    //     {
+    //         var 
+    //     }
+    //     catch (Exception e)
+    //     {
+    //         Console.WriteLine(e);
+    //         return CreateServiceResult(Success: false, StatusCode: 500, UserMsg: "Failed to add booking", DevMsg: e.Message);
+    //     }
+    // }
 
     public ServiceResult Login(string username, string password)
     {

@@ -8,9 +8,9 @@ namespace PickleballCourtBookingSystem.Core.Services;
 
 public class UserService : BaseService<User>, IUserService
 {
-    public UserService(IUserRepository repository) : base(repository)
+    private readonly IUserRepository _userRepository;
+    public UserService(IUserRepository repository, IUserRepository userRepository) : base(repository)
     {
-        
+        _userRepository = userRepository;
     }
-    
 }

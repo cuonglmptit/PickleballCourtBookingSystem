@@ -4,6 +4,6 @@ namespace PickleballCourtBookingSystem.Api.Models
     {
         Admin = 1,
         CourtOwner = 2,
-        Customer = 3,
+        Customer = 3
     }
 }
