@@ -70,7 +70,7 @@ public class AuthService : IAuthService
             var user = new User
             {
                 //****note quan trọng, bắt buộc phải có guid mới có thể check unique
-                // không thì nó sẽ là null và kết qảu trả về sẽ sai
+                // không thì nó sẽ là null và kết qua trả về sẽ sai
                 // null đại diện cho một giá trị không xác định, và bất kỳ phép so sánh nào với null,
                 // bao gồm !=, đều trả về giá trị false
                 Id = Guid.Empty,
@@ -81,11 +81,11 @@ public class AuthService : IAuthService
                 Email = email,
                 RoleId = (int)role
             };
-
-            if (!_userRepository.IsUniqueValueExistsInColumn(user, nameof(User.Username)))
+            var userCheck = _userRepository.FindUserByUniqueAttribute(username, phoneNumber, email);
+            if (userCheck != null)
             {
-                Console.WriteLine(nameof(User.Username));
-                errorData.Add("Username", "Username đã tồn tại");
+                Console.WriteLine("That nghiep");
+                errorData.Add("User", "user da ton tai");
             }
 
             // 7. Nếu có bất kì lỗi nào thì return lỗi

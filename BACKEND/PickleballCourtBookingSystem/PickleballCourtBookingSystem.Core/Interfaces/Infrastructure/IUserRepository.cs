@@ -11,5 +11,6 @@ namespace PickleballCourtBookingSystem.Core.Interfaces.Infrastructure
     public interface IUserRepository : IBaseRepository<User>
     {
         public User? CheckLogin(string username, string password);
+        public User? FindUserByUniqueAttribute(string username, string phoneNumber, string email);
     }
 }
