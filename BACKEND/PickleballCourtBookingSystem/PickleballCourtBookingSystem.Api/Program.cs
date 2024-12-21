@@ -7,6 +7,11 @@ using PickleballCourtBookingSystem.Infrastructure.Repository;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using CloudinaryDotNet;
+using CloudinaryDotNet.Actions;
+using dotenv.net;
+using Microsoft.Extensions.Options;
+using PickleballCourtBookingSystem.Core.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -51,6 +56,26 @@ builder.Services.AddCors(options =>
             .AllowAnyMethod()
             .AllowAnyHeader());
 });
+
+//Cau hinh cloudinary
+builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("Cloudinary"));
+builder.Services.AddSingleton(provider =>
+{
+    var cloudinarySettings = provider.GetRequiredService<IOptions<CloudinarySettings>>().Value;
+
+    return new Cloudinary(new Account(
+        cloudinarySettings.CloudName,
+        cloudinarySettings.ApiKey,
+        cloudinarySettings.ApiKeySecret
+    ))
+    {
+        Api = { Secure = true } // Kích hoạt kết nối HTTPS
+    };
+});
+// Set Cloudinary credentials
+// DotEnv.Load(options: new DotEnvOptions(probeForEnv: true));
+// Cloudinary cloudinary = new Cloudinary(Environment.GetEnvironmentVariable("CLOUDINARY_URL"));
+// cloudinary.Api.Secure = true;
 
 //Cấu hình Dependency Injection(DI) cho project
 builder.Services.AddScoped<IDbContext, MySqlDbContext>();
