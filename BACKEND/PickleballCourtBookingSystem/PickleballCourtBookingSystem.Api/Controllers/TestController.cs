@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using PickleballCourtBookingSystem.Api.DTOs;
+using PickleballCourtBookingSystem.Api.DTOs.AuthDTOs;
 using PickleballCourtBookingSystem.Core.Interfaces.Services;
 
 namespace PickleballCourtBookingSystem.Api.Controllers;
