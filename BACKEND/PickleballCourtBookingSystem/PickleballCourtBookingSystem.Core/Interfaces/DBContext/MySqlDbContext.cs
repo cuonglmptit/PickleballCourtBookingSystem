@@ -162,248 +162,248 @@ public class MySqlDbContext : IDbContext
     }
 
 
-public int Update<T>(T entity, Guid entityId)
+    public int Update<T>(T entity, Guid entityId)
+    {
+        var className = typeof(T).Name;
+
+        // Khai báo biến các prop/column và value của thực thể
+        var setClause = String.Empty;
+
+        // Tạo dynamic parameters
+        var parameters = new DynamicParameters();
+
+        // Lấy ra các property của entity
+        var properties = entity.GetType().GetProperties();
+
+        // Duyệt qua các prop và build câu lệnh update
+        foreach (var property in properties)
         {
-            var className = typeof(T).Name;
+            // Lấy ra tên của property
+            var propName = property.Name;
 
-            // Khai báo biến các prop/column và value của thực thể
-            var setClause = String.Empty;
 
-            // Tạo dynamic parameters
-            var parameters = new DynamicParameters();
-
-            // Lấy ra các property của entity
-            var properties = entity.GetType().GetProperties();
-
-            // Duyệt qua các prop và build câu lệnh update
-            foreach (var property in properties)
+            // Lấy ra value của property
+            var propValue = property.GetValue(entity);
+            // Nếu không đánh dấu NotInQuery thì mới thêm vào, Muốn đổi thành id khác cũng không được
+            if (!Attribute.IsDefined(property, typeof(NotInQuery)) && !Attribute.IsDefined(property, typeof(PrimaryKey)) && !Attribute.IsDefined(property, typeof(ForeignKey)))
             {
-                // Lấy ra tên của property
-                var propName = property.Name;
 
-                
-                // Lấy ra value của property
-                var propValue = property.GetValue(entity);
-                // Nếu không đánh dấu NotInQuery thì mới thêm vào, Muốn đổi thành id khác cũng không được
-                if (!Attribute.IsDefined(property, typeof(NotInQuery)) && !Attribute.IsDefined(property, typeof(PrimaryKey)) && !Attribute.IsDefined(property, typeof(ForeignKey)))
-                {
-                    
-                    // Xây dựng phần SET của câu lệnh UPDATE
-                    setClause += $"{propName} = @{propName}, ";
+                // Xây dựng phần SET của câu lệnh UPDATE
+                setClause += $"{propName} = @{propName}, ";
 
-                    // Thêm vào dynamic parameters
-                    parameters.Add($"@{propName}", propValue);
-                }
+                // Thêm vào dynamic parameters
+                parameters.Add($"@{propName}", propValue);
             }
-
-            // Loại bỏ dấu "," cuối chuỗi
-            if (setClause.EndsWith(", "))
-            {
-                setClause = setClause.Substring(0, setClause.Length - 2);
-            }
-
-            // Thêm tham số cho entityId
-            parameters.Add("@entityId", entityId);
-
-            // Tạo câu lệnh SQL
-            var sqlCommand = $"UPDATE {className} SET {setClause} WHERE Id = @entityId";
-
-            // Khai báo biến số bản ghi ảnh hưởng
-            var res = 0;
-
-            // Thực thi câu lệnh
-            res += Connection.Execute(sql: sqlCommand, param: parameters);
-
-            // Trả về kết quả
-            return res;
         }
 
-
-        public int Delete<T>(Guid entityId)
+        // Loại bỏ dấu "," cuối chuỗi
+        if (setClause.EndsWith(", "))
         {
-            var className = typeof(T).Name;
-
-            //Câu lệnh delete
-            var sqlCommand = $"DELETE FROM {className} WHERE Id = @entityId";
-
-            //Tạo dynamic param và add param
-            var parameters = new DynamicParameters();
-            parameters.Add("@entityId", entityId);
-
-            //Thực thi câu lệnh
-            var res = Connection.Execute(sql: sqlCommand, param: parameters);
-
-            //Trả về kết quả
-            return res;
+            setClause = setClause.Substring(0, setClause.Length - 2);
         }
 
-        public int DeleteAny<T>(List<Guid> ids)
+        // Thêm tham số cho entityId
+        parameters.Add("@entityId", entityId);
+
+        // Tạo câu lệnh SQL
+        var sqlCommand = $"UPDATE {className} SET {setClause} WHERE Id = @entityId";
+
+        // Khai báo biến số bản ghi ảnh hưởng
+        var res = 0;
+
+        // Thực thi câu lệnh
+        res += Connection.Execute(sql: sqlCommand, param: parameters);
+
+        // Trả về kết quả
+        return res;
+    }
+
+
+    public int Delete<T>(Guid entityId)
+    {
+        var className = typeof(T).Name;
+
+        //Câu lệnh delete
+        var sqlCommand = $"DELETE FROM {className} WHERE Id = @entityId";
+
+        //Tạo dynamic param và add param
+        var parameters = new DynamicParameters();
+        parameters.Add("@entityId", entityId);
+
+        //Thực thi câu lệnh
+        var res = Connection.Execute(sql: sqlCommand, param: parameters);
+
+        //Trả về kết quả
+        return res;
+    }
+
+    public int DeleteAny<T>(List<Guid> ids)
+    {
+        var className = typeof(T).Name;
+
+        // Khai báo biến số bản ghi ảnh hưởng
+        var res = 0;
+
+        // Tạo câu lệnh SQL và tham số
+        var sqlCommand = $"DELETE FROM {className} WHERE Id IN @ids";
+
+        // Tạo dynamic parameters
+        var parameters = new DynamicParameters();
+        parameters.Add("@ids", ids);
+
+        // Thực thi câu lệnh
+        res = Connection.Execute(sql: sqlCommand, param: parameters);
+
+        return res;
+    }
+
+
+    public void Dispose()
+    {
+        Connection.Dispose();
+    }
+
+    public bool IsUniqueValueExistsInColumn<T>(T entity, string columnName)
+    {
+        var className = typeof(T).Name;
+        //Tạo câu lệnh SQL
+        var sqlCheck = $"SELECT * FROM {className} WHERE {columnName} = @value AND Id != @id";
+        var parameters = new DynamicParameters();
+        //Thêm value chính là giá trị muốn tìm trong cột
+        parameters.Add("@value", typeof(T).GetProperty(columnName).GetValue(entity));
+        //Thêm id là khóa chính của thực thể
+        parameters.Add("@id", typeof(T).GetProperty("Id").GetValue(entity));
+
+        var result = Connection.QueryFirstOrDefault(sql: sqlCheck, param: parameters);
+
+        if (result != null)
         {
-            var className = typeof(T).Name;
-
-            // Khai báo biến số bản ghi ảnh hưởng
-            var res = 0;
-
-            // Tạo câu lệnh SQL và tham số
-            var sqlCommand = $"DELETE FROM {className} WHERE Id IN @ids";
-
-            // Tạo dynamic parameters
-            var parameters = new DynamicParameters();
-            parameters.Add("@ids", ids);
-
-            // Thực thi câu lệnh
-            res = Connection.Execute(sql: sqlCommand, param: parameters);
-
-            return res;
+            return false;
         }
+        return true;
+    }
 
+    public IEnumerable<T> SearchByKeyword<T>(string? keyword, string columnName)
+    {
+        var className = typeof(T).Name;
+        var newkeyword = "%" + keyword + "%";
+        //Tạo câu lệnh SQL
+        var sqlCommand = $"SELECT * FROM {className} WHERE {columnName} LIKE @keyword";
+        var parameters = new DynamicParameters();
+        //Thêm keyword chính là giá trị muốn tìm trong cột
+        parameters.Add("@keyword", newkeyword);
+        var result = Connection.Query<T>(sql: sqlCommand, param: parameters);
 
-        public void Dispose()
+        return result;
+    }
+
+    public IEnumerable<T> SearchByKeywordMultipleColumns<T>(string? keyword, List<string> listColumnName)
+    {
+        var className = typeof(T).Name;
+        var newKeyword = "%" + keyword + "%";
+        var conditions = new List<string>();
+        for (int i = 0; i < listColumnName.Count; i++)
         {
-            Connection.Dispose();
+            string columnName = listColumnName[i];
+            conditions.Add($"{columnName} LIKE @keyword");
         }
-
-        public bool IsUniqueValueExistsInColumn<T>(T entity, string columnName)
+        var whereClause = string.Join(" OR ", conditions);
+        var sqlCommand = $"SELECT * FROM {className} WHERE {whereClause}";
+        var parameters = new DynamicParameters();
+        for (int i = 0; i < listColumnName.Count; i++)
         {
-            var className = typeof(T).Name;
-            //Tạo câu lệnh SQL
-            var sqlCheck = $"SELECT * FROM {className} WHERE {columnName} = @value AND Id != @id";
-            var parameters = new DynamicParameters();
-            //Thêm value chính là giá trị muốn tìm trong cột
-            parameters.Add("@value", typeof(T).GetProperty(columnName).GetValue(entity));
-            //Thêm id là khóa chính của thực thể
-            parameters.Add("@id", typeof(T).GetProperty("Id").GetValue(entity));
-
-            var result = Connection.QueryFirstOrDefault(sql: sqlCheck, param: parameters);
-
-            if (result != null)
-            {
-                return false;
-            }
-            return true;
+            parameters.Add("@keyword", newKeyword);
         }
+        var result = Connection.Query<T>(sql: sqlCommand, param: parameters);
+        return result;
+    }
 
-        public IEnumerable<T> SearchByKeyword<T>(string? keyword, string columnName)
+    public IEnumerable<T> FindByColumnValue<T>(object? value, string columnName)
+    {
+        if (value == null)
         {
-            var className = typeof(T).Name;
-            var newkeyword = "%" + keyword + "%";
-            //Tạo câu lệnh SQL
-            var sqlCommand = $"SELECT * FROM {className} WHERE {columnName} LIKE @keyword";
-            var parameters = new DynamicParameters();
-            //Thêm keyword chính là giá trị muốn tìm trong cột
-            parameters.Add("@keyword", newkeyword);
-            var result = Connection.Query<T>(sql: sqlCommand, param: parameters);
-
-            return result;
+            throw new ArgumentNullException(nameof(value), "Value cannot be null");
         }
-        
-        public IEnumerable<T> SearchByKeywordMultipleColumns<T>(string? keyword, List<string> listColumnName)
+        // if (value is not (int or string))
+        // {
+        //     throw new ArgumentException("Value must be of type int or string", nameof(value));
+        // }
+
+        // var newValue = value.ToString();
+        var className = typeof(T).Name;
+        //Tạo câu lệnh SQL
+        var sqlCommand = $"SELECT * FROM {className} WHERE {columnName} = @keyword";
+        var parameters = new DynamicParameters();
+        //Thêm keyword chính là giá trị muốn tìm trong cột
+        parameters.Add("@keyword", value);
+
+        var result = Connection.Query<T>(sql: sqlCommand, param: parameters);
+
+        return result;
+    }
+
+    public T? FindFirstByColumnvalue<T>(string? value, string columnName)
+    {
+        if (value == null)
         {
-            var className = typeof(T).Name;
-            var newKeyword = "%" + keyword + "%";
-            var conditions = new List<string>();
-            for (int i = 0; i < listColumnName.Count; i++)
-            {
-                string columnName = listColumnName[i];
-                conditions.Add($"{columnName} LIKE @keyword");
-            }
-            var whereClause = string.Join(" OR ", conditions);
-            var sqlCommand = $"SELECT * FROM {className} WHERE {whereClause}";
-            var parameters = new DynamicParameters();
-            for (int i = 0; i < listColumnName.Count; i++)
-            {
-                parameters.Add("@keyword", newKeyword);
-            }
-            var result = Connection.Query<T>(sql: sqlCommand, param: parameters);
-            return result;
+            throw new ArgumentNullException(nameof(value), "Value cannot be null");
         }
-        
-        public IEnumerable<T> FindByColumnValue<T>(object? value, string columnName)
+        // if (value is not (int or string))
+        // {
+        //     throw new ArgumentException("Value must be of type int or string", nameof(value));
+        // }
+        var className = typeof(T).Name;
+        //Tạo câu lệnh SQL
+        var sqlCommand = $"SELECT * FROM {className} WHERE {columnName} = @keyword";
+        Console.WriteLine("hhh" + sqlCommand);
+        var parameters = new DynamicParameters();
+        //Thêm keyword chính là giá trị muốn tìm trong cột
+        parameters.Add("@keyword", value);
+        var result = Connection.QueryFirstOrDefault<T>(sql: sqlCommand, param: parameters);
+        return result;
+    }
+
+    public string? FindLargestValueEndsWithNumberInColumn<T>(string columnName)
+    {
+        var className = typeof(T).Name;
+        //Tạo câu lệnh SQL
+        var sqlCommand = $"SELECT {columnName} FROM {className} WHERE REGEXP_LIKE({columnName}, '[0-9]$') ORDER BY CAST(SUBSTRING({columnName}, LENGTH({columnName}) - LENGTH(REGEXP_SUBSTR({columnName}, '[0-9]+$')) + 1) AS UNSIGNED) DESC LIMIT 1;";
+
+        var result = Connection.QueryFirstOrDefault<string>(sql: sqlCommand);
+
+        return result;
+    }
+
+    public IEnumerable<T> GetAllOrderByColumn<T>(string columnName, bool DESC = false)
+    {
+        var className = typeof(T).Name;
+
+        string sort = "ASC";
+        if (DESC == true)
         {
-            if (value == null)
-            {
-                throw new ArgumentNullException(nameof(value), "Value cannot be null");
-            }
-            // if (value is not (int or string))
-            // {
-            //     throw new ArgumentException("Value must be of type int or string", nameof(value));
-            // }
-
-            // var newValue = value.ToString();
-            var className = typeof(T).Name;
-            //Tạo câu lệnh SQL
-            var sqlCommand = $"SELECT * FROM {className} WHERE {columnName} = @keyword";
-            var parameters = new DynamicParameters();
-            //Thêm keyword chính là giá trị muốn tìm trong cột
-            parameters.Add("@keyword", value);
-
-            var result = Connection.Query<T>(sql: sqlCommand, param: parameters);
-
-            return result;
+            sort = "DESC";
         }
+        var sqlCommand = $"SELECT * FROM {className} ORDER BY {columnName} {sort}";
+        var result = Connection.Query<T>(sql: sqlCommand);
+        return result;
+    }
 
-        public T? FindFirstByColumnvalue<T>(string? value, string columnName)
+    public IEnumerable<T> GetPaging<T>(int pageSize, int pageIndex, string orderByColumn, bool DESC = false)
+    {
+        var className = typeof(T).Name;
+
+        string sort = "ASC";
+        if (DESC == true)
         {
-            if (value == null)
-            {
-                throw new ArgumentNullException(nameof(value), "Value cannot be null");
-            }
-            // if (value is not (int or string))
-            // {
-            //     throw new ArgumentException("Value must be of type int or string", nameof(value));
-            // }
-            var className = typeof(T).Name;
-            //Tạo câu lệnh SQL
-            var sqlCommand = $"SELECT * FROM {className} WHERE {columnName} = @keyword";
-            Console.WriteLine("hhh" + sqlCommand);
-            var parameters = new DynamicParameters();
-            //Thêm keyword chính là giá trị muốn tìm trong cột
-            parameters.Add("@keyword", value);
-            var result = Connection.QueryFirstOrDefault<T>(sql: sqlCommand, param: parameters);
-            return result;
+            sort = "DESC";
         }
-
-        public string? FindLargestValueEndsWithNumberInColumn<T>(string columnName)
+        if (pageIndex <= 0)
         {
-            var className = typeof(T).Name;
-            //Tạo câu lệnh SQL
-            var sqlCommand = $"SELECT {columnName} FROM {className} WHERE REGEXP_LIKE({columnName}, '[0-9]$') ORDER BY CAST(SUBSTRING({columnName}, LENGTH({columnName}) - LENGTH(REGEXP_SUBSTR({columnName}, '[0-9]+$')) + 1) AS UNSIGNED) DESC LIMIT 1;";
-
-            var result = Connection.QueryFirstOrDefault<string>(sql: sqlCommand);
-
-            return result;
+            pageIndex = 1;
         }
-
-        public IEnumerable<T> GetAllOrderByColumn<T>(string columnName, bool DESC = false)
-        {
-            var className = typeof(T).Name;
-
-            string sort = "ASC";
-            if(DESC == true)
-            {
-                sort = "DESC";
-            }
-            var sqlCommand = $"SELECT * FROM {className} ORDER BY {columnName} {sort}";
-            var result = Connection.Query<T>(sql: sqlCommand);
-            return result;
-        }
-
-        public IEnumerable<T> GetPaging<T>(int pageSize, int pageIndex, string orderByColumn, bool DESC = false)
-        {
-            var className = typeof(T).Name;
-
-            string sort = "ASC";
-            if (DESC == true)
-            {
-                sort = "DESC";
-            }
-            if (pageIndex <= 0)
-            {
-                pageIndex = 1;
-            }
-            var sqlCommand = $"SELECT * FROM {className} ORDER BY {orderByColumn} {sort} LIMIT {pageSize} OFFSET {pageSize*(pageIndex-1)}";
-            var result = Connection.Query<T>(sql: sqlCommand);
-            return result;
-        }
-        #endregion
+        var sqlCommand = $"SELECT * FROM {className} ORDER BY {orderByColumn} {sort} LIMIT {pageSize} OFFSET {pageSize * (pageIndex - 1)}";
+        var result = Connection.Query<T>(sql: sqlCommand);
+        return result;
+    }
+    #endregion
 }

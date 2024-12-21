@@ -7,11 +7,20 @@ using PickleballCourtBookingSystem.Infrastructure.Repository;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
+//Cho console viết được utf=8
+Console.OutputEncoding = Encoding.UTF8;
 
 // Add services to the container.
-Console.OutputEncoding = Encoding.UTF8;
+//Khiến controller chuyển đổi string thành enum nếu truyền vào là string
+builder.Services.AddControllers()
+            .AddJsonOptions(option =>
+            {
+                option.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            });
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
