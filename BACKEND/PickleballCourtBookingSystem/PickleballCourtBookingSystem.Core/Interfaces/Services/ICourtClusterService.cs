@@ -13,4 +13,6 @@ public interface ICourtClusterService: IBaseService<CourtCluster>
 
     public ServiceResult SearchCourtClusterWithFilters(string? cityName, string? courtClusterName,
         DateTime? date, TimeSpan? startTime, TimeSpan? endTime);
+
+    public ServiceResult GetCourtsByClusterId(Guid courtClusterId);
 }
