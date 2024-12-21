@@ -13,12 +13,4 @@ public interface ICourtClusterService: IBaseService<CourtCluster>
 
     public ServiceResult SearchCourtClusterWithFilters(string? cityName, string? courtClusterName,
         DateTime? date, TimeSpan? startTime, TimeSpan? endTime);
-
-    /// <summary>
-    /// CuongLM (17/12/2024)
-    /// Lấy ra các sân của một cụm sân
-    /// </summary>
-    /// <param name="courtClusterId">Id của cụm sân</param>
-    /// <returns>Các sân thuộc cụm sân</returns>
-    public ServiceResult GetCourtsByClusterId(Guid courtClusterId);
 }

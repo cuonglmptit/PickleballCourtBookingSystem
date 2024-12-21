@@ -101,7 +101,7 @@ namespace PickleballCourtBookingSystem.Api.Controllers
         [HttpPut]
         public IActionResult UpdateCourtCluster([FromBody] CourtCluster courtCluster, Guid id)
         {
-            var result = _courtClusterService.UpdateCustomFieldService(courtCluster, id);
+            var result = _courtClusterService.UpdatePartialService(courtCluster, id);
             if (result.Success)
             {
                 return Ok(result.StatusCode);
@@ -114,13 +114,6 @@ namespace PickleballCourtBookingSystem.Api.Controllers
         public IActionResult DeleteCourtCluster(Guid id)
         {
             var result = _courtClusterService.DeleteService(id);
-            return StatusCode(result.StatusCode, result);
-        }
-
-        [HttpGet("{id}/Courts")]
-        public IActionResult GetCourtsOfACourtCluster(Guid id)
-        {
-            var result = _courtClusterService.GetCourtsByClusterId(id);
             return StatusCode(result.StatusCode, result);
         }
     }

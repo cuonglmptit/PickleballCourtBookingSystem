@@ -57,7 +57,7 @@ namespace PickleballCourtBookingSystem.Api.Controllers
         [HttpPut]
         public IActionResult UpdateUser([FromBody] User user, Guid id)
         {
-            var result = _userService.UpdateCustomFieldService(user, id);
+            var result = _userService.UpdateService(user, id);
             if (result.Success)
             {
                 return Ok(result.StatusCode);

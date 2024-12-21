@@ -105,4 +105,43 @@ public class AuthService : IAuthService
             return null;
         }
     }
+    public Dictionary<string, string> GetClaimsFromToken(string token)
+    {
+        var claims = new Dictionary<string, string>();
+
+        try
+        {
+            var principal = ValidateToken(token);
+
+            if (principal == null)
+                return claims;
+            
+            foreach (var claim in principal.Claims)
+            {
+                claims[claim.Type] = claim.Value;
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            throw;
+        }
+
+        return claims;
+    }
+    
+    public string? GetUserIdFromToken(string token)
+    {
+        try
+        {
+            var principal = ValidateToken(token);
+            var userIdClaim = principal?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            return userIdClaim?.Value;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            return null;
+        }
+    }
 }

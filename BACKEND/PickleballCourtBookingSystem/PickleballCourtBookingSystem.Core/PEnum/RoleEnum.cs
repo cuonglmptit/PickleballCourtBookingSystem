@@ -2,8 +2,8 @@ namespace PickleballCourtBookingSystem.Api.Models
 {
     public enum RoleEnum
     {
-        Admin,
-        CourtOwner,
-        Customer,
+        Admin = 1,
+        CourtOwner = 2,
+        Customer = 3,
     }
 }

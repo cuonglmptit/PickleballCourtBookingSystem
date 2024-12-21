@@ -57,7 +57,7 @@ namespace PickleballCourtBookingSystem.Api.Controllers
         [HttpPut]
         public IActionResult UpdateImageCourtUrl([FromBody] ImageCourtUrl imageCourtUrl, Guid id)
         {
-            var result = _imageCourtUrlService.UpdateCustomFieldService(imageCourtUrl, id);
+            var result = _imageCourtUrlService.UpdateService(imageCourtUrl, id);
             if (result.Success)
             {
                 return Ok(result.StatusCode);
