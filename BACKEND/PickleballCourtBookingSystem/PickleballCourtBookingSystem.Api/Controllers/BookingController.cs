@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.OpenApi.Extensions;
 using PickleballCourtBookingSystem.Api.DTOs;
 using PickleballCourtBookingSystem.Api.Models;
 using PickleballCourtBookingSystem.Core.Entities;
@@ -46,7 +47,7 @@ namespace PickleballCourtBookingSystem.Api.Controllers
         }
 
         [HttpPost("add-booking")]
-        [Authorize(Roles = RoleConstant.Customer)]
+        [Authorize(Roles = nameof(RoleEnum.Customer))]
         public IActionResult AddBooking([FromBody] AddBookingRequest request)
         {
             var authorizationHeader = HttpContext.Request.Headers["Authorization"].ToString();
@@ -68,7 +69,7 @@ namespace PickleballCourtBookingSystem.Api.Controllers
         }
         
         [HttpPost("court-owner-confirm-booking")]
-        [Authorize(Roles = RoleConstant.CourtOwner)]
+        [Authorize(Roles = nameof(RoleEnum.CourtOwner))]
         public IActionResult CourtOwnerConfirmBooking([FromBody] ConfirmBookingRequest confirmBookingRequest)
         {
             var authorizationHeader = HttpContext.Request.Headers["Authorization"].ToString();
@@ -88,7 +89,7 @@ namespace PickleballCourtBookingSystem.Api.Controllers
         }
 
         [HttpPost("customer-confirm-booking")]
-        [Authorize(Roles = RoleConstant.Customer)]
+        [Authorize(Roles = nameof(RoleEnum.Customer))]
         public IActionResult CustomerConfirmBooking([FromBody] ConfirmBookingRequest confirmBookingRequest)
         {
             var authorizationHeader = HttpContext.Request.Headers["Authorization"].ToString();
@@ -109,7 +110,7 @@ namespace PickleballCourtBookingSystem.Api.Controllers
 
 
         [HttpPost("cancel-booking")]
-        [Authorize(Roles = RoleConstant.Customer)]
+        [Authorize(Roles = nameof(RoleEnum.Customer))]
         public IActionResult CancelBooking([FromBody] CancelBookingRequest request)
         {
             var authorizationHeader = HttpContext.Request.Headers["Authorization"].ToString();
