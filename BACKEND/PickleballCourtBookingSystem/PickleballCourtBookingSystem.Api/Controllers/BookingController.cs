@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PickleballCourtBookingSystem.Api.DTOs;
@@ -14,9 +15,11 @@ namespace PickleballCourtBookingSystem.Api.Controllers
     public class BookingController : ControllerBase
     {
         private readonly IBookingService _bookingService;
-        public BookingController(IBookingService bookingService)
+        private readonly IAuthService _authService;
+        public BookingController(IBookingService bookingService, IAuthService authService)
         {
             _bookingService = bookingService;
+            _authService = authService;
         }
 
         [HttpGet]
@@ -42,10 +45,20 @@ namespace PickleballCourtBookingSystem.Api.Controllers
             return BadRequest();
         }
 
-        [HttpPost]
+        [HttpPost("add-booking")]
+        [Authorize(Roles = RoleConstant.Customer)]
         public IActionResult AddBooking([FromBody] AddBookingRequest request)
         {
-            var result = _bookingService.AddBooking(request.UserId, request.CourtTimeSlotsIds, request.CourtId);
+            var authorizationHeader = HttpContext.Request.Headers["Authorization"].ToString();
+            Console.WriteLine(authorizationHeader);
+            var token = authorizationHeader["Bearer ".Length..].Trim();
+            Console.WriteLine(token);
+            var userId = _authService.GetUserIdFromToken(token);
+            if (userId == null)
+            {
+                return BadRequest("Token bi loi khong co Id");
+            }
+            var result = _bookingService.AddBooking(Guid.Parse(userId), request.CourtTimeSlotsIds, request.CourtId);
             if (result.Success)
             {
                 return Ok(result.StatusCode);
@@ -54,27 +67,66 @@ namespace PickleballCourtBookingSystem.Api.Controllers
             return BadRequest(new { success = false, statusCode = result.StatusCode, userMessage = result.UserMsg, developerMessage = result.DevMsg });
         }
         
-        [HttpPut]
-        public IActionResult UpdateBooking([FromBody] Booking booking, Guid id)
+        [HttpPost("court-owner-confirm-booking")]
+        [Authorize(Roles = RoleConstant.CourtOwner)]
+        public IActionResult CourtOwnerConfirmBooking([FromBody] ConfirmBookingRequest confirmBookingRequest)
         {
-            var result = _bookingService.UpdateCustomFieldService(booking, id);
-            if (result.Success)
+            var authorizationHeader = HttpContext.Request.Headers["Authorization"].ToString();
+            var token = authorizationHeader["Bearer ".Length..].Trim();
+            var userId = _authService.GetUserIdFromToken(token);
+            if (userId == null)
             {
-                return Ok(result.StatusCode);
+                return BadRequest("Token không hợp lệ, không tìm thấy Id người dùng.");
             }
 
-            return BadRequest();
-        }
-        
-        [HttpDelete("{id}")]
-        public IActionResult DeleteBooking(Guid id)
-        {
-            var result = _bookingService.DeleteService(id);
+            var result = _bookingService.CourtOwnerConfirmBooking(Guid.Parse(userId), confirmBookingRequest.BookingId);
             if (result.Success)
             {
                 return Ok(result.StatusCode);
             }
-            return BadRequest();
+            return BadRequest(new { success = false, statusCode = result.StatusCode, userMessage = result.UserMsg, developerMessage = result.DevMsg });
+        }
+
+        [HttpPost("customer-confirm-booking")]
+        [Authorize(Roles = RoleConstant.Customer)]
+        public IActionResult CustomerConfirmBooking([FromBody] ConfirmBookingRequest confirmBookingRequest)
+        {
+            var authorizationHeader = HttpContext.Request.Headers["Authorization"].ToString();
+            var token = authorizationHeader["Bearer ".Length..].Trim();
+            var userId = _authService.GetUserIdFromToken(token);
+            if (userId == null)
+            {
+                return BadRequest("Token không hợp lệ, không tìm thấy Id người dùng.");
+            }
+
+            var result = _bookingService.CustomerConfirmBooking(Guid.Parse(userId), confirmBookingRequest.BookingId);
+            if (result.Success)
+            {
+                return Ok(result.StatusCode);
+            }
+            return BadRequest(new { success = false, statusCode = result.StatusCode, userMessage = result.UserMsg, developerMessage = result.DevMsg });
+        }
+
+
+        [HttpPost("cancel-booking")]
+        [Authorize(Roles = RoleConstant.Customer)]
+        public IActionResult CancelBooking([FromBody] CancelBookingRequest request)
+        {
+            var authorizationHeader = HttpContext.Request.Headers["Authorization"].ToString();
+            Console.WriteLine(authorizationHeader);
+            var token = authorizationHeader["Bearer ".Length..].Trim();
+            Console.WriteLine(token);
+            var userId = _authService.GetUserIdFromToken(token);
+            if (userId == null)
+            {
+                return BadRequest("Token bi loi khong co Id");
+            }
+            var result = _bookingService.CancelBooking(Guid.Parse(userId), request.BookingId, request.Reason);
+            if (result.Success)
+            {
+                return Ok(result.StatusCode);
+            }
+            return BadRequest(new { success = false, statusCode = result.StatusCode, userMessage = result.UserMsg, developerMessage = result.DevMsg });
         }
 
     }

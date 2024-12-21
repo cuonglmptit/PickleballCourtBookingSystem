@@ -56,7 +56,7 @@ namespace PickleballCourtBookingSystem.Api.Controllers
         [HttpPut]
         public IActionResult UpdateAddress([FromBody] Address address, Guid id)
         {
-            var result = _addressService.UpdateCustomFieldService(address, id);
+            var result = _addressService.UpdateService(address, id);
             if (result.Success)
             {
                 return Ok(result.StatusCode);

@@ -109,7 +109,7 @@ namespace PickleballCourtBookingSystem.Core.Services
         }
         
         // Update custom thuoc tinh
-        public virtual ServiceResult UpdateCustomFieldService(T entity, Guid id)
+        public virtual ServiceResult UpdatePartialService(T entity, Guid id)
         {
             try
             {

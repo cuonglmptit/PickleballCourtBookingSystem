@@ -57,7 +57,7 @@ namespace PickleballCourtBookingSystem.Api.Controllers
         [HttpPut]
         public IActionResult UpdateFeedback([FromBody] Feedback feedback, Guid id)
         {
-            var result = _feedbackService.UpdateCustomFieldService(feedback, id);
+            var result = _feedbackService.UpdateService(feedback, id);
             if (result.Success)
             {
                 return Ok(result.StatusCode);

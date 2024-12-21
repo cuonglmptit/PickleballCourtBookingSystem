@@ -57,7 +57,7 @@ namespace PickleballCourtBookingSystem.Api.Controllers
         [HttpPut]
         public IActionResult UpdateCancellation([FromBody] Cancellation cancellation, Guid id)
         {
-            var result = _cancellationService.UpdateCustomFieldService(cancellation, id);
+            var result = _cancellationService.UpdateService(cancellation, id);
             if (result.Success)
             {
                 return Ok(result.StatusCode);
