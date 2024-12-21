@@ -5,7 +5,10 @@ using Dapper;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using PickleballCourtBookingSystem.Api.Models;
+using PickleballCourtBookingSystem.Core.Common;
+using PickleballCourtBookingSystem.Core.CustomValidation;
 using PickleballCourtBookingSystem.Core.DTOs;
+using PickleballCourtBookingSystem.Core.Entities;
 using PickleballCourtBookingSystem.Core.Interfaces.Infrastructure;
 using PickleballCourtBookingSystem.Core.Interfaces.Services;
 
@@ -17,57 +20,148 @@ public class AuthService : IAuthService
     private readonly IUserRepository _userRepository;
     private readonly IConfiguration _configuration;
     private readonly IAddressService _addressService;
+    private readonly IUserService _userService;
 
-    private ServiceResult CreateServiceResult(bool Success, int StatusCode, string? UserMsg = null,
-        string? DevMsg = null, object? Data = null)
-    {
-        ServiceResult result = new ServiceResult();
-        result.Success = Success;
-        result.UserMsg = UserMsg;
-        result.DevMsg = DevMsg;
-        result.StatusCode = StatusCode;
-        result.Data = Data;
-        return result;
-    }
-
-    public AuthService(IConfiguration configuration, IUserRepository userRepository, IAddressService addressService)
+    public AuthService(IConfiguration configuration, IUserRepository userRepository, IAddressService addressService, IUserService userService)
     {
         _configuration = configuration;
         _userRepository = userRepository;
         _addressService = addressService;
+        _userService = userService;
     }
 
-    // public ServiceResult Register(string username, string password, string name, string phoneNumber, string email, int role)
-    // {
-    //     try
-    //     {
-    //         var 
-    //     }
-    //     catch (Exception e)
-    //     {
-    //         Console.WriteLine(e);
-    //         return CreateServiceResult(Success: false, StatusCode: 500, UserMsg: "Failed to add booking", DevMsg: e.Message);
-    //     }
-    // }
+    public ServiceResult Register(string username, string password, string confirmPassword, string fullName, string phoneNumber, string email, RoleEnum role)
+    {
+        var errorData = new Dictionary<string, string>();
+
+        try
+        {
+            // 1. Check username valid
+            if (!CustomValidationMethods.IsValidUsername(username))
+            {
+                errorData.Add("Username", "Username không hợp lệ");
+            }
+
+            // 2. Check confirm password
+            if (!password.Equals(confirmPassword))
+            {
+                errorData.Add("ConfirmPassword", "Password confirm không trùng khớp");
+            }
+
+            // 3. Check email valid
+            if (!CustomValidationMethods.IsValidEmail(email))
+            {
+                errorData.Add("Email", "Email không hợp lệ");
+            }
+
+            // 4. Check full name valid
+            if (!CustomValidationMethods.IsValidFullName(fullName))
+            {
+                errorData.Add("FullName", "Tên không hợp lệ");
+            }
+
+            // 5. Check role valid
+            if (role != RoleEnum.Customer && role != RoleEnum.CourtOwner)
+            {
+                errorData.Add("Role", "Role không hợp lệ (chỉ được là CourtOwner hoặc Customer)");
+            }
+
+            // 6. Check username tồn tại
+            var user = new User
+            {
+                //****note quan trọng, bắt buộc phải có guid mới có thể check unique
+                // không thì nó sẽ là null và kết qảu trả về sẽ sai
+                // null đại diện cho một giá trị không xác định, và bất kỳ phép so sánh nào với null,
+                // bao gồm !=, đều trả về giá trị false
+                Id = Guid.Empty,
+                Username = username.Trim(),
+                Password = password,
+                Name = fullName,
+                PhoneNumber = phoneNumber,
+                Email = email,
+                RoleId = (int)role
+            };
+
+            if (!_userRepository.IsUniqueValueExistsInColumn(user, nameof(User.Username)))
+            {
+                Console.WriteLine(nameof(User.Username));
+                errorData.Add("Username", "Username đã tồn tại");
+            }
+
+            // 7. Nếu có bất kì lỗi nào thì return lỗi
+            if (errorData.Any())
+            {
+                return CommonMethods.CreateServiceResult(
+                    Success: false,
+                    StatusCode: 400,
+                    UserMsg: "Validation errors occurred",
+                    DevMsg: "Validation failed for one or more fields",
+                    Data: errorData
+                );
+            }
+
+            // 8. Success case: Register user
+            user.Id = Guid.NewGuid();
+            var insertRes = _userService.InsertService(user);
+
+            if (insertRes.Success)
+            {
+                return CommonMethods.CreateServiceResult(
+                    Success: true,
+                    StatusCode: 201,
+                    UserMsg: "Account created successfully",
+                    DevMsg: "Account created successfully"
+                );
+            }
+            else
+            {
+                return CommonMethods.CreateServiceResult(
+                    Success: false,
+                    StatusCode: 500,
+                    UserMsg: "Failed to create account: " + insertRes.UserMsg,
+                    DevMsg: "Failed to create account: " + insertRes.DevMsg
+                );
+            }
+
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return CommonMethods.CreateServiceResult(
+                Success: false,
+                StatusCode: 500,
+                UserMsg: "Failed to create account",
+                DevMsg: e.Message
+            );
+        }
+    }
 
     public ServiceResult Login(string username, string password)
     {
-        var user = _userRepository.CheckLogin(username, password);
-        if (user == null)
+        try
         {
-            return CreateServiceResult(Success: true, StatusCode: 401,
-                UserMsg: "Tài khoản hoặc mật khẩu đăng nhập không chính xác",
-                DevMsg: "Tài khoản hoặc mật khẩu đăng nhập không chính xác");
-        }
-        var roleEnum = (RoleEnum)Enum.ToObject(typeof(RoleEnum), user.RoleId);
-        var claims = new List<Claim>
+            var user = _userRepository.CheckLogin(username, password);
+            if (user == null)
+            {
+                return CommonMethods.CreateServiceResult(Success: true, StatusCode: 401,
+                    UserMsg: "Tài khoản hoặc mật khẩu đăng nhập không chính xác",
+                    DevMsg: "Tài khoản hoặc mật khẩu đăng nhập không chính xác");
+            }
+            var roleEnum = (RoleEnum)Enum.ToObject(typeof(RoleEnum), user.RoleId);
+            var claims = new List<Claim>
         {
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new Claim(ClaimTypes.Role, roleEnum.ToString())
         };
-        var token = GenerateToken(claims);
-        return CreateServiceResult(Success: true, StatusCode: 200, UserMsg: "Đăng nhập thành công",
-            DevMsg: "Đăng nhập thành công", Data: new { Token = new JwtSecurityTokenHandler().WriteToken(token) });
+            var token = GenerateToken(claims);
+            return CommonMethods.CreateServiceResult(Success: true, StatusCode: 200, UserMsg: "Đăng nhập thành công",
+                DevMsg: "Đăng nhập thành công", Data: new { Token = new JwtSecurityTokenHandler().WriteToken(token) });
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return CommonMethods.CreateServiceResult(Success: false, StatusCode: 500, UserMsg: "Login service exception", DevMsg: e.Message);
+        }
     }
 
     public JwtSecurityToken GenerateToken(List<Claim> claims)
@@ -126,7 +220,7 @@ public class AuthService : IAuthService
 
             if (principal == null)
                 return claims;
-            
+
             foreach (var claim in principal.Claims)
             {
                 claims[claim.Type] = claim.Value;
@@ -140,7 +234,7 @@ public class AuthService : IAuthService
 
         return claims;
     }
-    
+
     public string? GetUserIdFromToken(string token)
     {
         try

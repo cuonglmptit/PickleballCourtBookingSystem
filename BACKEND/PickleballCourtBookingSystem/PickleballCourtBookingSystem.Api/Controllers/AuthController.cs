@@ -15,16 +15,15 @@ namespace PickleballCourtBookingSystem.Api.Controllers
             _authService = authService;
         }
 
-        // [HttpPost("Register")]
-        // public IActionResult Register([FromBody] RegisterRequest request)
-        // {
-        //     var result = _authService.Register(request.Username, request.Password);
-        //     if (result.Success)
-        //     {
-        //         return Ok(result);
-        //     }
-        //     return BadRequest();
-        // }
+        [HttpPost("Register")]
+        public IActionResult Register([FromBody] RegisterRequest request)
+        {
+
+            var result = _authService.Register(request.Username, request.Password, request.ConfirmPassword,
+                                                 request.FullName, request.PhoneNumber,
+                                                    request.Email, request.Role);
+            return StatusCode(result.StatusCode, result);
+        }
 
         [HttpPost("Login")]
         public IActionResult Login([FromBody] LoginRequest request)
