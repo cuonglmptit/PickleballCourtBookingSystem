@@ -19,7 +19,7 @@
         <div class="slash">|</div>
       </div>
       <div class="option">
-        <PrimaryButton>
+        <PrimaryButton :isRouterLink="true" :to="{ name: 'register' }">
           <template v-slot:name> Đăng ký </template>
         </PrimaryButton>
       </div>

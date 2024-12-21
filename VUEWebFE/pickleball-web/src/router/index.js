@@ -5,6 +5,7 @@ import MainLayout from '../views/layouts/MainLayout.vue';
 import EmptyLayout from '../views/layouts/EmptyLayout.vue';
 import CourtClusterDetail from '../views/court/CourtClusterDetail.vue';
 import NotFound from '../views/NotFound.vue';
+import RegisterView from '../views/auth/RegisterView.vue';
 
 const routes = [
   {
@@ -35,8 +36,19 @@ const routes = [
     children: [
       {
         path: "",
-        name: "Login",
+        name: "register",
         // component: LoginPage,
+      },
+    ],
+  },
+  {
+    path: "/register",
+    component: EmptyLayout, // Layout tối giản
+    children: [
+      {
+        path: "",
+        name: "register",
+        component: RegisterView,
       },
     ],
   },

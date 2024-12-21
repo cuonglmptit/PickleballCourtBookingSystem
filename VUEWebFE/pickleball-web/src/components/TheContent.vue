@@ -17,6 +17,6 @@ export default {};
   background-color: wheat;
   display: flex;
   padding-top: 96px;
-  background-color: rgb(244, 244, 244);
+  background-color: var(--gray-background);
 }
 </style>

@@ -1,0 +1,36 @@
+.text-white {
+    color: white;
+}
+
+.font-size-24 {
+    font-size: 24;
+}
+
+.font-size-32 {
+    font-size: 32;
+}
+
+.font-size-36 {
+    font-size: 36;
+}
+
+.roboto-bold {
+    font-family: roboto-bold;
+}
+
+.roboto-medium {
+    font-family: roboto-medium;
+}
+
+
+.roboto-thin {
+    font-family: roboto-thin;
+}
+
+.roboto-italic {
+    font-family: roboto-italic;
+}
+
+.roboto-regular {
+    font-family: roboto-regular;
+}

@@ -74,6 +74,10 @@
     background-image: url(../../assets/long-banner.png);
 }
 
+.p-banner {
+    background-image: url(../../assets/banner.jpeg);
+}
+
 .p-search-background {
     background-image: url(../../assets/search-background.jpg);
 }
