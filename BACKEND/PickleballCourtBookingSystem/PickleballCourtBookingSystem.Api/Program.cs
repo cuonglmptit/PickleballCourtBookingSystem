@@ -5,22 +5,26 @@ using PickleballCourtBookingSystem.Core.Interfaces.Services;
 using PickleballCourtBookingSystem.Core.Services;
 using PickleballCourtBookingSystem.Infrastructure.Repository;
 using System.Text;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using System.Text.Json.Serialization;
+using CloudinaryDotNet;
+using CloudinaryDotNet.Actions;
+using dotenv.net;
+using Microsoft.Extensions.Options;
+using PickleballCourtBookingSystem.Core.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
-//Cho console viết được utf=8
-Console.OutputEncoding = Encoding.UTF8;
 
 // Add services to the container.
+Console.OutputEncoding = Encoding.UTF8;
+builder.Services.AddControllers();
 //Khiến controller chuyển đổi string thành enum nếu truyền vào là string
 builder.Services.AddControllers()
-            .AddJsonOptions(option =>
-            {
-                option.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-            });
-
+    .AddJsonOptions(option =>
+    {
+        option.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -60,6 +64,26 @@ builder.Services.AddCors(options =>
             .AllowAnyMethod()
             .AllowAnyHeader());
 });
+
+//Cau hinh cloudinary
+builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("Cloudinary"));
+builder.Services.AddSingleton(provider =>
+{
+    var cloudinarySettings = provider.GetRequiredService<IOptions<CloudinarySettings>>().Value;
+
+    return new Cloudinary(new Account(
+        cloudinarySettings.CloudName,
+        cloudinarySettings.ApiKey,
+        cloudinarySettings.ApiKeySecret
+    ))
+    {
+        Api = { Secure = true } // Kích hoạt kết nối HTTPS
+    };
+});
+// Set Cloudinary credentials
+// DotEnv.Load(options: new DotEnvOptions(probeForEnv: true));
+// Cloudinary cloudinary = new Cloudinary(Environment.GetEnvironmentVariable("CLOUDINARY_URL"));
+// cloudinary.Api.Secure = true;
 
 //Cấu hình Dependency Injection(DI) cho project
 builder.Services.AddScoped<IDbContext, MySqlDbContext>();
