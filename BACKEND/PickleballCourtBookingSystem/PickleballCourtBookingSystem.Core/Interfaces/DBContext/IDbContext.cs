@@ -64,16 +64,29 @@ namespace PickleballCourtBookingSystem.Core.Interfaces.DBContext
         int DeleteAny<T>(List<Guid> ids);
 
         /// <summary>
-        /// Check giá trị tồn tại duy nhất trong cột (không một bản ghi nào có id khác bản ghi của giá trị mà có giá trị giống)
+        /// Check giá trị tồn tại duy nhất trong cột (không một bản ghi nào có id khác bản ghi truyền vào mà có giá trị giống nhau ở cột truyền vào)
         /// nghĩa là nếu có bản ghi khác id mà lại có giá trị trùng thì false
-        /// Lệnh sẽ dạng này: WHERE Code = @Code AND Id != @Id
+        /// Lệnh sẽ dạng này: WHERE ColName = @Value AND Id != @Id
         /// Author: CuongLM (04/08/2024)
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="entity">thực thể muốn kiểm tra</param>
+        /// <typeparam name="T">Class thực thể muốn kiểm tra tương ứng với bảng trong database</typeparam>
+        /// <param name="entity">Thực thể muốn kiểm tra (chú ý: thực thể phải được gán Id bất kì ngoài null)</param>
         /// <param name="columnName">cột muốn kiểm tra</param>
         /// <returns>true-giá trị này không bị duplicate trong cột, false ngược lại</returns>
         bool IsUniqueValueExistsInColumn<T>(T entity, string columnName);
+
+        /// <summary>
+        /// Check giá trị tồn tại duy nhất trong các cột được truyền vào (không một bản ghi nào có id khác bản ghi truyền vào mà có giá trị giống nhau ở các cột truyền vào)
+        /// nghĩa là nếu có bản ghi khác id mà lại có giá trị trùng ở 1 trong các cột thì false
+        /// Lệnh sẽ dạng này: WHERE (ColName1 = @T.Col1Value OR ColName2 = @T.Col2Value ...) AND Id != @Id
+        /// Author: CuongLM (22/12/2024)
+        /// </summary>
+        /// <typeparam name="T">Class thực thể muốn kiểm tra tương ứng với bảng trong database</typeparam>
+        /// <param name="entity">Thực thể muốn kiểm tra (chú ý: thực thể phải được gán Id bất kì ngoài null)</param>
+        /// <param name="columns">Tên của các cột muốn kiểm tra</param>
+        /// <returns>List các cột bị trùng nếu có, còn nếu không trùng thì là list rỗng</returns>
+        public List<string> HasDuplicateValuesInOtherRecords<T>(T entity, List<string> columns);
+
 
         /// <summary>
         /// Lấy ra bản ghi chứa giá trị keyword tương ứng với cột.
@@ -87,7 +100,7 @@ namespace PickleballCourtBookingSystem.Core.Interfaces.DBContext
         /// </remarks>
         IEnumerable<T> SearchByKeyword<T>(string? keyword, string columnName);
         IEnumerable<T> SearchByKeywordMultipleColumns<T>(string? keyword, List<string> columnName);
-        
+
         public IEnumerable<T> FindByColumnValue<T>(object? value, string columnName);
         T? FindFirstByColumnvalue<T>(string? keyword, string columnName);
         /// <summary>

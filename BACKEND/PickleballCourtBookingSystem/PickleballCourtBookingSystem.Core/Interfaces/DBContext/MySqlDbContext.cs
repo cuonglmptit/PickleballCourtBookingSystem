@@ -283,6 +283,39 @@ public class MySqlDbContext : IDbContext
         return true;
     }
 
+
+    public List<string> HasDuplicateValuesInOtherRecords<T>(T entity, List<string> columns)
+    {
+        var className = typeof(T).Name;
+        var parameters = new DynamicParameters();
+
+        // Thêm giá trị của các cột vào parameters
+        foreach (var column in columns)
+        {
+            parameters.Add($"@{column}", typeof(T).GetProperty(column)?.GetValue(entity));
+        }
+
+        // Thêm Id vào điều kiện
+        parameters.Add("@Id", typeof(T).GetProperty("Id")?.GetValue(entity));
+
+        // Tạo câu lệnh SQL động
+        var sqlCheck = $@"
+                    {string.Join(" UNION ", columns.Select(column => $@"
+                        SELECT '{column}' AS DuplicatedColumn
+                        FROM {className}
+                        WHERE {column} = @{column}
+                          AND Id != @Id
+                    "))};";
+
+        // In ra câu lệnh SQL để kiểm tra
+        Console.WriteLine(sqlCheck);
+
+        // Thực hiện truy vấn và trả về danh sách các cột bị trùng
+        var duplicatedColumns = Connection.Query<string>(sqlCheck, parameters).ToList();
+        return duplicatedColumns;
+    }
+
+
     public IEnumerable<T> SearchByKeyword<T>(string? keyword, string columnName)
     {
         var className = typeof(T).Name;
@@ -405,5 +438,6 @@ public class MySqlDbContext : IDbContext
         var result = Connection.Query<T>(sql: sqlCommand);
         return result;
     }
+
     #endregion
 }

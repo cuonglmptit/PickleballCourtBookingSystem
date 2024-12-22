@@ -6,7 +6,7 @@
     </div>
     <div class="court-content">
       <div class="court-thumbnail">
-        <img src="../../assets/img/picklleball_court_1.webp" alt="" />
+        <img src="https://res.cloudinary.com/dvqsa7iag/image/upload/v1734808805/Avatar.jpg" alt="" />
       </div>
       <div class="court-brief">
         <div class="court-inf">
@@ -57,7 +57,7 @@ export default {
   height: 350px;
   min-width: fit-content;
   display: flex;
-  /* background-color: tomato; */
+  align-items: center;
   flex-direction: column;
   border-radius: 4px;
   background-color: white;
@@ -65,6 +65,7 @@ export default {
   padding: 12px;
   border: 1px solid rgba(0, 0, 0, 0.3);
   row-gap: 12px;
+  /* background-color: tomato; */
 }
 
 .court-header {
@@ -72,8 +73,8 @@ export default {
   justify-content: space-between;
   width: 100%;
   flex-wrap: nowrap;
-  /* background-color: cornsilk; */
   height: 24px;
+  /* background-color: cornsilk; */
 }
 
 .court-header .court-title {
@@ -84,10 +85,10 @@ export default {
 
 .court-content {
   display: flex;
-  height: 100%;
   width: 100%;
   min-width: fit-content;
   column-gap: 12px;
+  height: calc(100% - 24px - 12px);
   /* background-color: palevioletred; */
 }
 

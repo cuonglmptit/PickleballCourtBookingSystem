@@ -81,13 +81,17 @@ public class AuthService : IAuthService
                 Email = email,
                 RoleId = (int)role
             };
-            var userCheck = _userRepository.FindUserByUniqueAttribute(username, phoneNumber, email);
-            if (userCheck != null)
-            {
-                Console.WriteLine("That nghiep");
-                errorData.Add("User", "user da ton tai");
-            }
 
+            List<string> columsCheck = new List<string> { nameof(User.Username), nameof(User.Email), nameof(User.PhoneNumber) };
+            List<string> duplicatedColumns = _userRepository.HasDuplicateValuesInOtherRecords(user, columsCheck);
+            if (duplicatedColumns.Any())
+            {
+                foreach (var column in duplicatedColumns)
+                {
+                    errorData.Add(column, column + " đã tồn tại");
+                }
+            }
+            Console.WriteLine(string.Join(", ", duplicatedColumns));
             // 7. Nếu có bất kì lỗi nào thì return lỗi
             if (errorData.Any())
             {
