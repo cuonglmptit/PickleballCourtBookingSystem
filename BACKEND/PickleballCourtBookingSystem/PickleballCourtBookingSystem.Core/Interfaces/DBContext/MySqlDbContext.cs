@@ -308,7 +308,7 @@ public class MySqlDbContext : IDbContext
                     "))};";
 
         // In ra câu lệnh SQL để kiểm tra
-        Console.WriteLine(sqlCheck);
+        //Console.WriteLine(sqlCheck);
 
         // Thực hiện truy vấn và trả về danh sách các cột bị trùng
         var duplicatedColumns = Connection.Query<string>(sqlCheck, parameters).ToList();

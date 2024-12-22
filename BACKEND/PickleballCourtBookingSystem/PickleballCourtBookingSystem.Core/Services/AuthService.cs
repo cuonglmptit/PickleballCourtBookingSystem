@@ -91,7 +91,6 @@ public class AuthService : IAuthService
                     errorData.Add(column, column + " đã tồn tại");
                 }
             }
-            Console.WriteLine(string.Join(", ", duplicatedColumns));
             // 7. Nếu có bất kì lỗi nào thì return lỗi
             if (errorData.Any())
             {
