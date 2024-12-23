@@ -105,6 +105,25 @@ public class AuthService : IAuthService
 
             // 8. Success case: Register user
             user.Id = Guid.NewGuid();
+            //Nếu user ok thì thêm address
+            var newAddressId = Guid.NewGuid();
+            _addressService.InsertService(
+                new Address
+                {
+                    Id = newAddressId,
+                    City = "",
+                    District = "",
+                    Street = "",
+                    Ward = ""
+                });
+
+            //Gán newAddressId vào user
+            user.AddressId = newAddressId;
+            //Các thuộc tính khác của user
+            user.IsActive = 1;
+            var newCode = _userRepository.FindLargestValueEndsWithNumberInColumn(nameof(User.Code));
+            user.Code = int.TryParse(newCode, out int parsedCode) ? parsedCode + 1 : 0;
+            user.AvatarUrl = "";
             var insertRes = _userService.InsertService(user);
 
             if (insertRes.Success)

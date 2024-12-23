@@ -13,7 +13,7 @@
         </PrimaryButton>
       </div>
       <div class="option">
-        <PrimaryButton>
+        <PrimaryButton :isRouterLink="true" :to="{ name: 'login' }">
           <template v-slot:name> Đăng nhập </template>
         </PrimaryButton>
         <div class="slash">|</div>

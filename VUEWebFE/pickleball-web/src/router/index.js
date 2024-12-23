@@ -6,6 +6,7 @@ import EmptyLayout from '../views/layouts/EmptyLayout.vue';
 import CourtClusterDetail from '../views/court/CourtClusterDetail.vue';
 import NotFound from '../views/NotFound.vue';
 import RegisterView from '../views/auth/RegisterView.vue';
+import LoginView from '../views/auth/LoginView.vue';
 
 const routes = [
   {
@@ -36,8 +37,9 @@ const routes = [
     children: [
       {
         path: "",
-        name: "register",
-        // component: LoginPage,
+        name: "login",
+        component: LoginView,
+        meta: { title: "Đăng Nhập" },
       },
     ],
   },
@@ -49,6 +51,7 @@ const routes = [
         path: "",
         name: "register",
         component: RegisterView,
+        meta: { title: "Đăng Ký" },
       },
     ],
   },
@@ -63,5 +66,9 @@ const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
 })
+
+router.afterEach((to) => {
+  document.title = to.meta.title || "PickleBall Booking";
+});
 
 export default router
