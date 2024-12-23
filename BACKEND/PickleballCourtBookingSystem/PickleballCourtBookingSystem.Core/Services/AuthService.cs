@@ -81,13 +81,16 @@ public class AuthService : IAuthService
                 Email = email,
                 RoleId = (int)role
             };
-            var userCheck = _userRepository.FindUserByUniqueAttribute(username, phoneNumber, email);
-            if (userCheck != null)
-            {
-                Console.WriteLine("That nghiep");
-                errorData.Add("User", "user da ton tai");
-            }
 
+            List<string> columsCheck = new List<string> { nameof(User.Username), nameof(User.Email), nameof(User.PhoneNumber) };
+            List<string> duplicatedColumns = _userRepository.HasDuplicateValuesInOtherRecords(user, columsCheck);
+            if (duplicatedColumns.Any())
+            {
+                foreach (var column in duplicatedColumns)
+                {
+                    errorData.Add(column, column + " đã tồn tại");
+                }
+            }
             // 7. Nếu có bất kì lỗi nào thì return lỗi
             if (errorData.Any())
             {
@@ -102,6 +105,25 @@ public class AuthService : IAuthService
 
             // 8. Success case: Register user
             user.Id = Guid.NewGuid();
+            //Nếu user ok thì thêm address
+            var newAddressId = Guid.NewGuid();
+            _addressService.InsertService(
+                new Address
+                {
+                    Id = newAddressId,
+                    City = "",
+                    District = "",
+                    Street = "",
+                    Ward = ""
+                });
+
+            //Gán newAddressId vào user
+            user.AddressId = newAddressId;
+            //Các thuộc tính khác của user
+            user.IsActive = 1;
+            var newCode = _userRepository.FindLargestValueEndsWithNumberInColumn(nameof(User.Code));
+            user.Code = int.TryParse(newCode, out int parsedCode) ? parsedCode + 1 : 0;
+            user.AvatarUrl = "";
             var insertRes = _userService.InsertService(user);
 
             if (insertRes.Success)

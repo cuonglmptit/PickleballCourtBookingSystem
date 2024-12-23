@@ -3,15 +3,15 @@
 }
 
 .font-size-24 {
-    font-size: 24;
+    font-size: 24px;
 }
 
 .font-size-32 {
-    font-size: 32;
+    font-size: 32px;
 }
 
 .font-size-36 {
-    font-size: 36;
+    font-size: 36px;
 }
 
 .roboto-bold {
@@ -33,4 +33,8 @@
 
 .roboto-regular {
     font-family: roboto-regular;
+}
+
+.text-decoration-none {
+    text-decoration: none;
 }

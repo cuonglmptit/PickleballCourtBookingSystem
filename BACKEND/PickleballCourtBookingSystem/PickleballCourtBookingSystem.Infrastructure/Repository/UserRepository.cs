@@ -23,17 +23,5 @@
                 var result = dbContext.Connection.QueryFirstOrDefault<User>(sqlCommand, parameters);
                 return result;
             }
-            
-            public User? FindUserByUniqueAttribute(string username, string phoneNumber, string email)
-            {
-                var sqlCommand = $"SELECT * FROM {className} WHERE (username = @username OR phone_number = @phoneNumber OR email = @email)";
-                var parameters = new DynamicParameters();
-                parameters.Add("@username", username);
-                parameters.Add("@phoneNumber", phoneNumber);
-                parameters.Add("@email", email);
-            
-                var result = dbContext.Connection.QueryFirstOrDefault<User>(sqlCommand, parameters);
-                return result;
-            }
         }
     }

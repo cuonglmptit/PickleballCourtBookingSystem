@@ -3,7 +3,7 @@
     <div class="form-container" action="">
       <div class="left-part">
         <div class="left-top">
-          <div class="big-title">Đăng ký tài khoản</div>
+          <div class="font-size-32">Đăng ký người dùng</div>
         </div>
         <form class="signup-form" action="">
           <div class="p-input-container">
@@ -37,10 +37,6 @@
               />
             </div>
           </div>
-          <!-- <input type="text" id="city" placeholder="city" />
-          <input type="text" id="district" placeholder="district" />
-          <input type="text" id="ward" placeholder="ward" />
-          <input type="text" id="street" placeholder="street" /> -->
         </form>
         <div class="left-bottom">
           <button class="p-button this-scoped-btn">Đăng ký</button>
@@ -48,9 +44,26 @@
       </div>
       <div class="right-part p-banner">
         <div class="right-top">
-          <div class="big-title text-white roboto-italic">
-            Đặt sân pickle ball
+          <div class="big-title text-white backdrop-filter-blur-10">
+            Đặt sân Pickleball
           </div>
+        </div>
+        <div class="right-mid backdrop-filter-blur-5">
+          <div class="big-title text-white">Chào mừng!</div>
+          <div class="text-white">Bạn đã có tài khoản?</div>
+          <PrimaryButtonBorder
+            :replace="true"
+            :isRouterLink="true"
+            :to="{ name: 'login' }"
+            style="width: 168px"
+          >
+            <template v-slot:name> Đăng nhập </template>
+          </PrimaryButtonBorder>
+        </div>
+        <div class="right-bot">
+          <router-link class="text-white" :to="{ name: 'home' }"
+            >Trang chủ</router-link
+          >
         </div>
       </div>
     </div>
@@ -58,7 +71,12 @@
 </template>
 
 <script>
-export default {};
+import PrimaryButtonBorder from "../../components/buttons/PrimaryButtonBorder.vue";
+export default {
+  components: {
+    PrimaryButtonBorder,
+  },
+};
 </script>
 
 <style scoped>
@@ -83,6 +101,17 @@ export default {};
   box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.5);
 }
 
+.left-part {
+  background-color: white;
+  width: 55%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  row-gap: 32px;
+  flex-shrink: 0;
+}
+
 .signup-form {
   padding: 24px 72px 24px 72px;
   width: 100%;
@@ -91,28 +120,6 @@ export default {};
   flex-direction: column;
   justify-content: center;
   row-gap: 24px;
-}
-
-.left-part {
-  background-color: white;
-  width: 55%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
-  flex-shrink: 0;
-}
-.right-part {
-  width: 45%;
-  height: 100%;
-  background-color: thistle;
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position-x: calc(100% + 64px);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
 }
 
 .p-input-container {
@@ -144,7 +151,8 @@ input:focus {
 
 .left-top {
   display: flex;
-  justify-content: center;
+  justify-content: start;
+  padding: 0 72px 0 72px;
 }
 
 .left-bottom {
@@ -158,6 +166,41 @@ input:focus {
 }
 
 .this-scoped-btn {
-  width: 124px;
+  width: 212px;
+}
+
+/* CSS phần bên phải */
+.right-part {
+  width: 45%;
+  height: 100%;
+  background-color: thistle;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position-x: calc(100% + 64px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.right-top {
+  margin-top: 72px;
+}
+
+.right-mid {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  row-gap: 12px;
+  width: 100%;
+  margin-bottom: 124px;
+}
+
+.right-bot {
+  display: flex;
+  justify-content: end;
+  width: 100%;
+  padding: 0 12px 12px 12px;
 }
 </style>
