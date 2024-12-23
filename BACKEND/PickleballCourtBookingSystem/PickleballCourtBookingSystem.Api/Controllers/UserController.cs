@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using CloudinaryDotNet.Actions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using PickleballCourtBookingSystem.Api.DTOs.AuthDTOs;
 using PickleballCourtBookingSystem.Api.Models;
+using PickleballCourtBookingSystem.Core.DTOs;
 using PickleballCourtBookingSystem.Core.Entities;
 using PickleballCourtBookingSystem.Core.Interfaces.Infrastructure;
 using PickleballCourtBookingSystem.Core.Interfaces.Services;
@@ -24,7 +27,7 @@ namespace PickleballCourtBookingSystem.Api.Controllers
             var result = _userService.GetAllService();
             return StatusCode(result.StatusCode, result);
         }
-        
+
         [HttpGet("{id}")]
         public IActionResult GetUserById(Guid id)
         {
@@ -46,12 +49,48 @@ namespace PickleballCourtBookingSystem.Api.Controllers
             var result = _userService.UpdateService(user, id);
             return StatusCode(result.StatusCode, result);
         }
-        
+
         [HttpDelete("{id}")]
         public IActionResult DeleteUser(Guid id)
         {
             var result = _userService.DeleteService(id);
             return StatusCode(result.StatusCode, result);
+        }
+
+        [HttpPost("dummy")]
+        public IActionResult PostListUser([FromBody] List<RegisterRequest> users)
+        {
+            List<ServiceResult> failedRecords = new List<ServiceResult>();
+            //Write too insert the list and return the number of rows inserted
+            foreach (var user in users)
+            {
+                var newUser = new User
+                {
+                    //****note quan trọng, bắt buộc phải có guid mới có thể check unique
+                    // không thì nó sẽ là null và kết qua trả về sẽ sai
+                    // null đại diện cho một giá trị không xác định, và bất kỳ phép so sánh nào với null,
+                    // bao gồm !=, đều trả về giá trị false
+                    Id = Guid.Empty,
+                    Username = user.Username.Trim(),
+                    Password = user.Password,
+                    Name = user.FullName,
+                    PhoneNumber = user.PhoneNumber,
+                    Email = user.Email,
+                    RoleId = (int)user.Role
+                };
+                var result = _userService.Register(newUser);
+                if (result.Success == false)
+                {
+                    failedRecords.Add(result);
+                }
+            }
+
+            return StatusCode(201,
+                new
+                {
+                    Result = $"insert thành công {users.Count - failedRecords.Count}/{users.Count} bản ghi",
+                    Failed = failedRecords
+                });
         }
 
     }

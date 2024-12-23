@@ -12,5 +12,5 @@ public interface IUserService : IBaseService<User>
     /// <param name="user">User muốn đăng ký</param>
     /// <param name="errorData">Danh sách lỗi (để append thêm vào)</param>
     /// <returns>Kết quả đăng ký</returns>
-    public ServiceResult Register(User user, Dictionary<string, string>? errorData);
+    public ServiceResult Register(User user, Dictionary<string, string>? errorData = null);
 }

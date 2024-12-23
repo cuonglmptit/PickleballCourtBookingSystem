@@ -19,7 +19,7 @@ public class UserService : BaseService<User>, IUserService
         _addressService = addressService;
     }
 
-    public ServiceResult Register(User user, Dictionary<string, string>? errorData)
+    public ServiceResult Register(User user, Dictionary<string, string>? errorData = null)
     {
         errorData ??= new Dictionary<string, string>();
         // 1. Check username valid
@@ -41,9 +41,17 @@ public class UserService : BaseService<User>, IUserService
         }
 
         // 4. Check role valid
-        if ((RoleEnum)user.RoleId != RoleEnum.Customer && (RoleEnum)user.RoleId != RoleEnum.CourtOwner)
+        // Kiểm tra nếu RoleId có giá trị trước khi sử dụng
+        if (user.RoleId == null || !Enum.IsDefined(typeof(RoleEnum), user.RoleId))
         {
-            errorData.Add("Role", "Role không hợp lệ (chỉ được là CourtOwner hoặc Customer)");
+            errorData.Add("Role", "Role không hợp lệ");
+        }
+        else
+        {
+            if ((RoleEnum)user.RoleId != RoleEnum.Customer && (RoleEnum)user.RoleId != RoleEnum.CourtOwner)
+            {
+                errorData.Add("Role", "Role không hợp lệ (chỉ được là CourtOwner hoặc Customer)");
+            }
         }
 
         List<string> columsCheck = new List<string> { nameof(User.Username), nameof(User.Email), nameof(User.PhoneNumber) };
