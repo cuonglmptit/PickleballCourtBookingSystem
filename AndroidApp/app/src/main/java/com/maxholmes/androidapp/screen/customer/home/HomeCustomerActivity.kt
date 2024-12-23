@@ -7,6 +7,8 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.maxholmes.androidapp.R
+import com.maxholmes.androidapp.data.dto.response.APIResponse
+import com.maxholmes.androidapp.data.dto.response.parseApiResponseData
 import com.maxholmes.androidapp.data.model.CourtCluster
 import com.maxholmes.androidapp.screen.customer.home.adapter.CourtClusterAdapter
 import com.maxholmes.androidapp.data.service.RetrofitClient
@@ -49,12 +51,15 @@ class HomeCustomerActivity : AppCompatActivity() {
 
     private fun fetchCourtClusters() {
         // Fetch data from the API using Retrofit
-        RetrofitClient.ApiClient.apiService.getAllCourtClusters().enqueue(object : Callback<List<CourtCluster>> {
-            override fun onResponse(call: Call<List<CourtCluster>>, response: Response<List<CourtCluster>>) {
+        RetrofitClient.ApiClient.apiService.getAllCourtClusters().enqueue(object : Callback<APIResponse> {
+            override fun onResponse(call: Call<APIResponse>, response: Response<APIResponse>) {
                 if (response.isSuccessful) {
-                    response.body()?.let {
-                        // Update the RecyclerView with the retrieved CourtClusters
-                        courtClusterAdapter.updateData(it.toMutableList())
+                    response.body()?.let { apiResponse ->
+                        val courtClusters: List<CourtCluster>? =
+                            parseApiResponseData(apiResponse.data)
+                        courtClusters.let {
+                            courtClusterAdapter.updateData(it!!.toMutableList())
+                        }
                     }
                 } else {
                     // Handle unsuccessful response
@@ -62,7 +67,7 @@ class HomeCustomerActivity : AppCompatActivity() {
                 }
             }
 
-            override fun onFailure(call: Call<List<CourtCluster>>, t: Throwable) {
+            override fun onFailure(call: Call<APIResponse>, t: Throwable) {
                 // Handle failure, e.g., no internet connection
                 Toast.makeText(this@HomeCustomerActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
             }
