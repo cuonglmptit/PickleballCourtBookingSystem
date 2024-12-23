@@ -32,41 +32,16 @@ public class AuthService : IAuthService
 
     public ServiceResult Register(string username, string password, string confirmPassword, string fullName, string phoneNumber, string email, RoleEnum role)
     {
-        var errorData = new Dictionary<string, string>();
 
         try
         {
-            // 1. Check username valid
-            if (!CustomValidationMethods.IsValidUsername(username))
-            {
-                errorData.Add("Username", "Username không hợp lệ");
-            }
-
-            // 2. Check confirm password
+            var errorData = new Dictionary<string, string>();
+            // 0. Check confirm password
             if (!password.Equals(confirmPassword))
             {
                 errorData.Add("ConfirmPassword", "Password confirm không trùng khớp");
             }
-
-            // 3. Check email valid
-            if (!CustomValidationMethods.IsValidEmail(email))
-            {
-                errorData.Add("Email", "Email không hợp lệ");
-            }
-
-            // 4. Check full name valid
-            if (!CustomValidationMethods.IsValidFullName(fullName))
-            {
-                errorData.Add("FullName", "Tên không hợp lệ");
-            }
-
-            // 5. Check role valid
-            if (role != RoleEnum.Customer && role != RoleEnum.CourtOwner)
-            {
-                errorData.Add("Role", "Role không hợp lệ (chỉ được là CourtOwner hoặc Customer)");
-            }
-
-            // 6. Check username tồn tại
+            //1. Tạo 1 user để thử đăng ký
             var user = new User
             {
                 //****note quan trọng, bắt buộc phải có guid mới có thể check unique
@@ -82,68 +57,8 @@ public class AuthService : IAuthService
                 RoleId = (int)role
             };
 
-            List<string> columsCheck = new List<string> { nameof(User.Username), nameof(User.Email), nameof(User.PhoneNumber) };
-            List<string> duplicatedColumns = _userRepository.HasDuplicateValuesInOtherRecords(user, columsCheck);
-            if (duplicatedColumns.Any())
-            {
-                foreach (var column in duplicatedColumns)
-                {
-                    errorData.Add(column, column + " đã tồn tại");
-                }
-            }
-            // 7. Nếu có bất kì lỗi nào thì return lỗi
-            if (errorData.Any())
-            {
-                return CommonMethods.CreateServiceResult(
-                    Success: false,
-                    StatusCode: 400,
-                    UserMsg: "Validation errors occurred",
-                    DevMsg: "Validation failed for one or more fields",
-                    Data: errorData
-                );
-            }
-
-            // 8. Success case: Register user
-            user.Id = Guid.NewGuid();
-            //Nếu user ok thì thêm address
-            var newAddressId = Guid.NewGuid();
-            _addressService.InsertService(
-                new Address
-                {
-                    Id = newAddressId,
-                    City = "",
-                    District = "",
-                    Street = "",
-                    Ward = ""
-                });
-
-            //Gán newAddressId vào user
-            user.AddressId = newAddressId;
-            //Các thuộc tính khác của user
-            user.IsActive = 1;
-            var newCode = _userRepository.FindLargestValueEndsWithNumberInColumn(nameof(User.Code));
-            user.Code = int.TryParse(newCode, out int parsedCode) ? parsedCode + 1 : 0;
-            user.AvatarUrl = "";
-            var insertRes = _userService.InsertService(user);
-
-            if (insertRes.Success)
-            {
-                return CommonMethods.CreateServiceResult(
-                    Success: true,
-                    StatusCode: 201,
-                    UserMsg: "Account created successfully",
-                    DevMsg: "Account created successfully"
-                );
-            }
-            else
-            {
-                return CommonMethods.CreateServiceResult(
-                    Success: false,
-                    StatusCode: 500,
-                    UserMsg: "Failed to create account: " + insertRes.UserMsg,
-                    DevMsg: "Failed to create account: " + insertRes.DevMsg
-                );
-            }
+            //Trả về kết quả đăng ký (cộng thêm các lỗi valid trước đó)
+            return _userService.Register(user, errorData);
 
         }
         catch (Exception e)

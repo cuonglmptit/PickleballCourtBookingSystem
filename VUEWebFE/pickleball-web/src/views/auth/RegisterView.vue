@@ -37,6 +37,10 @@
               />
             </div>
           </div>
+          <div class="checkbox-input">
+            <input type="checkbox" id="courtOwner" name="courtOwner" />
+            <label for="courtOwner"> Tôi muốn trở thành chủ sân</label>
+          </div>
         </form>
         <div class="left-bottom">
           <button class="p-button this-scoped-btn">Đăng ký</button>
@@ -129,7 +133,7 @@ export default {
   row-gap: 6px;
 }
 
-input {
+.p-input-container input {
   height: 36px;
   border: 1px solid rgba(0, 0, 0, 0.05);
   border-radius: 1000px;
@@ -167,6 +171,12 @@ input:focus {
 
 .this-scoped-btn {
   width: 212px;
+}
+
+.checkbox-input{
+  display: flex;
+  align-items: center;
+  column-gap: 4px;
 }
 
 /* CSS phần bên phải */
