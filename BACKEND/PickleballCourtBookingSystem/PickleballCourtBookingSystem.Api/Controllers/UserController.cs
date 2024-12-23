@@ -60,7 +60,7 @@ namespace PickleballCourtBookingSystem.Api.Controllers
         [HttpPost("dummy")]
         public IActionResult PostListUser([FromBody] List<RegisterRequest> users)
         {
-            List<ServiceResult> failedRecords = new List<ServiceResult>();
+            Dictionary<string, ServiceResult> failedRecords = new Dictionary<string, ServiceResult>();
             //Write too insert the list and return the number of rows inserted
             foreach (var user in users)
             {
@@ -79,9 +79,9 @@ namespace PickleballCourtBookingSystem.Api.Controllers
                     RoleId = (int)user.Role
                 };
                 var result = _userService.Register(newUser);
-                if (result.Success == false)
+                if (!result.Success)
                 {
-                    failedRecords.Add(result);
+                    failedRecords.Add(user.Username, result); // Use Username as the key
                 }
             }
 

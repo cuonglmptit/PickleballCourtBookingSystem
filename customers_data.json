@@ -1,0 +1,182 @@
+[
+	{
+		"UserName": "leemc",
+		"Password": "abc123",
+		"ConfirmPassword": "abc123",
+		"FullName": "Jesse Carver",
+		"Email": "jessecarver4164@google.ca",
+		"PhoneNumber": "03626433316",
+		"Role": "Customer"
+	},
+	{
+		"UserName": "ccuong123",
+		"Password": "abc123",
+		"ConfirmPassword": "abc123",
+		"FullName": "Irene Sherman",
+		"Email": "irenesherman@outlook.edu",
+		"PhoneNumber": "02725625478",
+		"Role": "Customer"
+	},
+	{
+		"UserName": "cuong_itdev",
+		"Password": "abc123",
+		"ConfirmPassword": "abc123",
+		"FullName": "Ginger Dominguez",
+		"Email": "gingerdominguez@google.ca",
+		"PhoneNumber": "02536287646",
+		"Role": "Customer"
+	},
+	{
+		"UserName": "cuong_itdev1",
+		"Password": "abc123",
+		"ConfirmPassword": "abc123",
+		"FullName": "Quin Gonzalez",
+		"Email": "quingonzalez@protonmail.com",
+		"PhoneNumber": "05431641125",
+		"Role": "Customer"
+	},
+	{
+		"UserName": "michael123",
+		"Password": "abc123",
+		"ConfirmPassword": "abc123",
+		"FullName": "Aimee Murphy",
+		"Email": "aimeemurphy9420@protonmail.ca",
+		"PhoneNumber": "02253138857",
+		"Role": "Customer"
+	},
+	{
+		"UserName": "cuong.it",
+		"Password": "abc123",
+		"ConfirmPassword": "abc123",
+		"FullName": "Freya Barnes",
+		"Email": "freyabarnes@hotmail.ca",
+		"PhoneNumber": "00713152706",
+		"Role": "Customer"
+	},
+	{
+		"UserName": "leemccc",
+		"Password": "abc123",
+		"ConfirmPassword": "abc123",
+		"FullName": "Bell Soto",
+		"Email": "bellsoto@outlook.edu",
+		"PhoneNumber": "09513737234",
+		"Role": "Customer"
+	},
+	{
+		"UserName": "tech.mc",
+		"Password": "abc123",
+		"ConfirmPassword": "abc123",
+		"FullName": "Felicia Lawrence",
+		"Email": "felicialawrence9115@icloud.couk",
+		"PhoneNumber": "08519131376",
+		"Role": "Customer"
+	},
+	{
+		"UserName": "cuong_online",
+		"Password": "abc123",
+		"ConfirmPassword": "abc123",
+		"FullName": "Mary Fleming",
+		"Email": "maryfleming1993@google.edu",
+		"PhoneNumber": "07736715288",
+		"Role": "Customer"
+	},
+	{
+		"UserName": "michael",
+		"Password": "abc123",
+		"ConfirmPassword": "abc123",
+		"FullName": "Keaton Oliver",
+		"Email": "keatonoliver2562@google.ca",
+		"PhoneNumber": "04579777239",
+		"Role": "Customer"
+	},
+	{
+		"UserName": "mc_tech",
+		"Password": "abc123",
+		"ConfirmPassword": "abc123",
+		"FullName": "September Burnett",
+		"Email": "septemberburnett2263@yahoo.org",
+		"PhoneNumber": "03021477255",
+		"Role": "Customer"
+	},
+	{
+		"UserName": "mc_2024",
+		"Password": "abc123",
+		"ConfirmPassword": "abc123",
+		"FullName": "Zorita Henry",
+		"Email": "zoritahenry@google.ca",
+		"PhoneNumber": "05046172208",
+		"Role": "Customer"
+	},
+	{
+		"UserName": "mclab",
+		"Password": "abc123",
+		"ConfirmPassword": "abc123",
+		"FullName": "Walker Hyde",
+		"Email": "walkerhyde702@google.ca",
+		"PhoneNumber": "01885899461",
+		"Role": "Customer"
+	},
+	{
+		"UserName": "lemanhcuong",
+		"Password": "abc123",
+		"ConfirmPassword": "abc123",
+		"FullName": "Brennan Ryan",
+		"Email": "brennanryan3165@protonmail.com",
+		"PhoneNumber": "01261396647",
+		"Role": "Customer"
+	},
+	{
+		"UserName": "michael.tech",
+		"Password": "abc123",
+		"ConfirmPassword": "abc123",
+		"FullName": "Ivan Perry",
+		"Email": "ivanperry929@hotmail.edu",
+		"PhoneNumber": "05326253671",
+		"Role": "Customer"
+	},
+	{
+		"UserName": "cuong.le",
+		"Password": "abc123",
+		"ConfirmPassword": "abc123",
+		"FullName": "Yael Hammond",
+		"Email": "yaelhammond@hotmail.couk",
+		"PhoneNumber": "06728318415",
+		"Role": "Customer"
+	},
+	{
+		"UserName": "cuong_itdev2",
+		"Password": "abc123",
+		"ConfirmPassword": "abc123",
+		"FullName": "Kennan Stein",
+		"Email": "kennanstein@protonmail.couk",
+		"PhoneNumber": "06511701817",
+		"Role": "Customer"
+	},
+	{
+		"UserName": "techmaster",
+		"Password": "abc123",
+		"ConfirmPassword": "abc123",
+		"FullName": "Tamara Mcfarland",
+		"Email": "tamaramcfarland@google.ca",
+		"PhoneNumber": "08764261045",
+		"Role": "Customer"
+	},
+	{
+		"UserName": "mc_coder",
+		"Password": "abc123",
+		"ConfirmPassword": "abc123",
+		"FullName": "Evangeline Raymond",
+		"Email": "evangelineraymond@protonmail.ca",
+		"PhoneNumber": "05244654321",
+		"Role": "Customer"
+	},
+	{
+		"UserName": "mc_software",
+		"Password": "abc123",
+		"ConfirmPassword": "abc123",
+		"FullName": "Byron Parsons",
+		"Email": "byronparsons1880@google.net",
+		"PhoneNumber": "03167085137",
+		"Role": "Customer"
+	}
+]
