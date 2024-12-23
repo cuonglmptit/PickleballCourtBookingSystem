@@ -56,7 +56,7 @@ public class CloudinaryController : ControllerBase
             var uploadResult = await _cloudinary.UploadAsync(uploadParams);
 
             // Return the secure URL of the uploaded image
-            return Ok(new { Url = uploadResult.SecureUrl });
+            return StatusCode(200, new { Url = uploadResult.SecureUrl });
         }
         catch (Exception ex)
         {

@@ -22,23 +22,14 @@ namespace PickleballCourtBookingSystem.Api.Controllers
         public IActionResult GetAllImageCourtUrl()
         {
             var result = _imageCourtUrlService.GetAllService();
-            if (result.Success)
-            {
-                return Ok(result.Data);
-            }
-            return BadRequest();
+            return StatusCode(result.StatusCode, result);
         }
         
         [HttpGet("{id}")]
         public IActionResult GetImageCourtUrlById(Guid id)
         {
             var result = _imageCourtUrlService.GetByIdService(id);
-            if (result.Success)
-            {
-                return Ok(result.Data);
-            }
-
-            return BadRequest();
+            return StatusCode(result.StatusCode, result);
         }
 
         [HttpPost]
@@ -46,35 +37,21 @@ namespace PickleballCourtBookingSystem.Api.Controllers
         {
             imageCourtUrl.Id = Guid.NewGuid();
             var result = _imageCourtUrlService.InsertService(imageCourtUrl);
-            if (result.Success)
-            {
-                return Ok(result.StatusCode);
-            }
-
-            return BadRequest();
+            return StatusCode(result.StatusCode, result);
         }
 
         [HttpPut]
         public IActionResult UpdateImageCourtUrl([FromBody] ImageCourtUrl imageCourtUrl, Guid id)
         {
             var result = _imageCourtUrlService.UpdateService(imageCourtUrl, id);
-            if (result.Success)
-            {
-                return Ok(result.StatusCode);
-            }
-
-            return BadRequest();
+            return StatusCode(result.StatusCode, result);
         }
         
         [HttpDelete("{id}")]
         public IActionResult DeleteImageCourtUrl(Guid id)
         {
             var result = _imageCourtUrlService.DeleteService(id);
-            if (result.Success)
-            {
-                return Ok(result.StatusCode);
-            }
-            return BadRequest();
+            return StatusCode(result.StatusCode, result);
         }
 
     }

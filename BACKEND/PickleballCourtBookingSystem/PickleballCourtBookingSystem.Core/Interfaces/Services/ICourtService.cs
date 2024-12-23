@@ -9,4 +9,5 @@ public interface ICourtService : IBaseService<Court>
     public ServiceResult GetCourtForTimeRange(DateTime date, TimeSpan startTime, TimeSpan endTime);
     public ServiceResult GetAvailableCourtsForTime(DateTime date, TimeSpan startTime, TimeSpan endTime);
     public ServiceResult GetCourtsByCourtClusterId(Guid courtClusterId);
+    public ServiceResult GetAvailableCourtTimeSlotByDate(Guid courtId, DateTime date);
 }

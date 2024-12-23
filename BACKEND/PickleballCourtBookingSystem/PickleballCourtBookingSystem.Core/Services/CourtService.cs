@@ -115,4 +115,18 @@ public class CourtService : BaseService<Court>, ICourtService
             return CreateServiceResult(Success: false, StatusCode: 500, UserMsg: "Error", DevMsg: e.Message);
         }
     }
+
+    public ServiceResult GetAvailableCourtTimeSlotByDate(Guid courtId, DateTime date)
+    {
+        try
+        {
+            var result = _courtTimeSlotService.GetAvailableCourtTimeSlotsByCourtIdAndDate(courtId, date);
+            return result;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return CreateServiceResult(Success: false, StatusCode: 500, UserMsg: "Khong lay duoc du lieu cua court time slot", DevMsg: "Get Court Time Slot Error");
+        }
+    }
 }

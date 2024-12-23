@@ -42,68 +42,7 @@ class HomeFragment :
             )
         mHomePresenter.setView(this)
 
-        val fakeCourtClusters = mutableListOf(
-            CourtCluster(
-                id = "1",
-                name = "Sân Pickleball Hoàn Kiếm",
-                description = "Sân chơi Pickleball tại trung tâm Hà Nội, khu vực Hoàn Kiếm.",
-                openingTime = LocalTime.of(5, 0),
-                closingTime = LocalTime.of(22, 0),
-                addressId = "Hoàn Kiếm, Hà Nội",
-                courtOwnerId = "d1e0c764-fbb9-47ab-836d-0645f94ffb80",
-                imageUrl = "https://picsum.photos/200"
-            ),
-            CourtCluster(
-                id = "2",
-                name = "Sân Pickleball Ba Đình",
-                description = "Sân chơi Pickleball ở quận Ba Đình, gần các khu vực công sở.",
-                openingTime = LocalTime.of(5, 0),
-                closingTime = LocalTime.of(22, 0),
-                addressId = "Ba Đình, Hà Nội",
-                courtOwnerId = "f7a7f935-22b4-4db1-b7e3-0fa240c1dbf6",
-                imageUrl = "https://picsum.photos/200"
-            ),
-            CourtCluster(
-                id = "3",
-                name = "Sân Pickleball Tây Hồ",
-                description = "Sân chơi Pickleball nằm tại quận Tây Hồ, gần Hồ Tây.",
-                openingTime = LocalTime.of(5, 0),
-                closingTime = LocalTime.of(22, 0),
-                addressId = "Tây Hồ, Hà Nội",
-                courtOwnerId = "4c8f233d-d741-49d4-9d8b-ea91a6c4b408",
-                imageUrl = "https://picsum.photos/200"
-            ),
-            CourtCluster(
-                id = "4",
-                name = "Sân Pickleball Cầu Giấy",
-                description = "Sân chơi Pickleball tại quận Cầu Giấy, khu vực gần các trung tâm thể thao.",
-                openingTime = LocalTime.of(5, 0),
-                closingTime = LocalTime.of(22, 0),
-                addressId = "Cầu Giấy, Hà Nội",
-                courtOwnerId = "3a29c019-e85b-48ec-b30d-4097bcba8157",
-                imageUrl = "https://picsum.photos/200"
-            ),
-            CourtCluster(
-                id = "5",
-                name = "Sân Pickleball Long Biên",
-                description = "Sân chơi Pickleball tại quận Long Biên, không gian rộng rãi, thoáng mát.",
-                openingTime = LocalTime.of(5, 0),
-                closingTime = LocalTime.of(22, 0),
-                addressId = "Long Biên, Hà Nội",
-                courtOwnerId = "a72b0891-25c3-4e93-8f8f-e2f6002052fc",
-                imageUrl = "https://picsum.photos/200"
-            ),
-            CourtCluster(
-                id = "6",
-                name = "Sân Pickleball Thanh Xuân",
-                description = "Sân Pickleball hiện đại tại quận Thanh Xuân, dễ dàng di chuyển từ các khu vực trung tâm.",
-                openingTime = LocalTime.of(5, 0),
-                closingTime = LocalTime.of(22, 0),
-                addressId = "Thanh Xuân, Hà Nội",
-                courtOwnerId = "d9577f56-c4a9-493b-87b5-b2b45511e462",
-                imageUrl = "https://picsum.photos/200"
-            )
-        )
+        val fakeCourtClusters = mutableListOf<CourtCluster>()
         mCourtClusterAdapter.updateData(fakeCourtClusters)
     }
 
