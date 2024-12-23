@@ -12,6 +12,7 @@ import com.maxholmes.androidapp.utils.OnItemRecyclerViewClickListener
 class SelectCourtAdapter : RecyclerView.Adapter<SelectCourtAdapter.ViewHolder>() {
     private val courts = mutableListOf<Court>()
     private var onItemClickListener: OnItemRecyclerViewClickListener<Court>? = null
+    private var selectedItemPosition: Int = RecyclerView.NO_POSITION
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -25,7 +26,7 @@ class SelectCourtAdapter : RecyclerView.Adapter<SelectCourtAdapter.ViewHolder>()
         holder: ViewHolder,
         position: Int,
     ) {
-        holder.bindViewData(courts[position])
+        holder.bindViewData(courts[position], position == selectedItemPosition)
     }
 
     override fun getItemCount(): Int {
@@ -44,6 +45,17 @@ class SelectCourtAdapter : RecyclerView.Adapter<SelectCourtAdapter.ViewHolder>()
         }
     }
 
+    fun getCourts(): List<Court> {
+        return courts
+    }
+
+    fun setSelectedItem(position: Int) {
+        val previousPosition = selectedItemPosition
+        selectedItemPosition = position
+        notifyItemChanged(previousPosition)
+        notifyItemChanged(selectedItemPosition)
+    }
+
     class ViewHolder(
         private val binding: ItemSelectCourtBinding,
         private val itemClickListener: OnItemRecyclerViewClickListener<Court>?,
@@ -54,12 +66,18 @@ class SelectCourtAdapter : RecyclerView.Adapter<SelectCourtAdapter.ViewHolder>()
             binding.root.setOnClickListener(this)
         }
 
-        fun bindViewData(court: Court) {
+        fun bindViewData(court: Court, isSelected: Boolean) {
             courtData = court
 
             val courtLabel = binding.root.context.getString(R.string.court_label)
             val courtName = "$courtLabel ${court.courtNumber}"
             binding.courtNameTextView.text = courtName
+
+            binding.root.setBackgroundColor(
+                if (isSelected) binding.root.context.getColor(R.color.yellow) else binding.root.context.getColor(
+                    R.color.white
+                )
+            )
         }
 
         override fun onClick(view: View?) {
