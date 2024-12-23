@@ -21,11 +21,7 @@ namespace PickleballCourtBookingSystem.Api.Controllers
         public IActionResult GetAllRole()
         {
             var result = _roleService.GetAllService();
-            if (result.Success)
-            {
-                return Ok(result.Data);
-            }
-            return BadRequest();
+            return StatusCode(result.StatusCode, result);
         }
 
         [HttpGet("{id}")]
@@ -33,12 +29,7 @@ namespace PickleballCourtBookingSystem.Api.Controllers
         public IActionResult GetRoleById(Guid id)
         {
             var result = _roleService.GetByIdService(id);
-            if (result.Success)
-            {
-                return Ok(result.Data);
-            }
-
-            return BadRequest();
+            return StatusCode(result.StatusCode, result);
         }
         
     }

@@ -2,16 +2,16 @@ package com.maxholmes.androidapp.data.model
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
-import java.time.LocalTime
+import kotlin.time.Duration
 
 @Parcelize
 data class CourtCluster(
     var id: String,
     var name: String,
-    var openingTime: LocalTime,
-    var closeingTime: LocalTime,
+    var openingTime: String,
+    var closingTime: String,
     var description: String?,
     var addressId: String,
     var courtOwnerId: String,
-    var imageUrl: String
+    var imageUrl: String? = null
 ) : Parcelable

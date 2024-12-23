@@ -22,23 +22,14 @@ namespace PickleballCourtBookingSystem.Api.Controllers
         public IActionResult GetAllCourtTimeSlot()
         {
             var result = _courtTimeSlotService.GetAllService();
-            if (result.Success)
-            {
-                return Ok(result.Data);
-            }
-            return BadRequest();
+            return StatusCode(result.StatusCode, result);
         }
         
         [HttpGet("{id}")]
         public IActionResult GetCourtTimeSlotById(Guid id)
         {
             var result = _courtTimeSlotService.GetByIdService(id);
-            if (result.Success)
-            {
-                return Ok(result.Data);
-            }
-
-            return BadRequest();
+            return StatusCode(result.StatusCode, result);
         }
 
         [HttpPost("single")]
@@ -46,12 +37,7 @@ namespace PickleballCourtBookingSystem.Api.Controllers
         {
             courtTimeSlot.Id = Guid.NewGuid();
             var result = _courtTimeSlotService.InsertService(courtTimeSlot);
-            if (result.Success)
-            {
-                return Ok(result.StatusCode);
-            }
-
-            return BadRequest();
+            return StatusCode(result.StatusCode, result);
         }
         
         [HttpPost("multiple")]
@@ -62,47 +48,34 @@ namespace PickleballCourtBookingSystem.Api.Controllers
                 courtTimeSlot.Id = Guid.NewGuid();
             }
             var result = _courtTimeSlotService.InsertManyService(courtTimeSlots);
-            if (result.Success)
-            {
-                return Ok(result.StatusCode);
-            }
-
-            return BadRequest();
+            return StatusCode(result.StatusCode, result);
         }
 
         [HttpPut]
         public IActionResult UpdateCourtTimeSlot([FromBody] CourtTimeSlot courtTimeSlot, Guid id)
         {
             var result = _courtTimeSlotService.UpdateService(courtTimeSlot, id);
-            if (result.Success)
-            {
-                return Ok(result.StatusCode);
-            }
-
-            return BadRequest();
+            return StatusCode(result.StatusCode, result);
         }
         
         [HttpDelete("{id}")]
         public IActionResult DeleteCourtTimeSlot(Guid id)
         {
             var result = _courtTimeSlotService.DeleteService(id);
-            if (result.Success)
-            {
-                return Ok(result.StatusCode);
-            }
-            return BadRequest();
+            return StatusCode(result.StatusCode, result);
         }
         
         [HttpGet("getCourtTimeSlot")]
         public IActionResult GetCourtTimeSlot([FromQuery] Guid courtId)
         {
             var result = _courtTimeSlotService.GetAvailableCourtTimeSlotsByCourtId(courtId);
-            if (result.Success)
-            {
-                return Ok(result.Data);
-            }
-            return BadRequest();
+            return StatusCode(result.StatusCode, result);
         }
-
+        [HttpGet("getAvailableSlots")]
+        public IActionResult GetCourtTimeSlotByDate([FromQuery] Guid courtId, [FromQuery] DateTime date)
+        {
+            var result = _courtTimeSlotService.GetAvailableCourtTimeSlotsByCourtIdAndDate(courtId, date);
+            return StatusCode(result.StatusCode, result);
+        }
     }
 }

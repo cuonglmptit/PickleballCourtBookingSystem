@@ -58,9 +58,11 @@ class CourtClusterAdapter : RecyclerView.Adapter<CourtClusterAdapter.ViewHolder>
         fun bindViewData(courtCluster: CourtCluster) {
             courtClusterData = courtCluster
 
-            binding.courtClusterImage.loadImageCircleWithUrl(
-                courtCluster.imageUrl, R.drawable.image_court_1
-            )
+            courtCluster.imageUrl?.let {
+                binding.courtClusterImage.loadImageCircleWithUrl(
+                    it, R.drawable.image_court_1
+                )
+            }
 
 //            binding.courtClusterImage.setImageResource(R.drawable.image_courtCluster_1)
 

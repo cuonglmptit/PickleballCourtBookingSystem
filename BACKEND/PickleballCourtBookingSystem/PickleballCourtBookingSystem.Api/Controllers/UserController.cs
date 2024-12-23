@@ -22,23 +22,14 @@ namespace PickleballCourtBookingSystem.Api.Controllers
         public IActionResult GetAllUser()
         {
             var result = _userService.GetAllService();
-            if (result.Success)
-            {
-                return Ok(result.Data);
-            }
-            return BadRequest();
+            return StatusCode(result.StatusCode, result);
         }
         
         [HttpGet("{id}")]
         public IActionResult GetUserById(Guid id)
         {
             var result = _userService.GetByIdService(id);
-            if (result.Success)
-            {
-                return Ok(result.Data);
-            }
-
-            return BadRequest();
+            return StatusCode(result.StatusCode, result);
         }
 
         [HttpPost]
@@ -46,35 +37,21 @@ namespace PickleballCourtBookingSystem.Api.Controllers
         {
             user.Id = Guid.NewGuid();
             var result = _userService.InsertService(user);
-            if (result.Success)
-            {
-                return Ok(result.StatusCode);
-            }
-
-            return BadRequest();
+            return StatusCode(result.StatusCode, result);
         }
 
         [HttpPut]
         public IActionResult UpdateUser([FromBody] User user, Guid id)
         {
             var result = _userService.UpdateService(user, id);
-            if (result.Success)
-            {
-                return Ok(result.StatusCode);
-            }
-
-            return BadRequest();
+            return StatusCode(result.StatusCode, result);
         }
         
         [HttpDelete("{id}")]
         public IActionResult DeleteUser(Guid id)
         {
             var result = _userService.DeleteService(id);
-            if (result.Success)
-            {
-                return Ok(result.StatusCode);
-            }
-            return BadRequest();
+            return StatusCode(result.StatusCode, result);
         }
 
     }

@@ -22,23 +22,14 @@ namespace PickleballCourtBookingSystem.Api.Controllers
         public IActionResult GetAllCourtTimeBooking()
         {
             var result = _courtTimeBookingService.GetAllService();
-            if (result.Success)
-            {
-                return Ok(result.Data);
-            }
-            return BadRequest();
+            return StatusCode(result.StatusCode, result);
         }
         
         [HttpGet("{id}")]
         public IActionResult GetCourtTimeBookingById(Guid id)
         {
             var result = _courtTimeBookingService.GetByIdService(id);
-            if (result.Success)
-            {
-                return Ok(result.Data);
-            }
-
-            return BadRequest();
+            return StatusCode(result.StatusCode, result);
         }
 
         [HttpPost]
@@ -46,35 +37,21 @@ namespace PickleballCourtBookingSystem.Api.Controllers
         {
             courtTimeBooking.Id = Guid.NewGuid();
             var result = _courtTimeBookingService.InsertService(courtTimeBooking);
-            if (result.Success)
-            {
-                return Ok(result.StatusCode);
-            }
-
-            return BadRequest();
+            return StatusCode(result.StatusCode, result);
         }
 
         [HttpPut]
         public IActionResult UpdateCourtTimeBooking([FromBody] CourtTimeBooking courtTimeBooking, Guid id)
         {
             var result = _courtTimeBookingService.UpdateService(courtTimeBooking, id);
-            if (result.Success)
-            {
-                return Ok(result.StatusCode);
-            }
-
-            return BadRequest();
+            return StatusCode(result.StatusCode, result);
         }
         
         [HttpDelete("{id}")]
         public IActionResult DeleteCourtTimeBooking(Guid id)
         {
             var result = _courtTimeBookingService.DeleteService(id);
-            if (result.Success)
-            {
-                return Ok(result.StatusCode);
-            }
-            return BadRequest();
+            return StatusCode(result.StatusCode, result);
         }
 
     }

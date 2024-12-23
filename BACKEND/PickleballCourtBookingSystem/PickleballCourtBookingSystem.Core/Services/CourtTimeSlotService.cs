@@ -34,6 +34,31 @@ public class CourtTimeSlotService : BaseService<CourtTimeSlot>, ICourtTimeSlotSe
             return CreateServiceResult(Success: false, StatusCode: 404, UserMsg: "Khong lay duoc du lieu cua court time slot", DevMsg: "Get Court Time Slot Error");
         }
     }
+    
+    public ServiceResult GetAvailableCourtTimeSlotsByCourtIdAndDate(Guid courtId, DateTime date)
+    {
+        try
+        {
+            var timeNow = TimeZoneInfo.ConvertTime(DateTime.Now, TimeZoneInfo.Local);
+            var dateCheck = timeNow.Date;
+            var time = TimeSpan.Zero;
+            if (dateCheck.Date == date.Date)
+            {
+                time = timeNow.TimeOfDay;
+            }
+            var result = _courtTimeSlotRepository.FindAvailableCourtTimeSlotByCourtIdAndDate(courtId, date, time);
+            if (result.ToList().Count == 0)
+            {
+                return CreateServiceResult(Success: true, StatusCode: 200, UserMsg: "Khong co khung gio co san cho san trong ngay da chon", DevMsg: "Khong co khung gio co san cho san trong ngay da chon");
+            }
+            return CreateServiceResult(Success: true, StatusCode: 200, Data: result);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return CreateServiceResult(Success: false, StatusCode: 500, UserMsg: "Khong lay duoc du lieu cua court time slot", DevMsg: "Get Court Time Slot Error");
+        }
+    }
 
     public ServiceResult GetAvailableCourtTimeSlotForTimeRange(DateTime date, TimeSpan startTime, TimeSpan endTime)
     {

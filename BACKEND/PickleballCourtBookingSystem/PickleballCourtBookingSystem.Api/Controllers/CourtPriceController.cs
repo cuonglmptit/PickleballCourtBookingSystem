@@ -22,23 +22,14 @@ namespace PickleballCourtBookingSystem.Api.Controllers
         public IActionResult GetAllCourtPrice()
         {
             var result = _courtPriceService.GetAllService();
-            if (result.Success)
-            {
-                return Ok(result.Data);
-            }
-            return BadRequest();
+            return StatusCode(result.StatusCode, result);
         }
         
         [HttpGet("{id}")]
         public IActionResult GetCourtPriceById(Guid id)
         {
             var result = _courtPriceService.GetByIdService(id);
-            if (result.Success)
-            {
-                return Ok(result.Data);
-            }
-
-            return BadRequest();
+            return StatusCode(result.StatusCode, result);
         }
 
         [HttpPost]
@@ -46,12 +37,7 @@ namespace PickleballCourtBookingSystem.Api.Controllers
         {
             courtPrice.Id = Guid.NewGuid();
             var result = _courtPriceService.InsertService(courtPrice);
-            if (result.Success)
-            {
-                return Ok(result.StatusCode);
-            }
-
-            return BadRequest();
+            return StatusCode(result.StatusCode, result);
         }
         
         [HttpPost("multiple")]
@@ -62,35 +48,21 @@ namespace PickleballCourtBookingSystem.Api.Controllers
                 courtPrice.Id = Guid.NewGuid();
             }
             var result = _courtPriceService.InsertManyService(courtPrices);
-            if (result.Success)
-            {
-                return Ok(result.StatusCode);
-            }
-
-            return BadRequest(new { success = false, statusCode = result.StatusCode, userMessage = result.UserMsg, developerMessage = result.DevMsg });
+            return StatusCode(result.StatusCode, result);
         }
 
         [HttpPut]
         public IActionResult UpdateCourtPrice([FromBody] CourtPrice courtPrice, Guid id)
         {
             var result = _courtPriceService.UpdateService(courtPrice, id);
-            if (result.Success)
-            {
-                return Ok(result.StatusCode);
-            }
-
-            return BadRequest();
+            return StatusCode(result.StatusCode, result);
         }
         
         [HttpDelete("{id}")]
         public IActionResult DeleteCourtPrice(Guid id)
         {
             var result = _courtPriceService.DeleteService(id);
-            if (result.Success)
-            {
-                return Ok(result.StatusCode);
-            }
-            return BadRequest();
+            return StatusCode(result.StatusCode, result);
         }
 
     }

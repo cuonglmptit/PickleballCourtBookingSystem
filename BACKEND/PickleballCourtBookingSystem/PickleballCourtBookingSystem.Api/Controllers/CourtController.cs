@@ -22,23 +22,14 @@ namespace PickleballCourtBookingSystem.Api.Controllers
         public IActionResult GetAllCourt()
         {
             var result = _courtService.GetAllService();
-            if (result.Success)
-            {
-                return Ok(result.Data);
-            }
-            return BadRequest();
+            return StatusCode(result.StatusCode, result);
         }
         
         [HttpGet("{id}")]
         public IActionResult GetCourtById(Guid id)
         {
             var result = _courtService.GetByIdService(id);
-            if (result.Success)
-            {
-                return Ok(result.Data);
-            }
-
-            return BadRequest();
+            return StatusCode(result.StatusCode, result);
         }
 
         [HttpPost]
@@ -46,35 +37,21 @@ namespace PickleballCourtBookingSystem.Api.Controllers
         {
             court.Id = Guid.NewGuid();
             var result = _courtService.InsertService(court);
-            if (result.Success)
-            {
-                return Ok(result.StatusCode);
-            }
-
-            return BadRequest();
+            return StatusCode(result.StatusCode, result);
         }
 
         [HttpPut]
         public IActionResult UpdateCourt([FromBody] Court court, Guid id)
         {
             var result = _courtService.UpdateService(court, id);
-            if (result.Success)
-            {
-                return Ok(result.StatusCode);
-            }
-
-            return BadRequest();
+            return StatusCode(result.StatusCode, result);
         }
         
         [HttpDelete("{id}")]
         public IActionResult DeleteCourt(Guid id)
         {
             var result = _courtService.DeleteService(id);
-            if (result.Success)
-            {
-                return Ok(result.StatusCode);
-            }
-            return BadRequest();
+            return StatusCode(result.StatusCode, result);
         }
         
         [HttpGet("get-court-by-courtCluster/{courtClusterId}")]

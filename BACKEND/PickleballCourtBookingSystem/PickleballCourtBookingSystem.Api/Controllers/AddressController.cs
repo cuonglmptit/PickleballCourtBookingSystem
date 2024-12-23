@@ -22,22 +22,14 @@ namespace PickleballCourtBookingSystem.Api.Controllers
         public IActionResult GetAllAddress()
         {
             var result = _addressService.GetAllService();
-            if (result.Success)
-            {
-                return StatusCode(result.StatusCode, result);
-            }
-            return BadRequest();
+            return StatusCode(result.StatusCode, result);
         }
 
         [HttpGet("{id}")]
         public IActionResult GetAddressById(Guid id)
         {
             var result = _addressService.GetByIdService(id);
-            if (result.Success)
-            {
-                return StatusCode(result.StatusCode, result);
-            }
-            return BadRequest();
+            return StatusCode(result.StatusCode, result);
         }
 
         [HttpPost]
@@ -45,47 +37,28 @@ namespace PickleballCourtBookingSystem.Api.Controllers
         {
             address.Id = Guid.NewGuid();
             var result = _addressService.InsertService(address);
-            if (result.Success)
-            {
-                return StatusCode(result.StatusCode, result);
-            }
-
-            return BadRequest();
+            return StatusCode(result.StatusCode, result);
         }
 
         [HttpPut]
         public IActionResult UpdateAddress([FromBody] Address address, Guid id)
         {
             var result = _addressService.UpdateService(address, id);
-            if (result.Success)
-            {
-                return Ok(result.StatusCode);
-            }
-
-            return BadRequest();
+            return StatusCode(result.StatusCode, result);
         }
 
         [HttpDelete("{id}")]
         public IActionResult DeleteAddress(Guid id)
         {
             var result = _addressService.DeleteService(id);
-            if (result.Success)
-            {
-                return Ok(result.StatusCode);
-            }
-            return BadRequest();
+            return StatusCode(result.StatusCode, result);
         }
 
         [HttpGet("search")]
         public IActionResult SearchAddress([FromQuery] string query)
         {
             var result = _addressService.SearchAddress(query);
-            if (result.Success)
-            {
-                return Ok(result.Data);
-            }
-
-            return BadRequest();
+            return StatusCode(result.StatusCode, result);
         }
 
     }

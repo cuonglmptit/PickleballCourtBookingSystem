@@ -81,11 +81,7 @@ namespace PickleballCourtBookingSystem.Api.Controllers
             }
 
             var result = _bookingService.CourtOwnerConfirmBooking(Guid.Parse(userId), confirmBookingRequest.BookingId);
-            if (result.Success)
-            {
-                return Ok(result.StatusCode);
-            }
-            return BadRequest(new { success = false, statusCode = result.StatusCode, userMessage = result.UserMsg, developerMessage = result.DevMsg });
+            return StatusCode(result.StatusCode, result);
         }
 
         [HttpPost("customer-confirm-booking")]
@@ -101,11 +97,7 @@ namespace PickleballCourtBookingSystem.Api.Controllers
             }
 
             var result = _bookingService.CustomerConfirmBooking(Guid.Parse(userId), confirmBookingRequest.BookingId);
-            if (result.Success)
-            {
-                return Ok(result.StatusCode);
-            }
-            return BadRequest(new { success = false, statusCode = result.StatusCode, userMessage = result.UserMsg, developerMessage = result.DevMsg });
+            return StatusCode(result.StatusCode, result);
         }
 
 

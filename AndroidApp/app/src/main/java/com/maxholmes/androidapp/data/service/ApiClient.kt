@@ -1,4 +1,4 @@
-package com.maxholmes.androidapp.data.repository.remote
+package com.maxholmes.androidapp.data.service
 
 import com.google.gson.GsonBuilder
 import com.maxholmes.androidapp.utils.base.Constant
@@ -18,8 +18,8 @@ object RetrofitClient {
     }
 
     object ApiClient {
-        val apiService: ApiService by lazy {
-            RetrofitClient.retrofit.create(ApiService::class.java)
+        val apiService: APIService by lazy {
+            retrofit.create(APIService::class.java)
         }
     }
 }

@@ -29,11 +29,7 @@ namespace PickleballCourtBookingSystem.Api.Controllers
         public IActionResult Login([FromBody] LoginRequest request)
         {
             var result = _authService.Login(request.Username, request.Password);
-            if (result.Success)
-            {
-                return Ok(result);
-            }
-            return BadRequest();
+            return StatusCode(result.StatusCode, result);
         }
 
         [HttpGet("CheckToken")]
@@ -42,10 +38,10 @@ namespace PickleballCourtBookingSystem.Api.Controllers
             var result = _authService.ValidateToken(token);
             if (result != null)
             {
-                return Ok("Token hop le");
+                return StatusCode(200);
             }
 
-            return BadRequest("Token khong hop le");
+            return StatusCode(401);
         }
     }
 }

@@ -35,9 +35,20 @@ public class CourtTimeSlotRepository : BaseRepository<CourtTimeSlot>, ICourtTime
         return result;
     }
 
-    public IEnumerable<CourtTimeSlot> FindCourtTimeSlotsByCourtId(Guid? courtId, DateTime date, TimeSpan time)
+    public IEnumerable<CourtTimeSlot> FindCourtTimeSlotsByCourtId(Guid courtId, DateTime date, TimeSpan time)
     {
         var sqlCommand = $"SELECT * FROM {className} WHERE courtId = @courtId AND (date > @date OR (date = @date AND time > @time))";
+        var parameters = new DynamicParameters();
+        parameters.Add("@courtId", courtId);
+        parameters.Add("@date", date);
+        parameters.Add("@time", time);
+        var result = dbContext.Connection.Query<CourtTimeSlot>(sql: sqlCommand, param: parameters);
+        return result;
+    }
+
+    public IEnumerable<CourtTimeSlot> FindAvailableCourtTimeSlotByCourtIdAndDate(Guid courtId, DateTime date, TimeSpan time)
+    {
+        var sqlCommand = $"SELECT * FROM {className} WHERE courtId = @courtId AND date = @date AND time > @time AND isAvailable = 1 ORDER BY time";
         var parameters = new DynamicParameters();
         parameters.Add("@courtId", courtId);
         parameters.Add("@date", date);
