@@ -23,33 +23,21 @@ namespace PickleballCourtBookingSystem.Api.Controllers
         public IActionResult GetAllCourtCluster()
         {
             var result = _courtClusterService.GetAllService();
-            if (result.Success)
-            {
-                return Ok(result.Data);
-            }
-            return BadRequest();
+            return StatusCode(result.StatusCode, result);
         }
 
         [HttpGet("getCourtClusterForTimeRange")]
         public IActionResult GetCourtClusterForTime([FromBody] TimeRangeRequest timeRangeRequest)
         {
             var result = _courtClusterService.GetCourtClustersForTimeRange(timeRangeRequest.Date, timeRangeRequest.StartTime, timeRangeRequest.EndTime);
-            if (result.Success)
-            {
-                return Ok(result.Data);
-            }
-            return BadRequest(new { success = false, statusCode = result.StatusCode, userMessage = result.UserMsg, developerMessage = result.DevMsg });
+            return StatusCode(result.StatusCode, result);
         }
 
         [HttpGet("getCourtClusterAvailableForTime")]
         public IActionResult GetAvailableCourtClusterForTime([FromBody] TimeRangeRequest timeRangeRequest)
         {
             var result = _courtClusterService.GetAvailableCourtClusterForTime(timeRangeRequest.Date, timeRangeRequest.StartTime, timeRangeRequest.EndTime);
-            if (result.Success)
-            {
-                return Ok(result.Data);
-            }
-            return BadRequest(new { success = false, statusCode = result.StatusCode, userMessage = result.UserMsg, developerMessage = result.DevMsg });
+            return StatusCode(result.StatusCode, result);
         }
 
         [HttpGet("SearchCourtClusterWithFilter")]
@@ -65,12 +53,7 @@ namespace PickleballCourtBookingSystem.Api.Controllers
         public IActionResult GetCourtClusterById(Guid id)
         {
             var result = _courtClusterService.GetByIdService(id);
-            if (result.Success)
-            {
-                return Ok(result.Data);
-            }
-
-            return BadRequest();
+            return StatusCode(result.StatusCode, result);
         }
 
         [HttpPost]
@@ -102,12 +85,7 @@ namespace PickleballCourtBookingSystem.Api.Controllers
         public IActionResult UpdateCourtCluster([FromBody] CourtCluster courtCluster, Guid id)
         {
             var result = _courtClusterService.UpdateService(courtCluster, id);
-            if (result.Success)
-            {
-                return Ok(result.StatusCode);
-            }
-
-            return BadRequest();
+            return StatusCode(result.StatusCode, result);
         }
 
         [HttpDelete("{id}")]
