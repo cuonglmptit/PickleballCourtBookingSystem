@@ -46,7 +46,7 @@ export default {
   async created() {
     const response = await getAddressByid(this.courtData.addressId);
     this.courtAddress = response.data;
-    console.log(this.courtAddress);
+    // console.log(this.courtAddress);
   },
 };
 </script>

@@ -110,7 +110,6 @@ namespace PickleballCourtBookingSystem.Api.Controllers
             Dictionary<string, ServiceResult> failedRecords = new Dictionary<string, ServiceResult>();
             foreach (var courtCluster in courtClusters)
             {
-                courtCluster.Id = Guid.NewGuid();
                 var result = _courtClusterService.InsertService(courtCluster);
                 if (!result.Success)
                 {

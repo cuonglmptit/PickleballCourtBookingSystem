@@ -31,11 +31,6 @@
           :key="index"
           :courtData="court"
         />
-        <CourtRsItem
-          v-for="(court, index) in searchResults"
-          :key="index"
-          :courtData="court"
-        />
       </div>
     </div>
   </div>

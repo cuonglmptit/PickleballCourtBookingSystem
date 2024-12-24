@@ -1,80 +1,79 @@
 [
-    {
-      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-      "city": "Hồ Chí Minh",
-      "district": "Quận 1",
-      "ward": "Phường Bến Nghé",
-      "street": "Đường Nguyễn Huệ"
-    },
-    {
-      "id": "278f0020-0ceb-461e-8ddd-57380d02170b",
-      "city": "Hà Nội",
-      "district": "Quận Hoàn Kiếm",
-      "ward": "Phường Tràng Tiền",
-      "street": "Đường Lê Thái Tổ"
-    },
-    {
-      "id": "764af1d9-64ea-486f-b778-e102233a8d8b",
-      "city": "Hà Nội",
-      "district": "Quận Ba Đình",
-      "ward": "Phường Ngọc Khánh",
-      "street": "Đường Kim Mã"
-    },
-    {
-      "id": "9898ddfd-1f07-4038-8b83-6aa844e0a100",
-      "city": "Đà Nẵng",
-      "district": "Quận Ngũ Hành Sơn",
-      "ward": "Phường Khuê Mỹ",
-      "street": "Đường Lê Văn Duyệt"
-    },
-    {
-      "id": "a5bff1f0-5b8f-4c27-b462-d93907ac7559",
-      "city": "Hồ Chí Minh",
-      "district": "Quận 3",
-      "ward": "Phường Võ Thị Sáu",
-      "street": "Đường Trường Sa"
-    },
-    {
-      "id": "b3a55de8-b847-4920-9b82-882bd602b595",
-      "city": "Khánh Hòa",
-      "district": "TP. Nha Trang",
-      "ward": "Phường Lộc Thọ",
-      "street": "Đường Trần Phú"
-    },
-    {
-      "id": "d8fe6eb7-d60b-42c5-9cf7-789abd25fbda",
-      "city": "Hà Nội",
-      "district": "Quận Tây Hồ",
-      "ward": "Phường Quảng An",
-      "street": "Đường Âu Cơ"
-    },
-    {
-      "id": "dd4593d0-26dc-435f-b567-c07d38eccff1",
-      "city": "Hòa Bình",
-      "district": "TP. Hòa Bình",
-      "ward": "Phường Đồng Tiến",
-      "street": "Đường Lê Lợi"
-    },
-    {
-      "id": "e964d230-ef8e-4f53-b6ae-301dd8835c7b",
-      "city": "Hà Nội",
-      "district": "Quận Cầu Giấy",
-      "ward": "Phường Dịch Vọng",
-      "street": "Đường Xuân Thủy"
-    },
-    {
-      "id": "f4df01c4-12a6-434d-9d09-e12b71b830c2",
-      "city": "Hồ Chí Minh",
-      "district": "Quận 5",
-      "ward": "Phường 10",
-      "street": "Đường Nguyễn Tri Phương"
-    },
-    {
-      "id": "ff44a489-ab46-4511-be26-fbc5df3335cd",
-      "city": "Hà Nội",
-      "district": "Quận Hoàng Mai",
-      "ward": "Phường Thanh Trì",
-      "street": "Đường Tam Trinh"
-    }
-  ]
-  
+  {
+    "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "city": "Hồ Chí Minh",
+    "district": "Quận 1",
+    "ward": "Phường Bến Nghé",
+    "street": "Đường Nguyễn Huệ"
+  },
+  {
+    "id": "278f0020-0ceb-461e-8ddd-57380d02170b",
+    "city": "Hà Nội",
+    "district": "Quận Hoàn Kiếm",
+    "ward": "Phường Tràng Tiền",
+    "street": "Đường Lê Thái Tổ"
+  },
+  {
+    "id": "764af1d9-64ea-486f-b778-e102233a8d8b",
+    "city": "Hà Nội",
+    "district": "Quận Ba Đình",
+    "ward": "Phường Ngọc Khánh",
+    "street": "Đường Kim Mã"
+  },
+  {
+    "id": "9898ddfd-1f07-4038-8b83-6aa844e0a100",
+    "city": "Đà Nẵng",
+    "district": "Quận Ngũ Hành Sơn",
+    "ward": "Phường Khuê Mỹ",
+    "street": "Đường Lê Văn Duyệt"
+  },
+  {
+    "id": "a5bff1f0-5b8f-4c27-b462-d93907ac7559",
+    "city": "Hồ Chí Minh",
+    "district": "Quận 3",
+    "ward": "Phường Võ Thị Sáu",
+    "street": "Đường Trường Sa"
+  },
+  {
+    "id": "b3a55de8-b847-4920-9b82-882bd602b595",
+    "city": "Khánh Hòa",
+    "district": "TP. Nha Trang",
+    "ward": "Phường Lộc Thọ",
+    "street": "Đường Trần Phú"
+  },
+  {
+    "id": "d8fe6eb7-d60b-42c5-9cf7-789abd25fbda",
+    "city": "Hà Nội",
+    "district": "Quận Tây Hồ",
+    "ward": "Phường Quảng An",
+    "street": "Đường Âu Cơ"
+  },
+  {
+    "id": "dd4593d0-26dc-435f-b567-c07d38eccff1",
+    "city": "Hòa Bình",
+    "district": "TP. Hòa Bình",
+    "ward": "Phường Đồng Tiến",
+    "street": "Đường Lê Lợi"
+  },
+  {
+    "id": "e964d230-ef8e-4f53-b6ae-301dd8835c7b",
+    "city": "Hà Nội",
+    "district": "Quận Cầu Giấy",
+    "ward": "Phường Dịch Vọng",
+    "street": "Đường Xuân Thủy"
+  },
+  {
+    "id": "f4df01c4-12a6-434d-9d09-e12b71b830c2",
+    "city": "Hồ Chí Minh",
+    "district": "Quận 5",
+    "ward": "Phường 10",
+    "street": "Đường Nguyễn Tri Phương"
+  },
+  {
+    "id": "ff44a489-ab46-4511-be26-fbc5df3335cd",
+    "city": "Hà Nội",
+    "district": "Quận Hoàng Mai",
+    "ward": "Phường Thanh Trì",
+    "street": "Đường Tam Trinh"
+  }
+]
