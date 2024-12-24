@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PickleballCourtBookingSystem.Api.Models;
+using PickleballCourtBookingSystem.Core.DTOs;
 using PickleballCourtBookingSystem.Core.Entities;
 using PickleballCourtBookingSystem.Core.Interfaces.Infrastructure;
 using PickleballCourtBookingSystem.Core.Interfaces.Services;
@@ -61,5 +62,25 @@ namespace PickleballCourtBookingSystem.Api.Controllers
             return StatusCode(result.StatusCode, result);
         }
 
+        [HttpPost("dummy")]
+        public IActionResult PostListAddress([FromBody] List<Address> addresses)
+        {
+            Dictionary<string, ServiceResult> failedRecords = new Dictionary<string, ServiceResult>();
+            for (int i = 0; i < addresses.Count; i++)
+            {
+                var result = _addressService.InsertService(addresses[i]);
+                if (!result.Success)
+                {
+                    failedRecords.Add(addresses[i].Id.ToString(), result);
+                }
+
+            }
+            return StatusCode(201,
+                new
+                {
+                    Result = $"insert thành công {addresses.Count - failedRecords.Count}/{addresses.Count} bản ghi",
+                    Failed = failedRecords
+                });
+        }
     }
 }
