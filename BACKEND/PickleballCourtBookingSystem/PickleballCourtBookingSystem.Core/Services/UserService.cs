@@ -20,12 +20,81 @@ public class UserService : BaseService<User>, IUserService
         _addressService = addressService;
     }
 
+    public ServiceResult ChangePassword(UpdatePasswordDTO updatePasswordDTO, Guid id)
+    {
+        try
+        {
+            var errorData = new Dictionary<string, string>();
+            //Lấy user từ id
+            var user = _userRepository.GetById(id);
+            if (user == null)
+            {
+                return CommonMethods.CreateServiceResult(
+                    Success: false,
+                    StatusCode: 404,
+                    UserMsg: "User not found",
+                    DevMsg: "User not found"
+                );
+            }
+            //Check password cũ
+            if (!user.Password.Equals(updatePasswordDTO.CurrentPassword))
+            {
+                errorData.Add("CurrentPassword", "Mật khẩu cũ không đúng");
+            }
+            //Check password confirm
+            if (!updatePasswordDTO.NewPassword.Equals(updatePasswordDTO.ConfirmNewPassword))
+            {
+                errorData.Add("ConfirmPassword", "Password confirm không trùng khớp");
+            }
+
+            //Trả về kết quả
+            if (errorData.Any())
+            {
+                return CommonMethods.CreateServiceResult(
+                    Success: false,
+                    StatusCode: 400,
+                    UserMsg: "Validation errors occurred",
+                    DevMsg: "Validation failed for one or more fields",
+                    Data: errorData
+                );
+            }
+            //Nếu thành công thì thực hiên update password
+            var updateRes = base.UpdateSpecifiedColumnsService(new User { Password = updatePasswordDTO.NewPassword }, id, new List<string> { nameof(User.Password) });
+            //Trả về kết quả thành công
+            if (updateRes.Success) {
+                return CommonMethods.CreateServiceResult(
+                    Success: true,
+                    StatusCode: 200,
+                    UserMsg: "Password changed successfully",
+                    DevMsg: "Password changed successfully"
+                );
+            }
+            else
+            {
+                return CommonMethods.CreateServiceResult(
+                    Success: false,
+                    StatusCode: 500,
+                    UserMsg: "Failed to change password",
+                    DevMsg: "Failed to change password"
+                );
+            }
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+            return CommonMethods.CreateServiceResult(
+                Success: false,
+                StatusCode: 500,
+                UserMsg: "Failed to change password",
+                DevMsg: e.Message
+            );
+        }
+    }
+
     public ServiceResult Register(User user, Dictionary<string, string>? errorData = null)
     {
         try
         {
-
-
             // 1. Check các lỗi của user
             var userErrors = CheckRegisterUserErrors(user, errorData);
 

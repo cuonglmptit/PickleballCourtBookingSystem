@@ -57,6 +57,19 @@ namespace PickleballCourtBookingSystem.Api.Controllers
             return StatusCode(result.StatusCode, result);
         }
 
+        /// <summary>
+        /// Update password cho người dùng
+        /// </summary>
+        /// <param name="userDTO"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpPut("change-password/{id}")]
+        public IActionResult UpdatePasswordUser([FromBody] UpdatePasswordDTO passwordDTO, Guid id)
+        {
+            var result = _userService.ChangePassword(passwordDTO, id);
+            return StatusCode(result.StatusCode, result);
+        }
+
         [HttpDelete("{id}")]
         public IActionResult DeleteUser(Guid id)
         {

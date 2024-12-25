@@ -22,4 +22,12 @@ public interface IUserService : IBaseService<User>
     /// <param name="id">id của user muốn update</param>
     /// <returns>Kết quả update</returns>
     public ServiceResult UpdateService(UpdateUserDTO updateUserDTO, Guid id);
+
+    /// <summary>
+    /// Thay đổi password cho người dùng
+    /// </summary>
+    /// <param name="updatePasswordDTO">Đối tượng password</param>
+    /// <param name="id">Id người dùng</param>
+    /// <returns>Kết quả service</returns>
+    public ServiceResult ChangePassword(UpdatePasswordDTO updatePasswordDTO, Guid id);
 }
