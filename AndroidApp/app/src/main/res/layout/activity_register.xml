@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".screen.register.RegisterActivity">
+
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/sign_up"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="@dimen/dp_50"
+        android:gravity="center"/>
+
+    <EditText
+        android:id="@+id/edtUsername"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="wrap_content"
+        android:hint="Nhập tên tài khoản"
+        android:padding="@dimen/dp_12"
+        app:layout_constraintTop_toBottomOf="@+id/tvTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginHorizontal="@dimen/dp_24"
+        android:background="@drawable/rounded_border_layout" />
+
+    <EditText
+        android:id="@+id/edtFullName"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="wrap_content"
+        android:hint="Nhập họ và tên"
+        android:padding="@dimen/dp_12"
+        app:layout_constraintTop_toBottomOf="@+id/edtUsername"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginHorizontal="@dimen/dp_24"
+        android:layout_marginTop="@dimen/dp_20"
+        android:background="@drawable/rounded_border_layout" />
+
+    <EditText
+        android:id="@+id/edtEmail"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="wrap_content"
+        android:hint="Nhập email"
+        android:padding="@dimen/dp_12"
+        app:layout_constraintTop_toBottomOf="@+id/edtFullName"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginHorizontal="@dimen/dp_24"
+        android:layout_marginTop="@dimen/dp_20"
+        android:background="@drawable/rounded_border_layout" />
+
+    <EditText
+        android:id="@+id/edtPhoneNumber"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="wrap_content"
+        android:hint="Nhập số điện thoại (*)"
+        android:padding="@dimen/dp_12"
+        app:layout_constraintTop_toBottomOf="@+id/edtEmail"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginHorizontal="@dimen/dp_24"
+        android:layout_marginTop="@dimen/dp_20"
+        android:background="@drawable/rounded_border_layout" />
+
+    <EditText
+        android:id="@+id/edtPassword"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="wrap_content"
+        android:hint="Nhập mật khẩu (*)"
+        android:padding="@dimen/dp_12"
+        android:inputType="textPassword"
+        app:layout_constraintTop_toBottomOf="@+id/edtPhoneNumber"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginHorizontal="@dimen/dp_24"
+        android:layout_marginTop="@dimen/dp_20"
+        android:drawableEnd="@drawable/ic_eye_password_hide"
+        android:background="@drawable/rounded_border_layout" />
+
+    <EditText
+        android:id="@+id/edtConfirmPassword"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="wrap_content"
+        android:hint="Nhập lại mật khẩu (*)"
+        android:padding="@dimen/dp_12"
+        android:inputType="textPassword"
+        app:layout_constraintTop_toBottomOf="@+id/edtPassword"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginHorizontal="@dimen/dp_24"
+        android:layout_marginTop="@dimen/dp_20"
+        android:drawableEnd="@drawable/ic_eye_password_hide"
+        android:background="@drawable/rounded_border_layout" />
+
+    <CheckBox
+        android:id="@+id/checkboxCustomer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tôi là người đặt sân"
+        android:textSize="14sp"
+        app:layout_constraintTop_toBottomOf="@+id/edtConfirmPassword"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginStart="@dimen/dp_24"/>
+
+    <CheckBox
+        android:id="@+id/checkboxOwner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tôi là chủ sân"
+        android:textSize="14sp"
+        app:layout_constraintTop_toBottomOf="@+id/edtConfirmPassword"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginEnd="@dimen/dp_24"/>
+
+    <Button
+        android:id="@+id/btnRegister"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="wrap_content"
+        android:text="Đăng ký"
+        android:backgroundTint="@color/blue500"
+        android:textColor="@android:color/white"
+        app:layout_constraintTop_toBottomOf="@+id/checkboxCustomer"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginHorizontal="@dimen/dp_24"
+        android:layout_marginTop="@dimen/dp_20"/>
+
+    <TextView
+        android:id="@+id/tvLogin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Bạn đã có tài khoản? Đăng nhập"
+        android:textColor="@color/blue500"
+        android:padding="@dimen/dp_8"
+        app:layout_constraintTop_toBottomOf="@+id/btnRegister"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="@dimen/dp_20"
+        android:gravity="center"/>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/tvLogin"
+        android:layout_marginTop="@dimen/dp_20"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
