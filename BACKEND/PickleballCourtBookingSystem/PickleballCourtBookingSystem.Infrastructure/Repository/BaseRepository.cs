@@ -113,5 +113,10 @@ public class BaseRepository<T> : IBaseRepository<T> where T : class
         return dbContext.HasDuplicateValuesInOtherRecords<T>(entity, columns);
     }
 
+    public int UpdateSpecifiedColumns(T entity, Guid entityId, List<string> columns)
+    {
+        return dbContext.UpdateSpecifiedColumns<T>(entity, entityId, columns);
+    }
+
     #endregion
 }

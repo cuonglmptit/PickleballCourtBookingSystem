@@ -1,7 +1,7 @@
 <template>
   <div class="court-rs-container">
     <div class="court-header">
-      <div class="court-title">{{ courtData.name }}</div>
+      <div class="court-title">{{ courtClusterData.name }}</div>
       <div class="court-title">Đánh giá 5/5</div>
     </div>
     <div class="court-content">
@@ -11,13 +11,13 @@
       <div class="court-brief">
         <div class="court-inf">
           0862200319
-          <div v-if="courtAddress">
-            {{ courtAddress.street }}, {{ courtAddress.district }},
-            {{ courtAddress.city }}
+          <div v-if="courtClusterAddress">
+            {{ courtClusterAddress.street }}, {{ courtClusterAddress.district }},
+            {{ courtClusterAddress.city }}
           </div>
         </div>
         <router-link
-          :to="{ name: 'court-cluster-detail', params: { id: courtData.id } }"
+          :to="{ name: 'court-cluster-detail', params: { id: courtClusterData.id } }"
           class="court-action-button"
         >
           Chi tiết đặt sân
@@ -33,20 +33,20 @@ import { getAddressByid } from "../../scripts/apiService.js";
 
 export default {
   props: {
-    courtData: {
+    courtClusterData: {
       type: Object,
       reqired: true,
     },
   },
   data() {
     return {
-      courtAddress: null,
+      courtClusterAddress: null,
     };
   },
   async created() {
-    const response = await getAddressByid(this.courtData.addressId);
-    this.courtAddress = response.data;
-    // console.log(this.courtAddress);
+    const response = await getAddressByid(this.courtClusterData.addressId);
+    this.courtClusterAddress = response.data;
+    // console.log(this.courtClusterAddress);
   },
 };
 </script>

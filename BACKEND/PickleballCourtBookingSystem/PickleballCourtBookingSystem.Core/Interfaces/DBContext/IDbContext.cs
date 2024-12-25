@@ -130,6 +130,16 @@ namespace PickleballCourtBookingSystem.Core.Interfaces.DBContext
         /// <param name="orderByColumn">Cột muốn sắp xếp</param>
         /// <returns>Các bản ghi của trang</returns>
         IEnumerable<T> GetPaging<T>(int pageSize, int pageIndex, string orderByColumn, bool DESC = false);
+
+        /// <summary>
+        /// Update các cột trong danh sách (chỉ update những cột được liệt kê trong danh sách)
+        /// </summary>
+        /// <typeparam name="T">Class(bảng) muốn update</typeparam>
+        /// <param name="entity">Thể hiện muốn update giá trị của nó trong bảng</param>
+        /// <param name="entityId">Id của thực thể (để tránh update nhầm nếu thế hiện chưa có Id)</param>
+        /// <param name="columns">Các cột(Property) muốn update của thực thể</param>
+        /// <returns>Số bản ghi bị ảnh hưởng</returns>
+        int UpdateSpecifiedColumns<T>(T entity, Guid entityId, List<string> columns);
         #endregion
     }
 }

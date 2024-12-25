@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using PickleballCourtBookingSystem.Api.DTOs.AuthDTOs;
 using PickleballCourtBookingSystem.Api.Models;
 using PickleballCourtBookingSystem.Core.DTOs;
+using PickleballCourtBookingSystem.Core.DTOs.UserDTOs;
 using PickleballCourtBookingSystem.Core.Entities;
 using PickleballCourtBookingSystem.Core.Interfaces.Infrastructure;
 using PickleballCourtBookingSystem.Core.Interfaces.Services;
@@ -43,10 +44,16 @@ namespace PickleballCourtBookingSystem.Api.Controllers
             return StatusCode(result.StatusCode, result);
         }
 
-        [HttpPut]
-        public IActionResult UpdateUser([FromBody] User user, Guid id)
+        /// <summary>
+        /// Update user với UpdateUserDTO (chỉ được update những trường trong UpdateUserDTO)
+        /// </summary>
+        /// <param name="user">DTO</param>
+        /// <param name="id">id của user muốn update</param>
+        /// <returns></returns>
+        [HttpPut("{id}")]
+        public IActionResult UpdateUser([FromBody] UpdateUserDTO userDTO, Guid id)
         {
-            var result = _userService.UpdateService(user, id);
+            var result = _userService.UpdateService(userDTO, id);
             return StatusCode(result.StatusCode, result);
         }
 
@@ -73,7 +80,7 @@ namespace PickleballCourtBookingSystem.Api.Controllers
                     Id = Guid.Empty,
                     Username = user.Username.Trim(),
                     Password = user.Password,
-                    Name = user.FullName,
+                    Name = user.Name,
                     PhoneNumber = user.PhoneNumber,
                     Email = user.Email,
                     RoleId = (int)user.Role
