@@ -1,7 +1,8 @@
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PickleballCourtBookingSystem.Api.DTOs;
 using PickleballCourtBookingSystem.Api.Models;
+using PickleballCourtBookingSystem.Core.DTOs;
 using PickleballCourtBookingSystem.Core.Entities;
 using PickleballCourtBookingSystem.Core.Interfaces.Infrastructure;
 using PickleballCourtBookingSystem.Core.Interfaces.Services;
@@ -56,29 +57,24 @@ namespace PickleballCourtBookingSystem.Api.Controllers
             return StatusCode(result.StatusCode, result);
         }
 
+        /// <summary>
+        /// Post 1 CourtCluster
+        /// </summary>
+        /// <param name="courtCluster"></param>
+        /// <returns></returns>
         [HttpPost]
         public IActionResult PostCourtCluster([FromBody] CourtCluster courtCluster)
         {
             courtCluster.Id = Guid.NewGuid();
             var result = _courtClusterService.InsertService(courtCluster);
-            if (result.Success)
-            {
-                return Ok(result.StatusCode);
-            }
-
-            return BadRequest();
+            return StatusCode(result.StatusCode, result);
         }
 
         [HttpPost("AutoCreateCourtTimeSlot")]
         public IActionResult AutoCreateCourtTimeSlot([FromBody] AutoAddCourtTimeSlotRequest request)
         {
             var result = _courtClusterService.AddTimeSlotsWithDefaultPrice(request.CourtClusterId, request.Dates);
-            if (result.Success)
-            {
-                return Ok(result.StatusCode);
-            }
-
-            return BadRequest(new { success = false, statusCode = result.StatusCode, userMessage = result.UserMsg, developerMessage = result.DevMsg });
+            return StatusCode(result.StatusCode, result);
         }
 
         [HttpPut]
@@ -100,6 +96,32 @@ namespace PickleballCourtBookingSystem.Api.Controllers
         {
             var result = _courtClusterService.GetCourtsByClusterId(id);
             return StatusCode(result.StatusCode, result);
+        }
+
+
+        /// <summary>
+        /// Post 1 list CourtCluster
+        /// </summary>
+        /// <param name="courtClusters"></param>
+        /// <returns></returns>
+        [HttpPost("dummy")]
+        public IActionResult PostListCourtCluster([FromBody] List<CourtCluster> courtClusters)
+        {
+            Dictionary<string, ServiceResult> failedRecords = new Dictionary<string, ServiceResult>();
+            foreach (var courtCluster in courtClusters)
+            {
+                var result = _courtClusterService.InsertService(courtCluster);
+                if (!result.Success)
+                {
+                    failedRecords.Add(courtCluster.Name, result);
+                }
+            }
+            return StatusCode(201,
+                new
+                {
+                    Result = $"insert thành công {courtClusters.Count - failedRecords.Count}/{courtClusters.Count} bản ghi",
+                    Failed = failedRecords
+                });
         }
     }
 }

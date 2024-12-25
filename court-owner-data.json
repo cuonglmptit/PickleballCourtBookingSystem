@@ -1,0 +1,92 @@
+[
+	{
+		"UserName": "binhminh456",
+		"Password": "abc123",
+		"ConfirmPassword": "abc123",
+		"FullName": "Joy Dorsey",
+		"Email": "joydorsey8639@hotmail.couk",
+		"PhoneNumber": "08226141632",
+		"Role": "CourtOwner"
+	},
+	{
+		"UserName": "nguyetminh247",
+		"Password": "abc123",
+		"ConfirmPassword": "abc123",
+		"FullName": "Seth Morrow",
+		"Email": "sethmorrow1161@protonmail.edu",
+		"PhoneNumber": "03115774806",
+		"Role": "CourtOwner"
+	},
+	{
+		"UserName": "minhtri63",
+		"Password": "abc123",
+		"ConfirmPassword": "abc123",
+		"FullName": "Vivian Ashley",
+		"Email": "vivianashley@google.ca",
+		"PhoneNumber": "04262797277",
+		"Role": "CourtOwner"
+	},
+	{
+		"UserName": "chusan1",
+		"Password": "abc123",
+		"ConfirmPassword": "abc123",
+		"FullName": "Oscar Morrison",
+		"Email": "oscarmorrison@google.com",
+		"PhoneNumber": "08917436957",
+		"Role": "CourtOwner"
+	},
+	{
+		"UserName": "haianh17",
+		"Password": "abc123",
+		"ConfirmPassword": "abc123",
+		"FullName": "Carter Vincent",
+		"Email": "cartervincent@google.com",
+		"PhoneNumber": "07313123372",
+		"Role": "CourtOwner"
+	},
+	{
+		"UserName": "chusan2",
+		"Password": "abc123",
+		"ConfirmPassword": "abc123",
+		"FullName": "Valentine Davenport",
+		"Email": "valentinedavenport@hotmail.com",
+		"PhoneNumber": "00158108337",
+		"Role": "CourtOwner"
+	},
+	{
+		"UserName": "anhvu123",
+		"Password": "abc123",
+		"ConfirmPassword": "abc123",
+		"FullName": "Oscar Tate",
+		"Email": "oscartate610@yahoo.org",
+		"PhoneNumber": "05776583728",
+		"Role": "CourtOwner"
+	},
+	{
+		"UserName": "thanhphong42",
+		"Password": "abc123",
+		"ConfirmPassword": "abc123",
+		"FullName": "Hiram Garrett",
+		"Email": "hiramgarrett@hotmail.edu",
+		"PhoneNumber": "04566454063",
+		"Role": "CourtOwner"
+	},
+	{
+		"UserName": "tuananh99",
+		"Password": "abc123",
+		"ConfirmPassword": "abc123",
+		"FullName": "Francis Lambert",
+		"Email": "francislambert@hotmail.net",
+		"PhoneNumber": "07879888852",
+		"Role": "CourtOwner"
+	},
+	{
+		"UserName": "chusan3",
+		"Password": "abc123",
+		"ConfirmPassword": "abc123",
+		"FullName": "Ross Hanson",
+		"Email": "rosshanson@hotmail.org",
+		"PhoneNumber": "01771815653",
+		"Role": "CourtOwner"
+	}
+]

@@ -14,5 +14,10 @@ public interface ICourtClusterService: IBaseService<CourtCluster>
     public ServiceResult SearchCourtClusterWithFilters(string? cityName, string? courtClusterName,
         DateTime? date, TimeSpan? startTime, TimeSpan? endTime);
 
+    /// <summary>
+    /// Lấy ra các courts của một CourtCluster
+    /// </summary>
+    /// <param name="courtClusterId"> Id của CourtCluster </param>
+    /// <returns>Các courts</returns>
     public ServiceResult GetCourtsByClusterId(Guid courtClusterId);
 }

@@ -1,0 +1,112 @@
+[
+  {
+    "id": "8e7f9b8c-fc22-4c77-98c7-7c0e6a8f1b1e",
+    "name": "Sân Ngọc Lan",
+    "description": "Một cụm sân xanh mát, được bao quanh bởi hàng cây ngọc lan thơm ngát. Phù hợp cho các buổi chơi giải trí và thi đấu nhỏ.",
+    "openingTime": "06:00:00",
+    "closingTime": "22:00:00",
+    "addressId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "courtOwnerId": "1050f0b6-4346-44e3-97c4-7c411e933628",
+    "status": 1
+  },
+  {
+    "id": "4bfaaf62-88dc-4e8c-abc4-2df7a9e0836c",
+    "name": "Golden Pickle Courts",
+    "description": "Cụm sân hiện đại với ánh sáng vàng sang trọng, thiết kế phù hợp cho các giải đấu chuyên nghiệp.",
+    "openingTime": "07:00:00",
+    "closingTime": "23:00:00",
+    "addressId": "278f0020-0ceb-461e-8ddd-57380d02170b",
+    "courtOwnerId": "278f0020-0ceb-461e-8ddd-57380d02170b",
+    "status": 1
+  },
+  {
+    "id": "76996b27-3e34-4b5c-8a36-9304b2d87e74",
+    "name": "Sân Hoàng Gia",
+    "description": "Cụm sân cao cấp với dịch vụ đạt chuẩn 5 sao, thích hợp cho các buổi chơi riêng tư và sự kiện cao cấp.",
+    "openingTime": "08:00:00",
+    "closingTime": "20:00:00",
+    "addressId": "764af1d9-64ea-486f-b778-e102233a8d8b",
+    "courtOwnerId": "764af1d9-64ea-486f-b778-e102233a8d8b",
+    "status": 1
+  },
+  {
+    "id": "aa2d4412-b843-4d57-aec7-18b75c9c68ec",
+    "name": "Green Valley Courts",
+    "description": "Cụm sân nằm trong thung lũng xanh, mang lại cảm giác thoải mái và hòa mình với thiên nhiên.",
+    "openingTime": "05:30:00",
+    "closingTime": "21:30:00",
+    "addressId": "9898ddfd-1f07-4038-8b83-6aa844e0a100",
+    "courtOwnerId": "9898ddfd-1f07-4038-8b83-6aa844e0a100",
+    "status": 1
+  },
+  {
+    "id": "3c85fd97-f7eb-4cb1-bc33-22dd9b7e2386",
+    "name": "Sân Ánh Dương",
+    "description": "Cụm sân nổi bật với thiết kế mở, tận dụng tối đa ánh sáng tự nhiên vào ban ngày.",
+    "openingTime": "06:00:00",
+    "closingTime": "20:00:00",
+    "addressId": "a5bff1f0-5b8f-4c27-b462-d93907ac7559",
+    "courtOwnerId": "a5bff1f0-5b8f-4c27-b462-d93907ac7559",
+    "status": 1
+  },
+  {
+    "id": "3e618b02-1f69-4855-9e94-c3e96b92abda",
+    "name": "Ocean Breeze Courts",
+    "description": "Cụm sân gần biển, không khí trong lành và mát mẻ, mang lại trải nghiệm chơi đầy thư giãn.",
+    "openingTime": "07:00:00",
+    "closingTime": "22:00:00",
+    "addressId": "b3a55de8-b847-4920-9b82-882bd602b595",
+    "courtOwnerId": "b3a55de8-b847-4920-9b82-882bd602b595",
+    "status": 1
+  },
+  {
+    "id": "4cf6a6d5-52b1-4854-8365-c72015682e9c",
+    "name": "Sân Bình Minh",
+    "description": "Nơi lý tưởng để khởi đầu một ngày mới với không gian thoáng đãng và ánh nắng ban mai.",
+    "openingTime": "05:00:00",
+    "closingTime": "19:00:00",
+    "addressId": "d8fe6eb7-d60b-42c5-9cf7-789abd25fbda",
+    "courtOwnerId": "d8fe6eb7-d60b-42c5-9cf7-789abd25fbda",
+    "status": 1
+  },
+  {
+    "id": "dc9e3f2e-6e1f-491f-bbe2-1caa86b0ccf1",
+    "name": "Mountain View Courts",
+    "description": "Cụm sân trên cao với tầm nhìn hướng núi tuyệt đẹp, mang lại cảm giác yên bình và thư thái.",
+    "openingTime": "06:30:00",
+    "closingTime": "21:00:00",
+    "addressId": "dd4593d0-26dc-435f-b567-c07d38eccff1",
+    "courtOwnerId": "dd4593d0-26dc-435f-b567-c07d38eccff1",
+    "status": 1
+  },
+  {
+    "id": "0ff7bd4d-8483-42c5-a29b-7c7996dfcbe5",
+    "name": "Sân Sao Mai",
+    "description": "Cụm sân mới xây với cơ sở vật chất hiện đại, phù hợp cho mọi lứa tuổi và trình độ.",
+    "openingTime": "06:00:00",
+    "closingTime": "20:30:00",
+    "addressId": "e964d230-ef8e-4f53-b6ae-301dd8835c7b",
+    "courtOwnerId": "e964d230-ef8e-4f53-b6ae-301dd8835c7b",
+    "status": 1
+  },
+  {
+    "id": "ec6a3b65-7c1a-46a8-9a67-76f93f931b73",
+    "name": "Central Park Courts",
+    "description": "Cụm sân tọa lạc ngay trung tâm thành phố, thuận tiện cho việc di chuyển và tổ chức các sự kiện lớn.",
+    "openingTime": "06:00:00",
+    "closingTime": "22:30:00",
+    "addressId": "f4df01c4-12a6-434d-9d09-e12b71b830c2",
+    "courtOwnerId": "f4df01c4-12a6-434d-9d09-e12b71b830c2",
+    "status": 1
+  },
+  {
+    "id": "e624fe58-657e-419f-bc76-b219b58986e5",
+    "name": "Sân Hoa Anh Đào",
+    "description": "Cụm sân mang phong cách Nhật Bản với hàng hoa anh đào xung quanh, tạo không gian lãng mạn và thư giãn.",
+    "openingTime": "05:30:00",
+    "closingTime": "21:00:00",
+    "addressId": "ff44a489-ab46-4511-be26-fbc5df3335cd",
+    "courtOwnerId": "ff44a489-ab46-4511-be26-fbc5df3335cd",
+    "status": 1
+  }
+]

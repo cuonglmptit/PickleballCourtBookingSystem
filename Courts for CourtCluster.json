@@ -1,0 +1,146 @@
+[
+    {
+        "id": "b27a9ab2-c38f-45b7-9bc7-35d4b0b81915",
+        "courtNumber": 1,
+        "description": "Court 1 of Sân Ngọc Lan",
+        "courtClusterId": "8e7f9b8c-fc22-4c77-98c7-7c0e6a8f1b1e"
+    },
+    {
+        "id": "d8531c4a-1a63-4f8d-8f3b-0c1c27c0c0c7",
+        "courtNumber": 2,
+        "description": "Court 2 of Sân Ngọc Lan",
+        "courtClusterId": "8e7f9b8c-fc22-4c77-98c7-7c0e6a8f1b1e"
+    },
+    {
+        "id": "5b74a6a4-e74d-48de-bb1b-9b3d4a0f8c0a",
+        "courtNumber": 3,
+        "description": "Court 3 of Sân Ngọc Lan",
+        "courtClusterId": "8e7f9b8c-fc22-4c77-98c7-7c0e6a8f1b1e"
+    },
+    {
+        "id": "3c7bfc95-72bc-43a2-b377-6d8a13d2ca04",
+        "courtNumber": 4,
+        "description": "Court 4 of Sân Ngọc Lan",
+        "courtClusterId": "8e7f9b8c-fc22-4c77-98c7-7c0e6a8f1b1e"
+    },
+    {
+        "id": "45bc27cf-3e3e-4d2d-9537-3fdfe6ac3e93",
+        "courtNumber": 1,
+        "description": "Court 1 of Golden Pickle Courts",
+        "courtClusterId": "4bfaaf62-88dc-4e8c-abc4-2df7a9e0836c"
+    },
+    {
+        "id": "c848e29a-2b98-47e0-bd3d-df88b30e2a92",
+        "courtNumber": 2,
+        "description": "Court 2 of Golden Pickle Courts",
+        "courtClusterId": "4bfaaf62-88dc-4e8c-abc4-2df7a9e0836c"
+    },
+    {
+        "id": "f239ab68-1a67-4b35-81b7-619399c0df78",
+        "courtNumber": 3,
+        "description": "Court 3 of Golden Pickle Courts",
+        "courtClusterId": "4bfaaf62-88dc-4e8c-abc4-2df7a9e0836c"
+    },
+    {
+        "id": "2cf170f9-fbb4-4c29-bb3d-00fe5725a8ca",
+        "courtNumber": 4,
+        "description": "Court 4 of Golden Pickle Courts",
+        "courtClusterId": "4bfaaf62-88dc-4e8c-abc4-2df7a9e0836c"
+    },
+    {
+        "id": "a35712a1-c409-4e0a-b30b-22f68d49b7e0",
+        "courtNumber": 1,
+        "description": "Court 1 of Sân Hoàng Gia",
+        "courtClusterId": "76996b27-3e34-4b5c-8a36-9304b2d87e74"
+    },
+    {
+        "id": "dafc6a3e-b872-42b1-bcba-b3e29c4e52c6",
+        "courtNumber": 2,
+        "description": "Court 2 of Sân Hoàng Gia",
+        "courtClusterId": "76996b27-3e34-4b5c-8a36-9304b2d87e74"
+    },
+    {
+        "id": "9b8f3216-42f5-4501-bde0-24fc93de4597",
+        "courtNumber": 3,
+        "description": "Court 3 of Sân Hoàng Gia",
+        "courtClusterId": "76996b27-3e34-4b5c-8a36-9304b2d87e74"
+    },
+    {
+        "id": "864d69ae-d631-4fe5-b53d-1e7abf39a3c6",
+        "courtNumber": 4,
+        "description": "Court 4 of Sân Hoàng Gia",
+        "courtClusterId": "76996b27-3e34-4b5c-8a36-9304b2d87e74"
+    },
+    {
+        "id": "55e01362-51f4-4528-9b7b-813d209fb7d1",
+        "courtNumber": 1,
+        "description": "Court 1 of Green Valley Courts",
+        "courtClusterId": "aa2d4412-b843-4d57-aec7-18b75c9c68ec"
+    },
+    {
+        "id": "34ab4ea9-bb47-4a07-b58b-bd492872a2fe",
+        "courtNumber": 2,
+        "description": "Court 2 of Green Valley Courts",
+        "courtClusterId": "aa2d4412-b843-4d57-aec7-18b75c9c68ec"
+    },
+    {
+        "id": "ac75806f-d75a-40e5-a8c4-b62d0708b57f",
+        "courtNumber": 3,
+        "description": "Court 3 of Green Valley Courts",
+        "courtClusterId": "aa2d4412-b843-4d57-aec7-18b75c9c68ec"
+    },
+    {
+        "id": "ce0ac705-b93a-48bc-9b2b-c9f80c687d82",
+        "courtNumber": 4,
+        "description": "Court 4 of Green Valley Courts",
+        "courtClusterId": "aa2d4412-b843-4d57-aec7-18b75c9c68ec"
+    },
+    {
+        "id": "48c1a6a2-6e96-4773-b423-86f10e3f83a5",
+        "courtNumber": 1,
+        "description": "Court 1 of Sân Ánh Dương",
+        "courtClusterId": "3c85fd97-f7eb-4cb1-bc33-22dd9b7e2386"
+    },
+    {
+        "id": "1f5d0512-bd5d-46bb-9447-412d0a34ffec",
+        "courtNumber": 2,
+        "description": "Court 2 of Sân Ánh Dương",
+        "courtClusterId": "3c85fd97-f7eb-4cb1-bc33-22dd9b7e2386"
+    },
+    {
+        "id": "b792cf6a-3132-4249-a62b-abb80f088302",
+        "courtNumber": 3,
+        "description": "Court 3 of Sân Ánh Dương",
+        "courtClusterId": "3c85fd97-f7eb-4cb1-bc33-22dd9b7e2386"
+    },
+    {
+        "id": "ed42bc68-520b-4f65-a727-1a1a04263f2b",
+        "courtNumber": 4,
+        "description": "Court 4 of Sân Ánh Dương",
+        "courtClusterId": "3c85fd97-f7eb-4cb1-bc33-22dd9b7e2386"
+    },
+    {
+        "id": "cc66b09e-4d89-4ad0-b0da-70c9bc423f1d",
+        "courtNumber": 1,
+        "description": "Court 1 of Ocean Breeze Courts",
+        "courtClusterId": "3e618b02-1f69-4855-9e94-c3e96b92abda"
+    },
+    {
+        "id": "253ccae2-b2d5-4b6e-8ca9-f2f20413b6c7",
+        "courtNumber": 2,
+        "description": "Court 2 of Ocean Breeze Courts",
+        "courtClusterId": "3e618b02-1f69-4855-9e94-c3e96b92abda"
+    },
+    {
+        "id": "c170fa91-3506-44f2-9a1d-498c93c7f587",
+        "courtNumber": 3,
+        "description": "Court 3 of Ocean Breeze Courts",
+        "courtClusterId": "3e618b02-1f69-4855-9e94-c3e96b92abda"
+    },
+    {
+        "id": "fa375ba0-bf33-4cc0-8042-c93aeb5c3d47",
+        "courtNumber": 4,
+        "description": "Court 4 of Ocean Breeze Courts",
+        "courtClusterId": "3e618b02-1f69-4855-9e94-c3e96b92abda"
+    }
+]
