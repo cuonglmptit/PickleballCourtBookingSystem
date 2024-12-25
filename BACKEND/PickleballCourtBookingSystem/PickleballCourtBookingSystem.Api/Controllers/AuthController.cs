@@ -20,7 +20,7 @@ namespace PickleballCourtBookingSystem.Api.Controllers
         {
 
             var result = _authService.Register(request.Username, request.Password, request.ConfirmPassword,
-                                                 request.FullName, request.PhoneNumber,
+                                                 request.Name, request.PhoneNumber,
                                                     request.Email, request.Role);
             return StatusCode(result.StatusCode, result);
         }

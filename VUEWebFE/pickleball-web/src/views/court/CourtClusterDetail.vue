@@ -10,7 +10,7 @@
           <thead>
             <tr>
               <th>Thời gian</th>
-              <th v-for="field in fields" :key="field.id">
+              <th v-for="field in courts" :key="field.id">
                 Sân {{ field.name }}
               </th>
             </tr>
@@ -18,7 +18,7 @@
           <tbody>
             <tr v-for="timeSlot in timeSlots" :key="timeSlot.id">
               <td>{{ timeSlot.time }}</td>
-              <td v-for="field in fields" :key="field.id">150k</td>
+              <td v-for="field in courts" :key="field.id">150k</td>
             </tr>
           </tbody>
         </table>
@@ -27,13 +27,10 @@
       <div class="booking-form"></div>
     </div>
     <div class="right-part">
-      <div class="court-title">Cụm sân hà đông 1</div>
+      <div class="court-title">{{courtCluster.name}}</div>
       <div class="court-photos"></div>
       <div class="court-des">
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis
-        laboriosam veniam distinctio ex reiciendis quis asperiores libero quidem
-        quae, repellat temporibus sapiente quos impedit fugit architecto ad,
-        dolor sit illum!
+        {{courtCluster.description}}
       </div>
       <div class="google-maps"></div>
     </div>
@@ -41,17 +38,20 @@
 </template>
 
 <script>
+import {
+  getCourtsOfCourtCluster,
+  getCourtClusterById,
+} from "../../scripts/apiService.js";
 import DatePicker from "../../components/inputs/DatePicker.vue";
+
 export default {
   components: {
     DatePicker,
   },
   data() {
     return {
-      fields: [
-        { id: 1, name: "1" }, // Sân 1
-        { id: 2, name: "2" }, // Sân 2
-        { id: 3, name: "3" }, // Sân 3
+      courtCluster: {},
+      courts: [
       ],
       timeSlots: [
         { id: 1, time: "05:30-07:00" },
@@ -65,6 +65,28 @@ export default {
         searchDate: new Date().toISOString().split("T")[0],
       },
     };
+  },
+  async created() {
+    try {
+      const courtClusterRes = await getCourtClusterById(
+        this.$route.params.id
+      );
+      this.courtCluster = courtClusterRes.data;
+      console.log(this.courtCluster);
+      const courtsResponse = await getCourtsOfCourtCluster(
+        this.$route.params.id
+      );
+      this.courts = courtsResponse.data;
+      console.log(this.courts);
+    } catch (error) {
+      console.log(`CourtClusterDetail created(): `+error);
+    }
+  },
+
+  methods: {
+    clickCourtTimeSlot(event){
+      console.log(event.target);
+    }
   },
 };
 </script>

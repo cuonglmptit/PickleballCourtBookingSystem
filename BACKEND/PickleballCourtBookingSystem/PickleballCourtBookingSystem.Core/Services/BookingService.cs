@@ -1,4 +1,4 @@
-using PickleballCourtBookingSystem.Api.Models;
+﻿using PickleballCourtBookingSystem.Api.Models;
 using PickleballCourtBookingSystem.Core.DTOs;
 using PickleballCourtBookingSystem.Core.Entities;
 using PickleballCourtBookingSystem.Core.Interfaces.Infrastructure;
@@ -19,9 +19,13 @@ public class BookingService : BaseService<Booking>, IBookingService
     private readonly ICourtOwnerService _courtOwnerService;
     private readonly ITimeService _timeService;
     private readonly ICancellationService _cancellationService;
+    private readonly IUserService _userService;
     public BookingService(IBookingRepository repository,
         IRoleService roleService,
-        ICourtTimeSlotService courtTimeSlotService, ICourtTimeBookingService courtTimeBookingService, ICourtService courtService, ICustomerService customerService, IBookingRepository bookingRepository, ITimeService timeService, ICancellationService cancellationService, ICourtOwnerService courtOwnerService, ICourtClusterService courtClusterService) : base(repository)
+        ICourtTimeSlotService courtTimeSlotService, ICourtTimeBookingService courtTimeBookingService,
+        ICourtService courtService, ICustomerService customerService, IBookingRepository bookingRepository,
+        ITimeService timeService, ICancellationService cancellationService,
+        ICourtOwnerService courtOwnerService, ICourtClusterService courtClusterService, IUserService userService) : base(repository)
     {
         _roleService = roleService;
         _courtTimeSlotService = courtTimeSlotService;
@@ -33,6 +37,7 @@ public class BookingService : BaseService<Booking>, IBookingService
         _cancellationService = cancellationService;
         _courtOwnerService = courtOwnerService;
         _courtClusterService = courtClusterService;
+        _userService = userService;
     }
 
     public ServiceResult AddBooking(Guid userId, List<Guid> courtTimeSlotIds, Guid courtId)
@@ -44,13 +49,13 @@ public class BookingService : BaseService<Booking>, IBookingService
             {
                 return CreateServiceResult(false, StatusCode: 400, UserMsg: "Request error", DevMsg: "Request error");
             }
-            
+
             var roleServiceResult = _roleService.GetUserRoleByUserId(userId);
             if (!roleServiceResult.Success)
             {
                 return roleServiceResult;
             }
-            
+
 
             var courtServiceResult = _courtService.GetByIdService(courtId);
             if (!courtServiceResult.Success)
@@ -88,7 +93,7 @@ public class BookingService : BaseService<Booking>, IBookingService
                     amount += courtTimeSlot.Price.Value;
                 }
             }
-            
+
 
             var customerServiceResult = _customerService.GetCustomerByUserIdService(userId);
             if (!customerServiceResult.Success)
@@ -105,7 +110,7 @@ public class BookingService : BaseService<Booking>, IBookingService
                 CustomerId = customerId,
                 CourtClusterId = court.CourtClusterId,
                 TimeBooking = _timeService.GetCurrentTime(),
-                Status = (int) BookingStatusEnum.Pending,
+                Status = (int)BookingStatusEnum.Pending,
                 PaymentStatus = 0,
                 Amount = amount
             };
@@ -137,7 +142,7 @@ public class BookingService : BaseService<Booking>, IBookingService
                 }
                 listCourtTimeBooking.Add(courtTimeBooking);
             }
-            
+
             var resultAddCourtTimeBooking = _courtTimeBookingService.InsertManyService(listCourtTimeBooking);
             if (resultAddCourtTimeBooking.Success)
             {
@@ -163,29 +168,29 @@ public class BookingService : BaseService<Booking>, IBookingService
         {
             return CreateServiceResult(Success: false, StatusCode: 404, UserMsg: "Booking not found", DevMsg: "Booking not found");
         }
-        
+
         var resultGetCourtOwner = _courtOwnerService.GetCourtOwnerByUserIdService(userId);
         if (!resultGetCourtOwner.Success)
         {
             return resultGetCourtOwner;
         }
-        var courtOwner = (CourtOwner) resultGetCourtOwner.Data!;
+        var courtOwner = (CourtOwner)resultGetCourtOwner.Data!;
 
         var resultGetCourtCluster = _courtClusterService.GetByIdService(booking.CourtClusterId!.Value);
         if (!resultGetCourtCluster.Success)
         {
             return resultGetCourtCluster;
         }
-        var courtCluster = (CourtCluster) resultGetCourtCluster.Data!;
+        var courtCluster = (CourtCluster)resultGetCourtCluster.Data!;
         if (courtOwner.Id != courtCluster.CourtOwnerId)
         {
             return CreateServiceResult(Success: false, StatusCode: 403, UserMsg: "Ban khong phai la chu san trong Booking", DevMsg: "Id chu san khong phai cua chu san trong Booking");
         }
-        if (booking.Status != (int) BookingStatusEnum.Pending)
+        if (booking.Status != (int)BookingStatusEnum.Pending)
         {
             return CreateServiceResult(Success: false, StatusCode: 400, UserMsg: "Booking khong o trang thai dang dat", DevMsg: "Booking khong o trang thai dang dat");
         }
-        booking.Status = (int) BookingStatusEnum.CourtOwnerConfirmed;
+        booking.Status = (int)BookingStatusEnum.CourtOwnerConfirmed;
         var result = _bookingRepository.Update(booking, bookingId);
         if (result != 0)
         {
@@ -207,17 +212,17 @@ public class BookingService : BaseService<Booking>, IBookingService
         {
             return resultGetCustomer;
         }
-        var customer = (Customer) resultGetCustomer.Data!;
+        var customer = (Customer)resultGetCustomer.Data!;
         if (booking.CustomerId != customer.Id)
         {
             return CreateServiceResult(Success: false, StatusCode: 403, UserMsg: "Ban khong co quyen xac nhan", DevMsg: "Booking khong phai cua customer");
         }
-        
-        if (booking.Status != (int) BookingStatusEnum.CourtOwnerConfirmed)
+
+        if (booking.Status != (int)BookingStatusEnum.CourtOwnerConfirmed)
         {
             return CreateServiceResult(Success: false, StatusCode: 400, UserMsg: "Booking khong o trang thai duoc chu san xac nhan", DevMsg: "Booking khong o trang thai duoc chu san xac nhan");
         }
-        booking.Status = (int) BookingStatusEnum.Completed;
+        booking.Status = (int)BookingStatusEnum.Completed;
         var result = _bookingRepository.Update(booking, bookingId);
         if (result != 0)
         {
@@ -235,19 +240,19 @@ public class BookingService : BaseService<Booking>, IBookingService
             {
                 return CreateServiceResult(Success: false, StatusCode: 404, UserMsg: "Booking not found", DevMsg: "Booking not found");
             }
-            
+
             var resultGetCustomer = _customerService.GetCustomerByUserIdService(userId);
             if (!resultGetCustomer.Success)
             {
                 return resultGetCustomer;
             }
-            var customer = (Customer) resultGetCustomer.Data!;
+            var customer = (Customer)resultGetCustomer.Data!;
             if (booking.CustomerId != customer.Id)
             {
                 return CreateServiceResult(Success: false, StatusCode: 403, UserMsg: "Ban khong co quyen huy san", DevMsg: "Booking khong phai cua customer");
             }
-            
-            if (booking.Status != (int) BookingStatusEnum.Pending)
+
+            if (booking.Status != (int)BookingStatusEnum.Pending)
             {
                 return CreateServiceResult(Success: false, StatusCode: 400, UserMsg: "Booking khong o trang thai dang dat", DevMsg: "Booking khong o trang thai dang dat");
             }
@@ -265,19 +270,49 @@ public class BookingService : BaseService<Booking>, IBookingService
             {
                 return resultCreateCancelBooking;
             }
-            booking.Status = (int) BookingStatusEnum.Canceled;
+            booking.Status = (int)BookingStatusEnum.Canceled;
             var resultUpdateBooking = _bookingRepository.Update(booking, booking.Id!.Value);
             if (resultUpdateBooking != 0)
             {
                 return CreateServiceResult(Success: true, StatusCode: 200, UserMsg: "Huy dat san thanh cong", DevMsg: "Huy dat san thanh cong");
-               
+
             }
             return CreateServiceResult(Success: false, StatusCode: 500, UserMsg: "Failed to update booking", DevMsg: "Error when update status booking");
         }
         catch (Exception e)
         {
             Console.WriteLine(e);
-            throw;
+            return CreateServiceResult(Success: false, StatusCode: 500, UserMsg: "Failed to cancel booking", DevMsg: e.Message);
+        }
+    }
+
+    public ServiceResult GetBookingByStatusService(Guid userId, BookingStatusEnum status)
+    {
+        try
+        {
+            if (_userService.GetByIdService(userId).Data is not User user)
+            {
+                return CreateServiceResult(Success: false, StatusCode: 404, UserMsg: "User not found", DevMsg: "User not found");
+            }
+            Customer customer = _customerService.GetCustomerByUserIdService(userId).Data as Customer;
+            if (user.RoleId == (int)RoleEnum.Customer)
+            {
+                Console.WriteLine("cusid "+customer.Id + " userid "+customer.UserId);
+                Console.WriteLine("status "+(int)status);
+                Dictionary<string, object> conditions = new Dictionary<string, object>
+                {
+                    {nameof(Booking.CustomerId), customer.Id},
+                    {nameof(Booking.Status), (int)status}
+                };
+                var res = _bookingRepository.GetByMultipleConditions(conditions);
+                return CreateServiceResult(Success: true, StatusCode: 200, Data: res);
+            }
+            return CreateServiceResult(Success: false, StatusCode: 403, UserMsg: "Ban khong co quyen truy cap", DevMsg: "Ban khong co quyen truy cap");
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+            return CreateServiceResult(Success: false, StatusCode: 500, UserMsg: "Failed to get booking", DevMsg: e.Message);
         }
     }
 }

@@ -29,7 +29,7 @@
         <CourtRsItem
           v-for="(court, index) in searchResults"
           :key="index"
-          :courtData="court"
+          :courtClusterData="court"
         />
       </div>
     </div>

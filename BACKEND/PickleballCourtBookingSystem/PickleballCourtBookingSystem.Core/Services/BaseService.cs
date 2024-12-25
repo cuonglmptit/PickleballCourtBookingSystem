@@ -107,7 +107,7 @@ namespace PickleballCourtBookingSystem.Core.Services
                 return CreateServiceResult(Success: false, StatusCode: 500, UserMsg: "Có lỗi xảy ra khi cập nhật đối tượng.", DevMsg: ex.Message);
             }
         }
-        
+
         // Update custom thuoc tinh
         public virtual ServiceResult UpdatePartialService(T entity, Guid id)
         {
@@ -163,12 +163,40 @@ namespace PickleballCourtBookingSystem.Core.Services
             try
             {
                 var res = baseRepository.GetById(entityId);
-                return CreateServiceResult(Success:res != null, StatusCode: res != null ? 200 : 404, Data: res);
+                return CreateServiceResult(Success: res != null, StatusCode: res != null ? 200 : 404, Data: res);
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
                 return CreateServiceResult(Success: false, StatusCode: 500, UserMsg: "Có lỗi xảy ra khi tìm đối tượng.", DevMsg: ex.Message);
+            }
+        }
+
+        public ServiceResult UpdateSpecifiedColumnsService(T entity, Guid entityId, List<string> columns)
+        {
+            try
+            {
+                var res = baseRepository.UpdateSpecifiedColumns(entity, entityId, columns);
+                return CreateServiceResult(Success: res > 0, StatusCode: res > 0 ? 200 : 404);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return CreateServiceResult(Success: false, StatusCode: 500, UserMsg: "Có lỗi xảy ra khi cập nhật (các cột đã chỉ định) đối tượng.", DevMsg: "BaseService.UpdateSpecifiedColumnsService " + e.Message);
+            }
+        }
+
+        public ServiceResult GetByMultipleConditionsService(Dictionary<string, object> conditions)
+        {
+            try
+            {
+                var res = baseRepository.GetByMultipleConditions(conditions);
+                return CreateServiceResult(Success: res != null, StatusCode: res != null ? 200 : 404, Data: res);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return CreateServiceResult(Success: false, StatusCode: 500, UserMsg: "Có lỗi xảy ra khi tìm đối tượng theo nhiều điều kiện.", DevMsg: "BaseService.GetByMultipleConditions " + e.Message);
             }
         }
 

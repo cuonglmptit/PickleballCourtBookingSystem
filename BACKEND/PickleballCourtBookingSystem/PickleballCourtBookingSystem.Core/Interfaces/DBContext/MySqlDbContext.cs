@@ -3,6 +3,7 @@ using System.Data;
 using Microsoft.Extensions.Configuration;
 using MySqlConnector;
 using Dapper;
+using System.Text;
 
 
 namespace PickleballCourtBookingSystem.Core.Interfaces.DBContext;
@@ -65,8 +66,8 @@ public class MySqlDbContext : IDbContext
         var className = typeof(T).Name;
 
         //Khai báo biến các prop/column và value của thực thể
-        var propListName = String.Empty;
-        var propListValue = String.Empty;
+        var propListName = string.Empty;
+        var propListValue = string.Empty;
 
         //Tạo dynamic parameters
         var parameters = new DynamicParameters();
@@ -115,7 +116,7 @@ public class MySqlDbContext : IDbContext
     public int InsertMany<T>(List<T> entities)
     {
         var className = typeof(T).Name;
-        var propListName = String.Empty;
+        var propListName = string.Empty;
         var valuesList = new List<string>();
         var parameters = new DynamicParameters();
         var properties = typeof(T).GetProperties();
@@ -135,7 +136,7 @@ public class MySqlDbContext : IDbContext
         for (var i = 0; i < entities.Count; i++)
         {
             var entity = entities[i];
-            var propListValueForOne = String.Empty;
+            var propListValueForOne = string.Empty;
 
             foreach (var property in properties)
             {
@@ -167,7 +168,7 @@ public class MySqlDbContext : IDbContext
         var className = typeof(T).Name;
 
         // Khai báo biến các prop/column và value của thực thể
-        var setClause = String.Empty;
+        var setClause = string.Empty;
 
         // Tạo dynamic parameters
         var parameters = new DynamicParameters();
@@ -437,6 +438,94 @@ public class MySqlDbContext : IDbContext
         var sqlCommand = $"SELECT * FROM {className} ORDER BY {orderByColumn} {sort} LIMIT {pageSize} OFFSET {pageSize * (pageIndex - 1)}";
         var result = Connection.Query<T>(sql: sqlCommand);
         return result;
+    }
+
+    public int UpdateSpecifiedColumns<T>(T entity, Guid entityId, List<string> columns)
+    {
+        var className = typeof(T).Name;
+
+        // Khai báo biến các prop/column và value của thực thể
+        var setClause = string.Empty;
+
+        // Tạo dynamic parameters
+        var parameters = new DynamicParameters();
+
+        // Lấy ra các property của entity
+        var properties = entity.GetType().GetProperties();
+
+        // Duyệt qua các prop và build câu lệnh update
+        foreach (var property in properties)
+        {
+            // Lấy ra tên của property
+            var propName = property.Name;
+
+            // Nếu tên property có trong danh sách columns thì tiếp tục
+            if (columns.Contains(propName))
+            {
+                // Lấy ra value của property
+                var propValue = property.GetValue(entity);
+                // Nếu không đánh dấu NotInQuery thì mới thêm vào, Muốn đổi thành id khác cũng không được
+                if (!Attribute.IsDefined(property, typeof(NotInQuery)) && !Attribute.IsDefined(property, typeof(PrimaryKey)) && !Attribute.IsDefined(property, typeof(ForeignKey)))
+                {
+
+                    // Xây dựng phần SET của câu lệnh UPDATE
+                    setClause += $"{propName} = @{propName}, ";
+
+                    // Thêm vào dynamic parameters
+                    parameters.Add($"@{propName}", propValue);
+                }
+            }
+        }
+
+        // Loại bỏ dấu "," cuối chuỗi
+        if (setClause.EndsWith(", "))
+        {
+            setClause = setClause.Substring(0, setClause.Length - 2);
+        }
+
+        // Thêm tham số cho entityId
+        parameters.Add("@entityId", entityId);
+
+        // Tạo câu lệnh SQL
+        var sqlCommand = $"UPDATE {className} SET {setClause} WHERE Id = @entityId";
+
+        // Khai báo biến số bản ghi ảnh hưởng
+        var res = 0;
+
+        // Thực thi câu lệnh
+        res += Connection.Execute(sql: sqlCommand, param: parameters);
+
+        // Trả về kết quả
+        return res;
+    }
+
+    public IEnumerable<T> GetByMultipleConditions<T>(Dictionary<string, object> conditions)
+    {
+        // Nếu không có điều kiện, trả về danh sách trống
+        if (conditions == null || conditions.Count == 0)
+        {
+            return Enumerable.Empty<T>();
+        }
+
+        // Xây dựng câu lệnh SQL WHERE
+        var whereClause = new StringBuilder("WHERE ");
+        var parameters = new DynamicParameters();
+
+        foreach (var condition in conditions)
+        {
+            whereClause.Append($"{condition.Key} = @{condition.Key} AND ");
+            parameters.Add($"@{condition.Key}", condition.Value);
+        }
+
+        // Loại bỏ " AND " cuối cùng
+        whereClause.Length -= 5;
+
+        // Tạo câu truy vấn SQL
+        var sql = $"SELECT * FROM {typeof(T).Name} {whereClause}";
+
+        Console.WriteLine(sql);
+        // Thực thi truy vấn và trả về kết quả
+        return Connection.Query<T>(sql, parameters);
     }
 
     #endregion

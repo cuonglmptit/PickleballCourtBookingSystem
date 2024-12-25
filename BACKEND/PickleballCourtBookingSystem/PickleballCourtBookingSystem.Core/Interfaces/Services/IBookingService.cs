@@ -1,4 +1,4 @@
-using PickleballCourtBookingSystem.Api.Models;
+﻿using PickleballCourtBookingSystem.Api.Models;
 using PickleballCourtBookingSystem.Core.DTOs;
 using PickleballCourtBookingSystem.Core.Entities;
 
@@ -10,4 +10,10 @@ public interface IBookingService : IBaseService<Booking>
     public ServiceResult CourtOwnerConfirmBooking(Guid userId, Guid bookingId);
     public ServiceResult CustomerConfirmBooking(Guid userId, Guid bookingId);
     public ServiceResult CancelBooking(Guid userId, Guid bookingId, string? reason);
+    /// <summary>
+    /// Lấy ra các booking theo trạng thái
+    /// </summary>
+    /// <param name="status">Trạng thái</param>
+    /// <returns>Danh sách booking</returns>
+    public ServiceResult GetBookingByStatusService(Guid userId, BookingStatusEnum status);
 }

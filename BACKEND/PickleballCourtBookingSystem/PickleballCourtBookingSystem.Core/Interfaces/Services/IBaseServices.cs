@@ -44,7 +44,23 @@ namespace PickleballCourtBookingSystem.Core.Interfaces.Services
         ServiceResult GetAllService();
         
         ServiceResult GetByIdService(Guid id);
-        
+
+        /// <summary>
+        /// Update các cột trong danh sách (chỉ update những cột được liệt kê trong danh sách)
+        /// </summary>
+        /// <param name="entity">Thực thể update</param>
+        /// <param name="entityId">Id của thực thể</param>
+        /// <param name="columns">Các cột muốn update</param>
+        /// <returns>Kết quả service</returns>
+        ServiceResult UpdateSpecifiedColumnsService(T entity, Guid entityId, List<string> columns);
+
+        /// <summary>
+        /// Lấy các bản ghi dựa trên nhiều điều kiện cột.
+        /// Author: CuongLM (25/12/2024) 
+        /// </summary>
+        /// <param name="conditions">Danh sách các điều kiện (cột và giá trị tương ứng).</param>
+        /// <returns>Danh sách các thực thể phù hợp với điều kiện; danh sách rỗng nếu không có bản ghi nào phù hợp.</returns>
+        ServiceResult GetByMultipleConditionsService(Dictionary<string, object> conditions);
         #endregion
     }
 }

@@ -39,6 +39,15 @@ namespace PickleballCourtBookingSystem.Core.Interfaces.Infrastructure
         int Update(T entity, Guid entityId);
 
         /// <summary>
+        /// Update các cột trong danh sách (chỉ update những cột được liệt kê trong danh sách)
+        /// </summary>
+        /// <param name="entity">Thể hiện muốn update giá trị của nó</param>
+        /// <param name="entityId">Id của thực thể (để tránh update nhầm nếu thế hiện chưa có Id)</param>
+        /// <param name="columns">Các cột (Property) muốn update của thực thể</param>
+        /// <returns>Số bản ghi bị ảnh hưởng</returns>
+        int UpdateSpecifiedColumns(T entity, Guid entityId, List<string> columns);
+
+        /// <summary>
         /// Delete dữ liệu
         /// </summary>
         /// <param name="entityId">Id của bản ghi muốn xóa</param>
@@ -103,6 +112,7 @@ namespace PickleballCourtBookingSystem.Core.Interfaces.Infrastructure
         IEnumerable<T> GetPaging(int pageSize, int pageIndex, string orderByColumn, bool DESC = false);
 
         /// <summary>
+        /// *Note: bắt buộc entity phải có Id khác null (không có không hoạt động); 
         /// Check giá trị tồn tại duy nhất trong các cột được truyền vào (không một bản ghi nào có id khác bản ghi truyền vào mà có giá trị giống nhau ở các cột truyền vào)
         /// nghĩa là nếu có bản ghi khác id mà lại có giá trị trùng ở 1 trong các cột thì false
         /// Lệnh sẽ dạng này: WHERE (ColName1 = @T.Col1Value OR ColName2 = @T.Col2Value ...) AND Id != @Id
@@ -111,8 +121,16 @@ namespace PickleballCourtBookingSystem.Core.Interfaces.Infrastructure
         /// <param name="entity">Thực thể muốn kiểm tra</param>
         /// <param name="columns">Tên của các cột muốn kiểm tra</param>
         /// <returns>List các cột bị trùng nếu có, còn nếu không trùng thì là list rỗng</returns>
-        public List<string> HasDuplicateValuesInOtherRecords(T entity, List<string> columns);
+        List<string> HasDuplicateValuesInOtherRecords(T entity, List<string> columns);
 
+
+        /// <summary>
+        /// Lấy các bản ghi dựa trên nhiều điều kiện cột.
+        /// Author: CuongLM (25/12/2024) 
+        /// </summary>
+        /// <param name="conditions">Danh sách các điều kiện (cột và giá trị tương ứng).</param>
+        /// <returns>Danh sách các thực thể phù hợp với điều kiện; danh sách rỗng nếu không có bản ghi nào phù hợp.</returns>
+        IEnumerable<T> GetByMultipleConditions(Dictionary<string, object> conditions);
         #endregion
     }
 }
