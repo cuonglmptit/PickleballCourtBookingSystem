@@ -27,13 +27,10 @@
       <div class="booking-form"></div>
     </div>
     <div class="right-part">
-      <div class="court-title">Cụm sân hà đông 1</div>
+      <div class="court-title">{{courtCluster.name}}</div>
       <div class="court-photos"></div>
       <div class="court-des">
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis
-        laboriosam veniam distinctio ex reiciendis quis asperiores libero quidem
-        quae, repellat temporibus sapiente quos impedit fugit architecto ad,
-        dolor sit illum!
+        {{courtCluster.description}}
       </div>
       <div class="google-maps"></div>
     </div>
@@ -53,7 +50,7 @@ export default {
   },
   data() {
     return {
-      courtCluster: null,
+      courtCluster: {},
       courts: [
       ],
       timeSlots: [
@@ -83,6 +80,12 @@ export default {
       console.log(this.courts);
     } catch (error) {
       console.log(`CourtClusterDetail created(): `+error);
+    }
+  },
+
+  methods: {
+    clickCourtTimeSlot(event){
+      console.log(event.target);
     }
   },
 };

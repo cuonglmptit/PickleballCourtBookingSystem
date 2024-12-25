@@ -140,6 +140,15 @@ namespace PickleballCourtBookingSystem.Core.Interfaces.DBContext
         /// <param name="columns">Các cột(Property) muốn update của thực thể</param>
         /// <returns>Số bản ghi bị ảnh hưởng</returns>
         int UpdateSpecifiedColumns<T>(T entity, Guid entityId, List<string> columns);
+
+        /// <summary>
+        /// Lấy các bản ghi dựa trên nhiều điều kiện cột.
+        /// Author: CuongLM (25/12/2024)
+        /// </summary>
+        /// <typeparam name="T">Kiểu thực thể (bảng).</typeparam>
+        /// <param name="conditions">Danh sách các điều kiện (cột và giá trị tương ứng).</param>
+        /// <returns>Danh sách các thực thể phù hợp với điều kiện; danh sách rỗng nếu không có bản ghi nào phù hợp.</returns>
+        IEnumerable<T> GetByMultipleConditions<T>(Dictionary<string, object> conditions);
         #endregion
     }
 }

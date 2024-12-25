@@ -186,6 +186,20 @@ namespace PickleballCourtBookingSystem.Core.Services
             }
         }
 
+        public ServiceResult GetByMultipleConditionsService(Dictionary<string, object> conditions)
+        {
+            try
+            {
+                var res = baseRepository.GetByMultipleConditions(conditions);
+                return CreateServiceResult(Success: res != null, StatusCode: res != null ? 200 : 404, Data: res);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return CreateServiceResult(Success: false, StatusCode: 500, UserMsg: "Có lỗi xảy ra khi tìm đối tượng theo nhiều điều kiện.", DevMsg: "BaseService.GetByMultipleConditions " + e.Message);
+            }
+        }
+
         #endregion
     }
 }

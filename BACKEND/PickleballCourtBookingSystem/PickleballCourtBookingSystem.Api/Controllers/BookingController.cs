@@ -33,7 +33,7 @@ namespace PickleballCourtBookingSystem.Api.Controllers
             }
             return BadRequest();
         }
-        
+
         [HttpGet("{id}")]
         public IActionResult GetBookingById(Guid id)
         {
@@ -67,7 +67,7 @@ namespace PickleballCourtBookingSystem.Api.Controllers
 
             return BadRequest(new { success = false, statusCode = result.StatusCode, userMessage = result.UserMsg, developerMessage = result.DevMsg });
         }
-        
+
         [HttpPost("court-owner-confirm-booking")]
         [Authorize(Roles = nameof(RoleEnum.CourtOwner))]
         public IActionResult CourtOwnerConfirmBooking([FromBody] ConfirmBookingRequest confirmBookingRequest)
@@ -120,6 +120,18 @@ namespace PickleballCourtBookingSystem.Api.Controllers
                 return Ok(result.StatusCode);
             }
             return BadRequest(new { success = false, statusCode = result.StatusCode, userMessage = result.UserMsg, developerMessage = result.DevMsg });
+        }
+
+        //[Authorize(Roles = $"{nameof(RoleEnum.Customer)},{nameof(RoleEnum.CourtOwner)}")]
+        [HttpGet("/status/{status}")]
+        public IActionResult GetBookingByStatus(BookingStatusEnum status, Guid userId)
+        {
+            var result = _bookingService.GetBookingByStatusService(userId, status);
+            if (result.Success)
+            {
+                return Ok(result.Data);
+            }
+            return BadRequest();
         }
 
     }

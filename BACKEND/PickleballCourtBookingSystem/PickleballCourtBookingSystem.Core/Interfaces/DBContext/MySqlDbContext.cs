@@ -3,6 +3,7 @@ using System.Data;
 using Microsoft.Extensions.Configuration;
 using MySqlConnector;
 using Dapper;
+using System.Text;
 
 
 namespace PickleballCourtBookingSystem.Core.Interfaces.DBContext;
@@ -496,6 +497,35 @@ public class MySqlDbContext : IDbContext
 
         // Trả về kết quả
         return res;
+    }
+
+    public IEnumerable<T> GetByMultipleConditions<T>(Dictionary<string, object> conditions)
+    {
+        // Nếu không có điều kiện, trả về danh sách trống
+        if (conditions == null || conditions.Count == 0)
+        {
+            return Enumerable.Empty<T>();
+        }
+
+        // Xây dựng câu lệnh SQL WHERE
+        var whereClause = new StringBuilder("WHERE ");
+        var parameters = new DynamicParameters();
+
+        foreach (var condition in conditions)
+        {
+            whereClause.Append($"{condition.Key} = @{condition.Key} AND ");
+            parameters.Add($"@{condition.Key}", condition.Value);
+        }
+
+        // Loại bỏ " AND " cuối cùng
+        whereClause.Length -= 5;
+
+        // Tạo câu truy vấn SQL
+        var sql = $"SELECT * FROM {typeof(T).Name} {whereClause}";
+
+        Console.WriteLine(sql);
+        // Thực thi truy vấn và trả về kết quả
+        return Connection.Query<T>(sql, parameters);
     }
 
     #endregion

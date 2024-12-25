@@ -121,8 +121,16 @@ namespace PickleballCourtBookingSystem.Core.Interfaces.Infrastructure
         /// <param name="entity">Thực thể muốn kiểm tra</param>
         /// <param name="columns">Tên của các cột muốn kiểm tra</param>
         /// <returns>List các cột bị trùng nếu có, còn nếu không trùng thì là list rỗng</returns>
-        public List<string> HasDuplicateValuesInOtherRecords(T entity, List<string> columns);
+        List<string> HasDuplicateValuesInOtherRecords(T entity, List<string> columns);
 
+
+        /// <summary>
+        /// Lấy các bản ghi dựa trên nhiều điều kiện cột.
+        /// Author: CuongLM (25/12/2024) 
+        /// </summary>
+        /// <param name="conditions">Danh sách các điều kiện (cột và giá trị tương ứng).</param>
+        /// <returns>Danh sách các thực thể phù hợp với điều kiện; danh sách rỗng nếu không có bản ghi nào phù hợp.</returns>
+        IEnumerable<T> GetByMultipleConditions(Dictionary<string, object> conditions);
         #endregion
     }
 }

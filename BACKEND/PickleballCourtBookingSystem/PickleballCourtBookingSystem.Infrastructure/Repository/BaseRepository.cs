@@ -118,5 +118,10 @@ public class BaseRepository<T> : IBaseRepository<T> where T : class
         return dbContext.UpdateSpecifiedColumns<T>(entity, entityId, columns);
     }
 
+    public IEnumerable<T> GetByMultipleConditions(Dictionary<string, object> conditions)
+    {
+        return dbContext.GetByMultipleConditions<T>(conditions);
+    }
+
     #endregion
 }
