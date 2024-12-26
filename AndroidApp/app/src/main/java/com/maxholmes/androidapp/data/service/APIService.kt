@@ -1,6 +1,7 @@
 package com.maxholmes.androidapp.data.service
 
 import com.maxholmes.androidapp.data.dto.request.LoginRequest
+import com.maxholmes.androidapp.data.dto.request.RegisterRequest
 import com.maxholmes.androidapp.data.dto.response.APIResponse
 import com.maxholmes.androidapp.data.dto.response.LoginResponse
 import retrofit2.http.GET
@@ -14,7 +15,7 @@ import java.util.UUID
 
 interface APIService {
 
-    @POST("Login")
+    @POST("api/Auth/Login")
     fun login(@Body loginRequest: LoginRequest): Call<LoginResponse>
 
     @GET("api/CourtCluster")
@@ -28,4 +29,10 @@ interface APIService {
 
     @GET("api/CourtTimeSlot/getAvailableSlots")
     fun getCourtTimeSlotsForBooking(@Query("courtId") courtId: String, @Query("date") date: String): Call<APIResponse>
+
+    @POST("api/Auth/Register")
+    fun register(@Body registerRequest: RegisterRequest): Call<APIResponse>
+
+    @GET("/api/CourtTimeSlot/getAvailableSlots")
+    fun getAvailableTimeSlots(@Query("courtId") courtId: String, @Query("date") date: String): Call<APIResponse>
 }

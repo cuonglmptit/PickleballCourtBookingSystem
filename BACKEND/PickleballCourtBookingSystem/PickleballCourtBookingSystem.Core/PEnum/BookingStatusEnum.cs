@@ -1,4 +1,4 @@
-namespace PickleballCourtBookingSystem.Api.Models;
+namespace PickleballCourtBookingSystem.Core.PEnum;
 
 public enum BookingStatusEnum
 {
