@@ -3,6 +3,7 @@ using PickleballCourtBookingSystem.Core.DTOs;
 using PickleballCourtBookingSystem.Core.Entities;
 using PickleballCourtBookingSystem.Core.Interfaces.Infrastructure;
 using PickleballCourtBookingSystem.Core.Interfaces.Services;
+using PickleballCourtBookingSystem.Core.PEnum;
 
 namespace PickleballCourtBookingSystem.Core.Services
 
@@ -14,13 +15,90 @@ namespace PickleballCourtBookingSystem.Core.Services
         private readonly ICourtPriceService _courtPriceService;
         private readonly ICourtTimeSlotService _courtTimeSlotService;
         private readonly IAddressService _addressService;
-        public CourtClusterService(ICourtClusterRepository repository, ICourtClusterRepository courtClusterRepository, ICourtService courtService, ICourtPriceService courtPriceService, ICourtTimeSlotService courtTimeSlotService, IAddressService addressService) : base(repository)
+        private readonly ICourtOwnerService _courtOwnerService;
+        public CourtClusterService(ICourtClusterRepository repository, ICourtClusterRepository courtClusterRepository, ICourtService courtService, ICourtPriceService courtPriceService, ICourtTimeSlotService courtTimeSlotService, IAddressService addressService, ICourtOwnerService courtOwnerService) : base(repository)
         {
             _courtClusterRepository = courtClusterRepository;
             _courtService = courtService;
             _courtPriceService = courtPriceService;
             _courtTimeSlotService = courtTimeSlotService;
             _addressService = addressService;
+            _courtOwnerService = courtOwnerService;
+        }
+
+        public ServiceResult RegisterNewCourtCluster(Guid userId, string name, string? description, TimeSpan openingTime,
+            TimeSpan closingTime, string city, string district, string ward, string street, int numberOfCourts)
+        {
+            try
+            {
+                if (userId == Guid.Empty)
+                {
+                    return CreateServiceResult(false, StatusCode: 400, UserMsg: "Request error",
+                        DevMsg: "Request error");
+                }
+
+                var resultCourtOwner = _courtOwnerService.GetCourtOwnerByUserIdService(userId);
+                if (!resultCourtOwner.Success)
+                {
+                    return CreateServiceResult(false, StatusCode: 403, UserMsg: "Ban khong phai la chu san",
+                        DevMsg: "Ban khong phai la chu san");
+                }
+
+                var address = new Address
+                {
+                    Id = Guid.NewGuid(),
+                    City = city,
+                    District = district,
+                    Ward = ward,
+                    Street = street
+                };
+                var resultAddAddress = _addressService.InsertService(address);
+                if (!resultAddAddress.Success)
+                {
+                    return resultAddAddress;
+                }
+
+                var courtOwner = (CourtOwner)resultCourtOwner.Data!;
+                var courtCluster = new CourtCluster
+                {
+                    Id = Guid.NewGuid(),
+                    Name = name,
+                    Description = description,
+                    OpeningTime = openingTime,
+                    ClosingTime = closingTime,
+                    AddressId = address.Id,
+                    CourtOwnerId = courtOwner.Id,
+                    Status = (int)CourtClusterStatusEnum.PendingApproval
+                };
+
+                var result = _courtClusterRepository.Insert(courtCluster);
+                if (result == 0)
+                {
+                    return CreateServiceResult(Success: false, StatusCode: 400, UserMsg: "Loi khi them court cluster");
+                }
+
+                for (int i = 1; i <= numberOfCourts; i++)
+                {
+                    var court = new Court
+                    {
+                        Id = Guid.NewGuid(),
+                        CourtNumber = i,
+                        CourtClusterId = courtCluster.Id,
+                    };
+                    var resultAddCourt = _courtService.InsertService(court);
+                    if (!resultAddCourt.Success)
+                    {
+                        return resultAddCourt;
+                    }
+                }
+                return CreateServiceResult(Success: true, StatusCode: 201, UserMsg: "Them cum san moi thanh cong",
+                    DevMsg: "Them san thanh cong");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return CreateServiceResult(Success: false, StatusCode: 500, UserMsg: "Error", DevMsg: e.Message);
+            }
         }
 
         public ServiceResult GetCourtClustersForTimeRange(DateTime date, TimeSpan startTime, TimeSpan endTime)

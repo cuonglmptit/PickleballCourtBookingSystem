@@ -76,20 +76,21 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/chatButton"
+        app:layout_constraintEnd_toStartOf="@id/filterButton"
         android:layout_marginTop="@dimen/dp_10"
         android:layout_marginStart="@dimen/dp_10"
+        android:hint="@string/enter_name_or_address"
         android:background="@color/white"
 
         />
 
     <ImageButton
-        android:id="@+id/chatButton"
+        android:id="@+id/filterButton"
         android:layout_width="@dimen/dp_35"
         android:layout_height="@dimen/dp_35"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:scaleType="fitXY"
-        android:src="@drawable/ic_chat"
+        android:src="@drawable/ic_filter"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="@dimen/dp_10"

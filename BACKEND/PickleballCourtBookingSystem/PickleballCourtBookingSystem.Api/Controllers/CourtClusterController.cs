@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PickleballCourtBookingSystem.Api.DTOs;
 using PickleballCourtBookingSystem.Api.Models;
@@ -15,9 +16,11 @@ namespace PickleballCourtBookingSystem.Api.Controllers
     public class CourtClusterController : ControllerBase
     {
         private readonly ICourtClusterService _courtClusterService;
-        public CourtClusterController(ICourtClusterService courtClusterService)
+        private readonly IAuthService _authService;
+        public CourtClusterController(ICourtClusterService courtClusterService, IAuthService authService)
         {
             _courtClusterService = courtClusterService;
+            _authService = authService;
         }
 
         [HttpGet]
@@ -63,12 +66,21 @@ namespace PickleballCourtBookingSystem.Api.Controllers
         /// Post 1 CourtCluster
         /// </summary>
         /// <param name="courtCluster"></param>
+        /// <param name="addCourtClusterRequest"></param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult PostCourtCluster([FromBody] CourtCluster courtCluster)
+        [Authorize(Roles = nameof(RoleEnum.CourtOwner))]
+        public IActionResult AddCourtCluster([FromBody] AddCourtClusterRequest addCourtClusterRequest)
         {
-            courtCluster.Id = Guid.NewGuid();
-            var result = _courtClusterService.InsertService(courtCluster);
+            var authorizationHeader = HttpContext.Request.Headers["Authorization"].ToString();
+            var token = authorizationHeader["Bearer ".Length..].Trim();
+            var userId = _authService.GetUserIdFromToken(token);
+            if (userId == null)
+            {
+                return BadRequest("Token bi loi khong co Id");
+            }
+            var result = _courtClusterService.RegisterNewCourtCluster(Guid.Parse(userId), addCourtClusterRequest.Name, addCourtClusterRequest.Description, addCourtClusterRequest.OpeningTime,
+                addCourtClusterRequest.ClosingTime, addCourtClusterRequest.City, addCourtClusterRequest.District, addCourtClusterRequest.Ward, addCourtClusterRequest.Street, addCourtClusterRequest.NumberOfCourts);
             return StatusCode(result.StatusCode, result);
         }
 
