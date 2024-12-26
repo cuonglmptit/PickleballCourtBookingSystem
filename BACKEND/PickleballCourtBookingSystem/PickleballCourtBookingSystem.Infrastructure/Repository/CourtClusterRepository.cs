@@ -1,4 +1,4 @@
-using Dapper;
+﻿using Dapper;
 using PickleballCourtBookingSystem.Api.Models;
 using PickleballCourtBookingSystem.Core.Entities;
 using PickleballCourtBookingSystem.Core.Interfaces.DBContext;
@@ -13,7 +13,9 @@ namespace PickleballCourtBookingSystem.Infrastructure.Repository
 
         }
 
-        public IEnumerable<CourtCluster> SearchCourtClusterWithFilters(string? cityName, string? courtClusterName, DateTime date, TimeSpan startTime, TimeSpan endTime)
+        public IEnumerable<CourtCluster> SearchCourtClusterWithFilters(string? cityName, string? courtClusterName,
+            DateTime date, TimeSpan startTime, TimeSpan endTime,
+            int pageSize, int pageIndex, string orderByColumn, bool DESC = false)
         {
             var cityKeyword = "%" + cityName + "%";
             var courtClusterKeyword = "%" + courtClusterName + "%";
@@ -28,10 +30,30 @@ namespace PickleballCourtBookingSystem.Infrastructure.Repository
                                 AND cts.time >= @startTime
                                 AND cts.time < @endTime
                                 AND (@cityName IS NULL OR a.city LIKE @cityKeyword)
-                                AND (@courtClusterName IS NULL OR cc.name LIKE @courtClusterKeyword);
+                                AND (@courtClusterName IS NULL OR cc.name LIKE @courtClusterKeyword)
                                 ";
 
+
             var parameter = new DynamicParameters();
+
+            if (!string.IsNullOrEmpty(orderByColumn))
+            {
+                sqlCommand += $" ORDER BY {orderByColumn} {(DESC ? "DESC" : "ASC")}";
+            }
+
+            // Kiểm tra phân trang và thêm LIMIT vào câu lệnh SQL
+            if (pageSize > 0 && pageIndex > 0)
+            {
+                var offset = pageSize * (pageIndex - 1);
+                sqlCommand += " LIMIT @pageSize OFFSET @offset";
+                parameter.Add("@offset", pageSize * (pageIndex - 1)); // Set offset here
+                parameter.Add("@pageSize", pageSize);
+            }
+            else if (pageSize > 0 || pageIndex > 0)
+            {
+                Console.WriteLine("SearchCourtClusterWithFilters CourtClusterRepo: Warning: Pagination skipped because either pageSize or pageIndex is missing.");
+            }
+
             parameter.Add("@date", date);
             parameter.Add("@cityName", cityName);
             parameter.Add("@courtClusterName", courtClusterName);
@@ -39,6 +61,7 @@ namespace PickleballCourtBookingSystem.Infrastructure.Repository
             parameter.Add("@courtClusterKeyword", courtClusterKeyword);
             parameter.Add("@startTime", startTime);
             parameter.Add("@endTime", endTime);
+            //Console.WriteLine(sqlCommand);
             var result = dbContext.Connection.Query<CourtCluster>(sql: sqlCommand, param: parameter);
             return result;
         }

@@ -11,8 +11,9 @@ public interface ICourtClusterService: IBaseService<CourtCluster>
 
     public ServiceResult AddTimeSlotsWithDefaultPrice(Guid courtClusterId, List<DateTime> dates);
 
-    public ServiceResult SearchCourtClusterWithFilters(string? cityName, string? courtClusterName,
-        DateTime? date, TimeSpan? startTime, TimeSpan? endTime);
+    public ServiceResult SearchCourtClusterWithFiltersService(string? cityName, string? courtClusterName,
+        DateTime? date, TimeSpan? startTime, TimeSpan? endTime,
+        int? pageSize, int? pageIndex, string? orderByColumn, bool? DESC = false);
 
     /// <summary>
     /// Lấy ra các courts của một CourtCluster

@@ -43,10 +43,12 @@ namespace PickleballCourtBookingSystem.Api.Controllers
 
         [HttpGet("SearchCourtClusterWithFilter")]
         public IActionResult SearchCourtClusterWithFiler([FromQuery] string? cityName, [FromQuery] string? courtClusterName, [FromQuery] DateTime? date,
-            [FromQuery] TimeSpan? startTime, [FromQuery] TimeSpan? endTime)
+            [FromQuery] TimeSpan? startTime, [FromQuery] TimeSpan? endTime,
+            int? pageSize, int? pageIndex, string? orderByColumn, bool? DESC = false)
         {
-            var result = _courtClusterService.SearchCourtClusterWithFilters(cityName, courtClusterName, date, startTime, endTime);
-            Console.WriteLine(result);
+            var result = _courtClusterService.SearchCourtClusterWithFiltersService(cityName, courtClusterName, date, startTime, endTime,
+                                                    pageSize, pageIndex, orderByColumn, DESC);
+            //Console.WriteLine(result);
             return StatusCode(result.StatusCode, result);
         }
 

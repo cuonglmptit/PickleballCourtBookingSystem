@@ -105,8 +105,9 @@ namespace PickleballCourtBookingSystem.Core.Services
             }
         }
 
-        public ServiceResult SearchCourtClusterWithFilters(string? cityName, string? courtClusterName,
-            DateTime? date, TimeSpan? startTime, TimeSpan? endTime)
+        public ServiceResult SearchCourtClusterWithFiltersService(string? cityName, string? courtClusterName,
+            DateTime? date, TimeSpan? startTime, TimeSpan? endTime,
+            int? pageSize, int? pageIndex, string? orderByColumn, bool? DESC = false)
         {
             try
             {
@@ -114,7 +115,7 @@ namespace PickleballCourtBookingSystem.Core.Services
                 var dateCheck = date ?? timeNow.Date;
                 //Nếu ngày tìm lớn hơn ngày hôm nay thì thời gian bắt đầu sẽ là 00:00
                 //, nếu ngày tìm mà là hôm nay thì thời gian bắt đầu sẽ là hiện tại, 
-                Console.WriteLine("startTime truyen vao: " + startTime);
+                //Console.WriteLine("startTime truyen vao: " + startTime);
                 var startTimeCheck = startTime ?? TimeSpan.Zero;
                 if (dateCheck.Date == timeNow.Date && !startTime.HasValue)
                 {
@@ -141,19 +142,33 @@ namespace PickleballCourtBookingSystem.Core.Services
                 {
                     return CreateServiceResult(Success: false, StatusCode: 400, UserMsg: "Ngày truyền vào trong quá khứ", DevMsg: "Ngày truyền vào trong quá khứ");
                 }
-                var result = (List<CourtCluster>)_courtClusterRepository.SearchCourtClusterWithFilters(cityName, courtClusterName, dateCheck, startTimeCheck, endTimeCheck);
+
+                // Xử lý phân trang: Nếu chỉ truyền một giá trị hoặc cả hai giá trị null thì bỏ qua phân trang
+                if (pageSize.HasValue != pageIndex.HasValue)
+                {
+                    return CreateServiceResult(false, 400, "Thiếu thông tin phân trang", "pageSize và pageIndex cần được truyền cùng nhau");
+                }
+
+                // Gán giá trị mặc định nếu cần
+                var pageSizeValue = pageSize ?? 0; // Nếu không phân trang, `pageSize` là 0
+                var pageIndexValue = pageIndex ?? 0; // Nếu không phân trang, `pageIndex` là 0
+
+                // Gọi đến repository
+                var result = (List<CourtCluster>)_courtClusterRepository.SearchCourtClusterWithFilters(
+                    cityName, courtClusterName, dateCheck, startTimeCheck, endTimeCheck,
+                    pageSizeValue, pageIndexValue, orderByColumn, DESC ?? false);
                 Console.WriteLine("service SearchCourtClusterWithFilters kết quả: " + result.Count);
 
                 if (result.Count == 0)
                 {
-                    return CreateServiceResult(Success: true, StatusCode: 200, UserMsg: "Khong co cum san san thoa man dieu kien", DevMsg: "Khong co san thoa man dieu kien");
+                    return CreateServiceResult(Success: false, StatusCode: 200, UserMsg: "Không tìm thấy kết quả", DevMsg: "Không tìm thấy kết quả");
                 }
                 return CreateServiceResult(Success: true, StatusCode: 200, Data: result);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return CreateServiceResult(Success: false, StatusCode: 500, UserMsg: "Query loi", DevMsg: "Loi");
+                return CreateServiceResult(Success: false, StatusCode: 500, UserMsg: "Error", DevMsg: e.Message);
             }
         }
 
@@ -200,7 +215,7 @@ namespace PickleballCourtBookingSystem.Core.Services
                 return CreateServiceResult(Success: false, StatusCode: 500, UserMsg: "Error", DevMsg: e.Message);
             }
         }
-        
+
         public ServiceResult GetCourtsByClusterId(Guid courtClusterId)
         {
             try
