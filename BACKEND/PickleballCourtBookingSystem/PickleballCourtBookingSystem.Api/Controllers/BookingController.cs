@@ -7,6 +7,7 @@ using PickleballCourtBookingSystem.Api.Models;
 using PickleballCourtBookingSystem.Core.Entities;
 using PickleballCourtBookingSystem.Core.Interfaces.Infrastructure;
 using PickleballCourtBookingSystem.Core.Interfaces.Services;
+using PickleballCourtBookingSystem.Core.PEnum;
 using PickleballCourtBookingSystem.Infrastructure.Repository;
 
 namespace PickleballCourtBookingSystem.Api.Controllers
@@ -106,9 +107,7 @@ namespace PickleballCourtBookingSystem.Api.Controllers
         public IActionResult CancelBooking([FromBody] CancelBookingRequest request)
         {
             var authorizationHeader = HttpContext.Request.Headers["Authorization"].ToString();
-            Console.WriteLine(authorizationHeader);
             var token = authorizationHeader["Bearer ".Length..].Trim();
-            Console.WriteLine(token);
             var userId = _authService.GetUserIdFromToken(token);
             if (userId == null)
             {

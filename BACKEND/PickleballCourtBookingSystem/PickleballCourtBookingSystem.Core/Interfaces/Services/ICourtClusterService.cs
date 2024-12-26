@@ -20,4 +20,7 @@ public interface ICourtClusterService: IBaseService<CourtCluster>
     /// <param name="courtClusterId"> Id của CourtCluster </param>
     /// <returns>Các courts</returns>
     public ServiceResult GetCourtsByClusterId(Guid courtClusterId);
+
+    public ServiceResult RegisterNewCourtCluster(Guid userId, string name, string? description, TimeSpan openingTime,
+        TimeSpan closingTime, string city, string district, string ward, string street, int numberOfCourts);
 }
