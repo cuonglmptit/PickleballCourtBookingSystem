@@ -107,9 +107,7 @@ namespace PickleballCourtBookingSystem.Api.Controllers
         public IActionResult CancelBooking([FromBody] CancelBookingRequest request)
         {
             var authorizationHeader = HttpContext.Request.Headers["Authorization"].ToString();
-            Console.WriteLine(authorizationHeader);
             var token = authorizationHeader["Bearer ".Length..].Trim();
-            Console.WriteLine(token);
             var userId = _authService.GetUserIdFromToken(token);
             if (userId == null)
             {
