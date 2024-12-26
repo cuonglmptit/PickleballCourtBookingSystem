@@ -53,6 +53,10 @@ export default {
         startTime: this.$route.query.startTime || "",
         endTime: this.$route.query.endTime || "",
         cityName: this.$route.query.cityName || "",
+        pageSize: this.$route.query.pageSize || "",
+        pageIndex: this.$route.query.pageIndex || "",
+        orderByColumn: this.$route.query.orderByColumn || "name",
+        DESC: this.$route.query.DESC === "true" || false,
         forceUpdate: Date.now(),
       },
       searchResults: [], // dữ liệu kết quả tìm kiếm
@@ -79,6 +83,10 @@ export default {
         if (searchQuery.startTime === "Tất cả") {
           delete searchQuery.startTime;
           delete searchQuery.endTime;
+        }
+        // Nếu cityName là "Tất cả", xóa
+        if (searchQuery.cityName === "Tất cả") {
+          delete searchQuery.cityName;
         }
         // Gửi request đến API với query parameters
         const response = await searchCourtClusters(searchQuery);

@@ -7,6 +7,7 @@ using PickleballCourtBookingSystem.Api.Models;
 using PickleballCourtBookingSystem.Core.Entities;
 using PickleballCourtBookingSystem.Core.Interfaces.Infrastructure;
 using PickleballCourtBookingSystem.Core.Interfaces.Services;
+using PickleballCourtBookingSystem.Core.PEnum;
 using PickleballCourtBookingSystem.Infrastructure.Repository;
 
 namespace PickleballCourtBookingSystem.Api.Controllers

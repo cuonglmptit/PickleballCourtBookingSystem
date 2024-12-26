@@ -6,21 +6,36 @@
     </div>
     <div class="court-content">
       <div class="court-thumbnail">
-        <img src="https://res.cloudinary.com/dvqsa7iag/image/upload/v1734808805/Avatar.jpg" alt="" />
+        <img
+          src="https://res.cloudinary.com/dvqsa7iag/image/upload/v1734808805/Avatar.jpg"
+          alt=""
+        />
       </div>
       <div class="court-brief">
         <div class="court-inf">
-          0862200319
           <div v-if="courtClusterAddress">
-            {{ courtClusterAddress.street }}, {{ courtClusterAddress.district }},
+            {{ courtClusterAddress.street }},
+            {{ courtClusterAddress.district }},
             {{ courtClusterAddress.city }}
+          </div>
+          <div v-if="courtClusterData.description">
+            {{ courtClusterData.description }}
+          </div>
+          <div
+            v-if="courtClusterData.openingTime && courtClusterData.closingTime"
+          >
+            {{ courtClusterData.openingTime }} -
+            {{ courtClusterData.closingTime }}
           </div>
         </div>
         <router-link
-          :to="{ name: 'court-cluster-detail', params: { id: courtClusterData.id } }"
+          :to="{
+            name: 'court-cluster-detail',
+            params: { id: courtClusterData.id },
+          }"
           class="court-action-button"
         >
-          Chi tiết đặt sân
+          Chi tiết
           <div class="action-icon p-icon-right-round-arrow"></div>
         </router-link>
       </div>
@@ -95,7 +110,7 @@ export default {
 .court-inf {
   display: flex;
   flex-direction: column;
-  row-gap: 6px;
+  row-gap: 12px;
 }
 
 .court-thumbnail {

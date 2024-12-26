@@ -1,6 +1,7 @@
 ﻿using PickleballCourtBookingSystem.Api.Models;
 using PickleballCourtBookingSystem.Core.DTOs;
 using PickleballCourtBookingSystem.Core.Entities;
+using PickleballCourtBookingSystem.Core.PEnum;
 
 namespace PickleballCourtBookingSystem.Core.Interfaces.Services;
 

@@ -1,5 +1,7 @@
 <template>
-  <div class="footer"></div>
+  <div class="footer">
+    Hệ thống đặt sân Pickle Ball
+  </div>
 </template>
 
 <script>
@@ -10,6 +12,12 @@ export default {};
 .footer {
     height: 200px;
     width: 100%;
-    background-color: white;
+    background-color: var(--topic-color-700);
+    font-size: 32px;
+    font-family: roboto-bold;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 </style>

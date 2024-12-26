@@ -106,6 +106,10 @@
     background-image: url(../../assets/icon/court_active_hori.png);
 }
 
+.p-icon-court-disabled-hori {
+    background-image: url(../../assets/icon/court_disabled-hori.png);
+}
+
 .p-icon-calendar {
     background-image: url(../../assets/icon/calendar.png);
 }
@@ -120,4 +124,8 @@
 
 .p-img-icon-48 {
     height: 48px;
+}
+
+.p-icon-add-btn {
+    background-image: url(../../assets/icon/add-btn.png);
 }

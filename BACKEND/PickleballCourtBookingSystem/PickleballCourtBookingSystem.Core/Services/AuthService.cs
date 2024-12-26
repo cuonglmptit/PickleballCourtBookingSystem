@@ -144,6 +144,7 @@ public class AuthService : IAuthService
         }
         catch (Exception ex)
         {
+            Console.WriteLine(ex.Message);
             return null;
         }
     }

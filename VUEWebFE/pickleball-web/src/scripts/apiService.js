@@ -6,6 +6,7 @@ const endpoints = {
     getAddress: '/api/Address',
     getListTime: '/api/GetListTime',
     CourtCluster: '/api/CourtCluster',
+    getProvinces: '/api/Locations/provinces',
     getCourtsOfCourtCluster: (courtClusterId) => `/api/CourtCluster/${courtClusterId}/Courts`,
 };
 
@@ -39,4 +40,8 @@ export const getListTime = () => {
 
 export const getCourtsOfCourtCluster = (courtClusterId) => {
     return getData(endpoints.getCourtsOfCourtCluster(courtClusterId));
+}
+
+export const getProvinces = () => {
+    return getData(endpoints.getProvinces);
 }

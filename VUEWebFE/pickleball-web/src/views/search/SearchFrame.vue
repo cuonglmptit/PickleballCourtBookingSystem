@@ -34,6 +34,7 @@
             <div class="f-icon p-icon-location"></div>
             <InputSelect
               v-model="searchData.cityName"
+              :suggestions="['Tất cả', ...provinesSuggestionList]"
               :placeHoder="'Nhập khu vực'"
             />
           </div>
@@ -56,7 +57,7 @@ import DatePicker from "../../components/inputs/DatePicker.vue";
 // import DropCheckboxes from "../../components/inputs/DropCheckboxes.vue";
 import InputSelect from "../../components/inputs/InputSelect.vue";
 import TriangleButton from "../../components/buttons/TriangleButton.vue";
-import { getListTime } from "../../scripts/apiService.js";
+import { getListTime, getProvinces } from "../../scripts/apiService.js";
 export default {
   components: {
     TranparentSearch,
@@ -67,10 +68,18 @@ export default {
   },
   async created() {
     try {
+      //Lấy gợi ý list time
       const listTimeResposne = await getListTime();
       this.timeSuggestionList = listTimeResposne.data;
       this.updateEndTimeList(this.searchData.startTime);
-      console.log(this.timeSuggestionList);
+      // console.log(this.timeSuggestionList);
+
+      //Lấy gợi ý list khu vực
+      const listProvinesRes = await getProvinces();
+      this.provinesSuggestionList = listProvinesRes.data.map(
+        (item) => item.name
+      );
+      console.log(this.provinesSuggestionList);
     } catch (error) {
       console.log(error);
     }
@@ -128,7 +137,11 @@ export default {
         date: new Date().toISOString().split("T")[0],
         startTime: "Tất cả",
         endTime: "",
-        cityName: "",
+        cityName: "Tất cả",
+        pageSize: "",
+        pageIndex: "",
+        orderByColumn: "",
+        DESC: "",
         forceUpdate: Date.now(),
       }),
     },
@@ -138,6 +151,7 @@ export default {
       searchData: { ...this.initialData },
       timeSuggestionList: [],
       filteredEndTimeList: [],
+      provinesSuggestionList: [],
     };
   },
 };
