@@ -40,7 +40,7 @@ export default {
 .header {
   /* background: greenyellow; */
   position: fixed;
-  z-index: 9999;
+  z-index: 5;
   display: flex;
   height: 96px;
   width: 100%;

@@ -4,6 +4,7 @@ import SearchResult from '../views/search/SearchResult.vue';
 import MainLayout from '../views/layouts/MainLayout.vue';
 import EmptyLayout from '../views/layouts/EmptyLayout.vue';
 import CourtClusterDetail from '../views/court/CourtClusterDetail.vue';
+import CourtOwnerManage from '../views/owner/CourtOwnerManage.vue';
 import NotFound from '../views/NotFound.vue';
 import RegisterView from '../views/auth/RegisterView.vue';
 import LoginView from '../views/auth/LoginView.vue';
@@ -27,6 +28,11 @@ const routes = [
         path: '/court-cluster/:id',
         name: 'court-cluster-detail',
         component: CourtClusterDetail
+      },
+      {
+        path: '/manage/court-cluster',
+        name: 'manage-court-cluster',
+        component: CourtOwnerManage
       },
     ],
   },
