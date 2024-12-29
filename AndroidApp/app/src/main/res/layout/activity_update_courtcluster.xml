@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/dp_16"
+    tools:context=".UpdateFieldActivity">
+
+    <ImageButton
+        android:id="@+id/backButton"
+        android:layout_width="@dimen/dp_35"
+        android:layout_height="@dimen/dp_35"
+        android:background="@drawable/ic_arrrow_back"
+        android:scaleType="fitXY"
+        android:src="@drawable/ic_arrow_back"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Cập nhật thông tin sân"
+        android:textSize="@dimen/sp_18"
+        android:textStyle="bold"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/backButton"
+        app:layout_constraintTop_toTopOf="@id/backButton"
+        app:layout_constraintBottom_toBottomOf="@id/backButton"
+        app:layout_constraintEnd_toStartOf="@+id/saveButton" />
+
+    <ImageButton
+        android:id="@+id/saveButton"
+        android:layout_width="@dimen/dp_35"
+        android:layout_height="@dimen/dp_35"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:src="@drawable/ic_confirm"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <EditText
+        android:id="@+id/fieldName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Tên sân"
+        android:inputType="text"
+        app:layout_constraintTop_toBottomOf="@id/title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="@dimen/dp_16" />
+
+    <Spinner
+        android:id="@+id/openTimeSpinner"
+        android:layout_width="@dimen/dp_150"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_10"
+        app:layout_constraintTop_toBottomOf="@id/fieldName"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Spinner
+        android:id="@+id/closeTimeSpinner"
+        android:layout_width="@dimen/dp_150"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_10"
+        app:layout_constraintTop_toBottomOf="@id/openTimeSpinner"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/cityField"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Tỉnh/ thành phố"
+        android:inputType="text"
+        app:layout_constraintTop_toBottomOf="@id/closeTimeSpinner"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="@dimen/dp_10" />
+
+    <EditText
+        android:id="@+id/districtField"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Quận/ huyện"
+        android:inputType="text"
+        app:layout_constraintTop_toBottomOf="@id/cityField"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="@dimen/dp_10" />
+
+    <EditText
+        android:id="@+id/wardField"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Phường/ xã"
+        android:inputType="text"
+        app:layout_constraintTop_toBottomOf="@id/districtField"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="@dimen/dp_10" />
+
+    <EditText
+        android:id="@+id/addressField"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Đường, số nhà"
+        android:inputType="text"
+        app:layout_constraintTop_toBottomOf="@id/wardField"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="@dimen/dp_10" />
+
+    <EditText
+        android:id="@+id/descriptionField"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Mô tả"
+        android:inputType="textMultiLine"
+        android:minLines="3"
+        app:layout_constraintTop_toBottomOf="@id/addressField"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="@dimen/dp_10" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
