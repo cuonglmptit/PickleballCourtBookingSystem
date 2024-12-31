@@ -33,4 +33,5 @@
     <string name="invalid_password">Mật khẩu phải lớn hơn 5 ký tự</string>
     <string name="login_failed">Đăng nhập thất bại</string>
     <string name="enter_name_or_address">Nhập tên hoặc địa chỉ cụm sân để tìm kiếm</string>
+    <string name="title_activity_maps">MapsActivity</string>
 </resources>
