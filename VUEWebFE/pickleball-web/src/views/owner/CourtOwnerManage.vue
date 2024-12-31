@@ -1,12 +1,15 @@
 <template>
   <div class="container">
     <div class="navigation">
-      <div class="nav-option">Quản lý sân</div>
-      <div class="nav-option">Quản lý booking</div>
+      <router-link class="nav-option" :to="{ name: 'manage-court-cluster' }"
+        >Quản lý sân
+      </router-link>
+      <router-link class="nav-option" :to="{ name: 'owner-manage-booking' }"
+        >Quản lý booking
+      </router-link>
     </div>
     <div class="content">
-      <CourtRsItem :courtClusterData="courtCluster" />
-      <CourtRsItem :courtClusterData="courtCluster" />
+      <CourtRsItem :manageMode="true" :courtClusterData="courtCluster" />
       <button class="add-btn p-icon-add-btn" @click="showForm"></button>
     </div>
   </div>
@@ -31,7 +34,7 @@
           </div>
           <div class="p-input-container">
             <label for="">Địa chỉ</label>
-            <input type="city" id="city" placeholder="Khu vực" />
+            <input type="text" id="city" placeholder="Khu vực" />
             <div class="p-input-container">
               <input type="text" id="district" placeholder="Quận/Huyện..." />
             </div>
@@ -41,6 +44,10 @@
             <div class="p-input-container">
               <input type="text" id="street" placeholder="Tên đường..." />
             </div>
+          </div>
+          <div>
+            <label for="">Số lượng sân: </label>
+            <input type="number" />
           </div>
           <div class="p-input-container">
             <label for="">Mô tả</label>
@@ -149,6 +156,7 @@ export default {
   grid-template-columns: 1fr 1fr;
   gap: 12px;
   width: 100%;
+  border-radius: 4px;
   padding: 12px;
   overflow: auto;
 }
@@ -170,7 +178,7 @@ export default {
   font-size: 18px;
   font-family: roboto-medium;
   height: 32px;
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: rgba(255, 255, 255, 1);
   padding: 6px;
   border-radius: 4px;
   display: flex;
@@ -178,6 +186,16 @@ export default {
   align-items: center;
   border: 1px solid rgba(0, 0, 0, 0.2);
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  text-decoration: unset;
+  color: black;
+  opacity: 0.8;
+}
+
+.router-link-active {
+  opacity: 1;
+  background-color: var(--topic-color-600);
+  box-shadow: 2px 2px 4px var(--topic-color-500);
+  color: white;
 }
 
 /* add button */

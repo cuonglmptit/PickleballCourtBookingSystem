@@ -59,7 +59,11 @@
       <div class="court-des">
         {{ courtCluster.description }}
       </div>
-      <div class="court-title">Địa chỉ trên google maps</div>
+      <div class="court-title">Địa chỉ</div>
+      <div v-if="courtClusterAddress">
+        {{ courtClusterAddress.street }}, {{ courtClusterAddress.district }},
+        {{ courtClusterAddress.city }}
+      </div>
       <div class="google-maps"></div>
     </div>
   </div>
@@ -69,6 +73,7 @@
 import {
   getCourtsOfCourtCluster,
   getCourtClusterById,
+  getAddressByid,
 } from "../../scripts/apiService.js";
 import DatePicker from "../../components/inputs/DatePicker.vue";
 import TriangleButton from "../../components/buttons/TriangleButton.vue";
@@ -81,6 +86,7 @@ export default {
   data() {
     return {
       courtCluster: {},
+      courtClusterAddress: null,
       courts: [],
       timeSlots: [
         "00:00",
@@ -113,10 +119,14 @@ export default {
       courtClusterSearchData: {
         searchDate: new Date().toISOString().split("T")[0],
       },
+      courtClusterPhotoUrls:[
+        
+      ]
     };
   },
   async created() {
     try {
+      //fetch data
       const courtClusterRes = await getCourtClusterById(this.$route.params.id);
       this.courtCluster = courtClusterRes.data;
       console.log(this.courtCluster);
@@ -126,7 +136,13 @@ export default {
       this.courts = courtsResponse.data.sort(
         (a, b) => a.courtNumber - b.courtNumber
       );
-      console.log(this.courts);
+
+      // console.log(this.courts);
+      const addressRes = await getAddressByid(this.courtCluster.addressId);
+      this.courtClusterAddress = addressRes.data;
+
+      // Cập nhật Google Map
+      this.updateGoogleMap();
     } catch (error) {
       console.log(`CourtClusterDetail created(): ` + error);
     }
@@ -134,15 +150,37 @@ export default {
 
   methods: {
     clickCourtTimeSlot(event) {
-      const target = event.currentTarget;
+      try {
+        const target = event.currentTarget;
 
-      // Kiểm tra xem ô này đã được chọn chưa
-      if (target.classList.contains("slot-selected")) {
-        // Nếu đã chọn, bỏ chọn
-        target.classList.remove("slot-selected");
-      } else {
-        // Nếu chưa chọn, thêm trạng thái được chọn
-        target.classList.add("slot-selected");
+        // Kiểm tra xem ô này đã được chọn chưa
+        if (target.classList.contains("slot-selected")) {
+          // Nếu đã chọn, bỏ chọn
+          target.classList.remove("slot-selected");
+        } else {
+          // Nếu chưa chọn, thêm trạng thái được chọn
+          target.classList.add("slot-selected");
+        }
+      } catch (error) {
+        console.log(`clickCourtTimeSlot CourtClusterDetail ${error}`);
+      }
+    },
+    //Gán google map
+    updateGoogleMap() {
+      try {
+        const address = `${this.courtClusterAddress.street}, ${this.courtClusterAddress.district}, ${this.courtClusterAddress.city}`;
+        const encodedAddress = encodeURIComponent(address);
+        const embedUrl = `https://maps.google.com/maps?&q=${encodedAddress}&output=embed`;
+
+        // Gắn iframe vào phần tử với class 'google-maps'
+        const googleMapsElement = this.$el.querySelector(".google-maps");
+        if (googleMapsElement) {
+          googleMapsElement.innerHTML = `<iframe width="100%" height="100%" frameborder="0" 
+          scrolling="no" marginheight="0" marginwidth="0" 
+          src="${embedUrl}"></iframe>`;
+        }
+      } catch (error) {
+        console.log(`updateGoogleMap ${error}`);
       }
     },
   },
@@ -208,6 +246,7 @@ export default {
   justify-content: space-between;
   flex-wrap: nowrap;
   padding: 12px 32px 12px 32px;
+  overflow: hidden;
 }
 .form-selected-timeslot {
   display: flex;
@@ -222,7 +261,7 @@ export default {
   width: 30%;
 }
 
-.summary-money{
+.summary-money {
   display: flex;
   flex-wrap: nowrap;
   justify-content: space-between;
@@ -245,7 +284,7 @@ export default {
   font-family: roboto-medium;
   font-size: 24px;
 }
-
+/* CSS ảnh preview court photos */
 .court-photos {
   height: 35%;
   width: 100%;
@@ -260,7 +299,7 @@ export default {
 
 .google-maps {
   background-color: wheat;
-  height: 35%;
+  flex: 1;
 }
 
 /* CSS table */

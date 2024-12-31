@@ -129,3 +129,19 @@
 .p-icon-add-btn {
     background-image: url(../../assets/icon/add-btn.png);
 }
+
+.p-icon-delete-btn {
+    background-image: url(../../assets/icon/delete-btn.png);
+}
+
+.p-icon-view {
+    background-image: url(../../assets/icon/view.png);
+}
+
+.p-icon-hide {
+    background-image: url(../../assets/icon/hide.png);
+}
+
+.p-icon-x {
+    background-image: url(../../assets/icon/x.png);
+}

@@ -2,6 +2,7 @@
 @import url(./components/text-font.css);
 @import url(./components/filter.css);
 @import url(./components/button.css);
+@import url(./components/background-color.css);
 
 
 /* Biến màu toàn cục */
@@ -38,6 +39,17 @@
     --topic-color3-700: rgb(138, 0, 0);
     --topic-color3-800: rgb(92, 0, 0);
     --topic-color3-900: rgb(46, 0, 0);
+
+    --topic-color4-50: rgb(231, 245, 236);
+    --topic-color4-100: rgb(206, 234, 217);
+    --topic-color4-200: rgb(156, 213, 179);
+    --topic-color4-300: rgb(107, 193, 141);
+    --topic-color4-400: rgb(57, 172, 102);
+    --topic-color4-500: rgb(8, 151, 64);
+    --topic-color4-600: rgb(6, 121, 51);
+    --topic-color4-700: rgb(5, 91, 39);
+    --topic-color4-800: rgb(3, 60, 26);
+    --topic-color4-900: rgb(2, 30, 13);
 
     --banner-background-color: rgb(37, 88, 146);
 

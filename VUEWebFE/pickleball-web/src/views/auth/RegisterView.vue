@@ -5,45 +5,98 @@
         <div class="left-top">
           <div class="font-size-32">Đăng ký người dùng</div>
         </div>
-        <form class="signup-form" action="">
+        <form class="signup-form" @submit.prevent="handleRegister">
           <div class="p-input-container">
             <label for="">Tên của bạn</label>
-            <input type="text" id="name" placeholder="" />
+            <input
+              type="text"
+              id="name"
+              v-model="user.Name"
+              :class="{ 'input-error': nameError }"
+              @input="validateField('name')"
+            />
           </div>
           <div class="p-input-container">
             <label for="">Email</label>
-            <input type="text" id="email" placeholder="example@gmail.com" />
+            <input
+              type="email"
+              id="email"
+              v-model="user.Email"
+              :class="{ 'input-error': emailError }"
+              @input="validateField('email')"
+            />
           </div>
           <div class="p-input-container">
             <label for="">Số điện thoại</label>
-            <input type="text" id="phonenumber" placeholder="" />
+            <input
+              type="text"
+              id="phonenumber"
+              v-model="user.PhoneNumber"
+              :class="{ 'input-error': phoneError }"
+              @input="validateField('phonenumber')"
+            />
           </div>
           <div class="p-input-container">
             <label for="username">Tài khoản</label>
-            <input type="text" id="username" placeholder="" />
+            <input
+              type="text"
+              id="username"
+              v-model="user.Username"
+              :class="{ 'input-error': usernameError }"
+              @input="validateField('username')"
+            />
           </div>
           <div class="p-input-container">
             <label for="">Mật khẩu</label>
             <input
-              type="password"
               id="password"
-              placeholder="Tối thiểu 6 ký tự..."
+              :type="showPassword ? 'text' : 'password'"
+              v-model="user.Password"
+              :class="{ 'input-error': passwordError }"
+              @input="validateField('password')"
             />
-            <div class="p-input-container">
-              <input
-                type="password"
-                id="confirmPassword"
-                placeholder="Nhập lại mật khẩu..."
-              />
-            </div>
+            <div
+              v-if="user.Password"
+              class="toggle-password"
+              :class="showPassword ? 'p-icon-view' : 'p-icon-hide'"
+              @click="showPassword = !showPassword"
+            ></div>
+          </div>
+          <div class="p-input-container">
+            <label for=""
+              >Nhập lại mật khẩu
+              <span v-if="confirmPasswordError" class="error-message">
+                Mật khẩu nhật lại chưa khớp
+              </span>
+            </label>
+            <input
+              :type="showConfirmPassword ? 'text' : 'password'"
+              id="confirmPassword"
+              v-model="user.ConfirmPassword"
+              @input="validateField('confirmPassword')"
+            />
+            <div
+              v-if="user.ConfirmPassword"
+              class="toggle-password"
+              :class="showConfirmPassword ? 'p-icon-view' : 'p-icon-hide'"
+              @click="showConfirmPassword = !showConfirmPassword"
+            ></div>
           </div>
           <div class="checkbox-input">
-            <input type="checkbox" id="courtOwner" name="courtOwner" />
+            <input
+              type="checkbox"
+              id="courtOwner"
+              name="courtOwner"
+              v-model="isCourtOwner"
+            />
             <label for="courtOwner"> Tôi muốn trở thành chủ sân</label>
           </div>
+          <button type="submit" style="display: none"></button>
         </form>
         <div class="left-bottom">
-          <button class="p-button this-scoped-btn">Đăng ký</button>
+          <button class="p-button this-scoped-btn" @click="handleRegister">
+            Đăng ký
+          </button>
         </div>
       </div>
       <div class="right-part p-banner">
@@ -76,9 +129,102 @@
 
 <script>
 import PrimaryButtonBorder from "../../components/buttons/PrimaryButtonBorder.vue";
+import { registerUser } from "@/scripts/apiService.js";
 export default {
   components: {
     PrimaryButtonBorder,
+  },
+  data() {
+    return {
+      user: {
+        Username: "",
+        Password: "",
+        ConfirmPassword: "",
+        Name: "",
+        Email: "",
+        PhoneNumber: "",
+        Role: "Customer",
+      },
+      isCourtOwner: false, // Ràng buộc với checkbox
+      nameError: false,
+      emailError: false,
+      phoneError: false,
+      usernameError: false,
+      passwordError: false,
+      confirmPasswordError: false,
+      errors: "", // Thêm phần để hiển thị lỗi tổng thể nếu có
+      showPassword: false,
+      showConfirmPassword: false,
+    };
+  },
+  methods: {
+    validateEmail(email) {
+      if (/^[\w.-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/.test(email)) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    validateField(field) {
+      if (field === "name") {
+        this.nameError = !this.user.Name.trim();
+      } else if (field === "email") {
+        this.emailError =
+          !this.user.Email.trim() || !this.validateEmail(this.user.Email);
+      } else if (field === "phonenumber") {
+        this.phoneError = !this.user.PhoneNumber.trim();
+      } else if (field === "username") {
+        this.usernameError = !this.user.Username.trim();
+      } else if (field === "password") {
+        this.passwordError = !this.user.Password.trim();
+      } else if (field === "confirmPassword") {
+        this.confirmPasswordError =
+          this.user.ConfirmPassword !== this.user.Password;
+      }
+    },
+
+    async handleRegister() {
+      // Xác định vai trò dựa trên checkbox
+      this.user.Role = this.isCourtOwner ? "CourtOwner" : "Customer";
+      // Kiểm tra tất cả các trường
+      this.nameError = !this.user.Name.trim();
+      this.emailError =
+        !this.user.Email.trim() || !this.validateEmail(this.user.Email);
+      this.phoneError = !this.user.PhoneNumber.trim();
+      this.usernameError = !this.user.Username.trim();
+      this.passwordError = !this.user.Password.trim();
+      this.confirmPasswordError =
+        this.user.ConfirmPassword !== this.user.Password;
+      // Nếu có lỗi, không tiếp tục
+      if (
+        this.nameError ||
+        this.emailError ||
+        this.phoneError ||
+        this.usernameError ||
+        this.passwordError ||
+        this.confirmPasswordError
+      ) {
+        return;
+      }
+
+      try {
+        // Thực hiện yêu cầu đăng ký (Giả sử có hàm đăng ký API)
+        const response = await registerUser(this.user);
+        if (response.success) {
+          // Nếu đăng ký thành công, có thể chuyển hướng hoặc thông báo
+          this.$router.push("/login");
+          alert("Đăng ký thành công!"); // Hiển thị alert sau khi chuyển hướng
+        } else {
+          this.errors = response.data;
+          const errorResult = Object.entries(this.errors)
+            .map(([key, value]) => `${key}: ${value}`)
+            .join("\n");
+          alert(errorResult);
+        }
+      } catch (error) {
+        console.log(`handleRegister error: ${error}`);
+      }
+    },
   },
 };
 </script>
@@ -147,6 +293,26 @@ input:focus {
   border: 1px solid var(--topic-color-500);
   background-color: white;
 }
+.input-error {
+  background: url("@/assets/icon/error.png");
+  background-repeat: no-repeat;
+  background-position-x: calc(100% - 12px);
+  background-position-y: center;
+  background-size: 24px;
+  border: 1px solid var(--topic-color3-400);
+}
+.toggle-password {
+  width: 16px;
+  height: 16px;
+  position: absolute;
+  right: 12px;
+  bottom: 10px;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  background-repeat: no-repeat;
+  background-size: 16px;
+}
 
 /* input:not(:placeholder-shown):not(:focus) {
   background-color: white;
@@ -173,7 +339,7 @@ input:focus {
   width: 212px;
 }
 
-.checkbox-input{
+.checkbox-input {
   display: flex;
   align-items: center;
   column-gap: 4px;
@@ -212,5 +378,9 @@ input:focus {
   justify-content: end;
   width: 100%;
   padding: 0 12px 12px 12px;
+}
+
+.error-message {
+  color: var(--topic-color3-400);
 }
 </style>

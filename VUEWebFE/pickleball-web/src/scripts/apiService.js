@@ -8,6 +8,11 @@ const endpoints = {
     CourtCluster: '/api/CourtCluster',
     getProvinces: '/api/Locations/provinces',
     getCourtsOfCourtCluster: (courtClusterId) => `/api/CourtCluster/${courtClusterId}/Courts`,
+
+    // Endpoint đăng nhập
+    login: '/api/Auth/Login',
+    //Register
+    registerUser: '/api/Auth/Register',
 };
 
 export const searchCourtClusters = (queryParams) => {
@@ -44,4 +49,22 @@ export const getCourtsOfCourtCluster = (courtClusterId) => {
 
 export const getProvinces = () => {
     return getData(endpoints.getProvinces);
+}
+
+/**
+ * Đăng nhập với tài khoản và mật khẩu
+ * @param {String} username Tên đăng nhập
+ * @param {String} password Mật khẩu
+ * @returns {Promise} Promise chứa kết quả từ API
+ */
+export const login = (username, password) => {
+    const body = {
+        username,
+        password,
+    };
+    return postData(endpoints.login, body);
+};
+
+export const registerUser = (user) => {
+    return postData(endpoints.registerUser, user)
 }

@@ -30,7 +30,7 @@ public class AuthService : IAuthService
         _userService = userService;
     }
 
-    public ServiceResult Register(string username, string password, string confirmPassword, string fullName, string phoneNumber, string email, RoleEnum role)
+    public ServiceResult Register(string username, string password, string confirmPassword, string name, string phoneNumber, string email, RoleEnum role)
     {
 
         try
@@ -51,7 +51,7 @@ public class AuthService : IAuthService
                 Id = Guid.Empty,
                 Username = username.Trim(),
                 Password = password,
-                Name = fullName,
+                Name = name,
                 PhoneNumber = phoneNumber,
                 Email = email,
                 RoleId = (int)role
@@ -80,7 +80,7 @@ public class AuthService : IAuthService
             var user = _userRepository.CheckLogin(username, password);
             if (user == null)
             {
-                return CommonMethods.CreateServiceResult(Success: true, StatusCode: 401,
+                return CommonMethods.CreateServiceResult(Success: false, StatusCode: 401,
                     UserMsg: "Tài khoản hoặc mật khẩu đăng nhập không chính xác",
                     DevMsg: "Tài khoản hoặc mật khẩu đăng nhập không chính xác");
             }
@@ -91,8 +91,27 @@ public class AuthService : IAuthService
             new Claim(ClaimTypes.Role, roleEnum.ToString())
         };
             var token = GenerateToken(claims);
-            return CommonMethods.CreateServiceResult(Success: true, StatusCode: 200, UserMsg: "Đăng nhập thành công",
-                DevMsg: "Đăng nhập thành công", Data: new { Token = new JwtSecurityTokenHandler().WriteToken(token) });
+            return CommonMethods.CreateServiceResult(
+                Success: true, StatusCode: 200,
+                UserMsg: "Đăng nhập thành công",
+                DevMsg: "Đăng nhập thành công",
+                Data: new
+                {
+                    token = new JwtSecurityTokenHandler().WriteToken(token),
+                    user = new
+                    {
+                        id = user.Id,
+                        role = roleEnum.ToString(),
+                        code = user.Code,
+                        username = user.Username,
+                        name = user.Name,
+                        email = user.Email,
+                        phoneNumber = user.PhoneNumber,
+                        addressId = user.AddressId,
+                        avatarUrl = user.AvatarUrl,
+                    }
+                }
+            );
         }
         catch (Exception e)
         {

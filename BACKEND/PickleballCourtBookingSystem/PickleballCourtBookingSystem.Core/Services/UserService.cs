@@ -250,7 +250,7 @@ public class UserService : BaseService<User>, IUserService
         // 3. Check full name valid
         if (!CustomValidationMethods.IsValidFullName(user.Name))
         {
-            errorData.Add("FullName", "Tên không hợp lệ");
+            errorData.Add("Name", "Tên không hợp lệ");
         }
 
         // 4. Check role valid

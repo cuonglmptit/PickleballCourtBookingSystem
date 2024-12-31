@@ -1,13 +1,16 @@
 <template>
   <div class="court-rs-container">
     <div class="court-header">
-      <div class="court-title">{{ courtClusterData.name }}</div>
+      <div class="court-title">
+        <button class="delete-btn p-icon-delete-btn" v-if="manageMode"></button>
+        {{ courtClusterData.name }}
+      </div>
       <div class="court-title">Đánh giá 5/5</div>
     </div>
     <div class="court-content">
       <div class="court-thumbnail">
         <img
-          src="https://res.cloudinary.com/dvqsa7iag/image/upload/v1734808805/Avatar.jpg"
+          src="../../assets/img/picklleball_court_3.webp"
           alt=""
         />
       </div>
@@ -52,6 +55,10 @@ export default {
       type: Object,
       reqired: true,
     },
+    manageMode: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -59,14 +66,18 @@ export default {
     };
   },
   async created() {
-    const response = await getAddressByid(this.courtClusterData.addressId);
-    this.courtClusterAddress = response.data;
-    // console.log(this.courtClusterAddress);
+    try {
+      const response = await getAddressByid(this.courtClusterData.addressId);
+      this.courtClusterAddress = response.data;
+      // console.log(this.courtClusterAddress);
+    } catch (error) {
+      console.log(`CourtRsItem created: ` + error);
+    }
   },
 };
 </script>
 
-<style>
+<style scoped>
 .court-rs-container {
   width: 100%;
   height: 350px;
@@ -111,6 +122,14 @@ export default {
   display: flex;
   flex-direction: column;
   row-gap: 12px;
+}
+
+.court-inf div {
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .court-thumbnail {
@@ -164,5 +183,16 @@ export default {
   flex-shrink: 0;
   filter: invert(100%) sepia(100%) saturate(0%) hue-rotate(315deg)
     brightness(104%) contrast(101%);
+}
+
+.delete-btn {
+  width: 24px;
+  height: 24px;
+  background-size: 24px;
+  background-repeat: no-repeat;
+  background-position: center;
+  cursor: pointer;
+  border: none;
+  outline: none;
 }
 </style>
