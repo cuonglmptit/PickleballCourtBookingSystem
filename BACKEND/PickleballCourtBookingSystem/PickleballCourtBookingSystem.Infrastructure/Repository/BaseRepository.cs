@@ -118,9 +118,9 @@ public class BaseRepository<T> : IBaseRepository<T> where T : class
         return dbContext.UpdateSpecifiedColumns<T>(entity, entityId, columns);
     }
 
-    public IEnumerable<T> GetByMultipleConditions(Dictionary<string, object> conditions)
+    public IEnumerable<T> GetByMultipleConditions(Dictionary<string, object> conditions, Dictionary<string, string> orderBy = null)
     {
-        return dbContext.GetByMultipleConditions<T>(conditions);
+       return dbContext.GetByMultipleConditions<T>(conditions, orderBy);
     }
 
     #endregion

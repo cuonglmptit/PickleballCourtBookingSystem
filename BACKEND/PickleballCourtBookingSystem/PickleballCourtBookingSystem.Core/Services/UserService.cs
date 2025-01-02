@@ -14,10 +14,14 @@ public class UserService : BaseService<User>, IUserService
 {
     private readonly IUserRepository _userRepository;
     private readonly IAddressService _addressService;
-    public UserService(IUserRepository repository, IUserRepository userRepository, IAddressService addressService) : base(repository)
+    private readonly ICustomerService _customerService;
+    private readonly ICourtOwnerService _courtOwnerService;
+    public UserService(IUserRepository repository, IUserRepository userRepository, IAddressService addressService, ICustomerService customerService, ICourtOwnerService courtOwnerService) : base(repository)
     {
         _userRepository = userRepository;
         _addressService = addressService;
+        _customerService = customerService;
+        _courtOwnerService = courtOwnerService;
     }
 
     public ServiceResult ChangePassword(UpdatePasswordDTO updatePasswordDTO, Guid id)
@@ -61,7 +65,8 @@ public class UserService : BaseService<User>, IUserService
             //Nếu thành công thì thực hiên update password
             var updateRes = base.UpdateSpecifiedColumnsService(new User { Password = updatePasswordDTO.NewPassword }, id, new List<string> { nameof(User.Password) });
             //Trả về kết quả thành công
-            if (updateRes.Success) {
+            if (updateRes.Success)
+            {
                 return CommonMethods.CreateServiceResult(
                     Success: true,
                     StatusCode: 200,
@@ -132,9 +137,16 @@ public class UserService : BaseService<User>, IUserService
             user.Code = int.TryParse(newCode, out int parsedCode) ? parsedCode + 1 : 0;
             user.AvatarUrl = "";
             var insertRes = base.InsertService(user);
-
             if (insertRes.Success)
             {
+                if (user.RoleId == (int)RoleEnum.Customer)
+                {
+                    _customerService.InsertService(new Customer { Id = Guid.NewGuid(), UserId = user.Id });
+                }
+                else if (user.RoleId == (int)RoleEnum.CourtOwner)
+                {
+                    _courtOwnerService.InsertService(new CourtOwner { Id = Guid.NewGuid(), UserId = user.Id });
+                }
                 return CommonMethods.CreateServiceResult(
                     Success: true,
                     StatusCode: 201,
@@ -303,5 +315,58 @@ public class UserService : BaseService<User>, IUserService
             }
         }
         return errorData;
+    }
+
+    public override ServiceResult InsertService(User entity)
+    {
+        try
+        {
+            if (entity.Id == null)
+            {
+                entity.Id = Guid.NewGuid();
+            }
+            if (entity.AddressId == null)
+            {
+                var address = new Address
+                {
+                    Id = Guid.NewGuid(),
+                    City = "",
+                    District = "",
+                    Street = "",
+                    Ward = ""
+                };
+                _addressService.InsertService(address);
+                entity.AddressId = address.Id;
+            }
+            entity.IsActive = 1;
+            var newCode = _userRepository.FindLargestValueEndsWithNumberInColumn(nameof(User.Code));
+            entity.Code = int.TryParse(newCode, out int parsedCode) ? parsedCode + 1 : 0;
+            if (string.IsNullOrEmpty(entity.AvatarUrl))
+            {
+                entity.AvatarUrl = "";
+            }
+            var insertRs = base.InsertService(entity);
+            if (insertRs.Success)
+            {
+                if (entity.RoleId == (int)RoleEnum.Customer)
+                {
+                    _customerService.InsertService(new Customer { Id = Guid.NewGuid(), UserId = entity.Id });
+                }
+                else if (entity.RoleId == (int)RoleEnum.CourtOwner)
+                {
+                    _courtOwnerService.InsertService(new CourtOwner { Id = entity.Id, UserId = entity.Id });
+                }
+            }
+            return insertRs;
+        }
+        catch (Exception e)
+        {
+            return CommonMethods.CreateServiceResult(
+                Success: false,
+                StatusCode: 500,
+                UserMsg: "Failed to create account",
+                DevMsg: e.Message
+            );
+        }
     }
 }

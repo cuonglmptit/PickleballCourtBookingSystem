@@ -147,8 +147,9 @@ namespace PickleballCourtBookingSystem.Core.Interfaces.DBContext
         /// </summary>
         /// <typeparam name="T">Kiểu thực thể (bảng).</typeparam>
         /// <param name="conditions">Danh sách các điều kiện (cột và giá trị tương ứng).</param>
+        /// <param name="orderBy">các cặp order by cột</param>
         /// <returns>Danh sách các thực thể phù hợp với điều kiện; danh sách rỗng nếu không có bản ghi nào phù hợp.</returns>
-        IEnumerable<T> GetByMultipleConditions<T>(Dictionary<string, object> conditions);
+        IEnumerable<T> GetByMultipleConditions<T>(Dictionary<string, object> conditions, Dictionary<string, string> orderBy = null);
         #endregion
     }
 }
