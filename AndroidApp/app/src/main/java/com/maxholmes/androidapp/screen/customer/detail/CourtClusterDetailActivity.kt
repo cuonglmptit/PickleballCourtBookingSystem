@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.maxholmes.androidapp.R
 import com.maxholmes.androidapp.data.dto.response.APIResponse
 import com.maxholmes.androidapp.data.dto.response.parseApiResponseData
+import com.maxholmes.androidapp.data.model.Address
 import com.maxholmes.androidapp.data.service.RetrofitClient
 import com.maxholmes.androidapp.data.model.Court
 import com.maxholmes.androidapp.data.model.CourtCluster
@@ -37,7 +38,7 @@ class CourtClusterDetailActivity : AppCompatActivity() {
         binding = ActivityCourtClusterDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        courtClusterId = intent.getStringExtra("courtClusterId") ?: throw IllegalArgumentException("courtClusterId is required")
+//        courtClusterId = intent.getStringExtra("courtClusterId") ?: throw IllegalArgumentException("courtClusterId is required")
 
         setupRecyclerViews()
 
@@ -88,51 +89,108 @@ class CourtClusterDetailActivity : AppCompatActivity() {
     }
 
     private fun loadCourtClusterDetails() {
-        RetrofitClient.ApiClient.apiService.getCourtClusterById(courtClusterId).enqueue(object : Callback<APIResponse> {
+        binding.courtNameTextView.text = "Sân Sao Mai"
+        binding.courtDescriptionTextView.text = "Không có mô tả"
+        binding.addressCourtTextView.text = "Đường Xuân Thủy, Phường Dịch Vọng, Quận Cầu Giấy, Hà Nội"
+        binding.phoneNumberTextView.text = "0123456789"
+        binding.starValueTextView.text = "0"
+        binding.workingTimeTextView.text = "05:00 - 22:00"
+        binding.courtClusterImage.setImageResource(R.drawable.image_court_1)
+//        RetrofitClient.ApiClient.apiService.getCourtClusterById(courtClusterId).enqueue(object : Callback<APIResponse> {
+//            override fun onResponse(call: Call<APIResponse>, response: Response<APIResponse>) {
+//                if (response.isSuccessful) {
+//                    response.body()?.let { apiResponse ->
+//                        val courtCluster: CourtCluster? = parseApiResponseData(apiResponse.data)
+//                        courtCluster?.let {
+////                            binding.courtNameTextView.text = courtCluster.name
+//
+////                            binding.courtDescriptionTextView.text = courtCluster.description ?: "Không có mô tả"
+//
+//
+////                            loadAddressById(courtCluster.addressId)
+////                            binding.addressCourtTextView.text = "Đường Xuân Thủy, Phường Dịch Vọng, Quận Cầu Giấy, Hà Nội"
+////                            binding.phoneNumberTextView.text = "0123456789"
+////                            binding.starValueTextView.text = "0"
+////                            binding.workingTimeTextView.text = "${courtCluster.openingTime} - ${courtCluster.closingTime}"
+//
+////                            courtCluster.imageUrl?.let {
+////                                binding.courtClusterImage.loadImageWithUrl(it)
+////                            }
+////                            binding.workingTimeTextView.text = "05:00 - 22:00"
+////                            binding.courtClusterImage.setImageResource(R.drawable.image_court_1)
+////                            courtCluster.imageUrl?.let {
+////                                binding.courtClusterImage.loadImageWithUrl(it)
+////                            }
+//                        }
+//                    }
+//                }
+//            }
+//
+//            override fun onFailure(call: Call<APIResponse>, t: Throwable) {
+//                // Xử lý khi gọi API không thành công (nếu cần)
+//            }
+//        })
+    }
+
+
+    private fun loadCourts() {
+        var courts = mutableListOf<Court>(
+            Court(
+                id = "test",
+                courtNumber = 1,
+                description = null,
+                courtClusterId = "test"
+            ),
+            Court(
+                id = "test",
+                courtNumber = 2,
+                description = null,
+                courtClusterId = "test"
+            )
+        )
+        selectCourtAdapter.updateData(courts)
+//        RetrofitClient.ApiClient.apiService.getCourtsByCourtClusterId(courtClusterId).enqueue(object : Callback<APIResponse> {
+//            override fun onResponse(call: Call<APIResponse>, response: Response<APIResponse>) {
+//                if (response.isSuccessful) {
+//                    response.body()?.let { apiReponse ->
+//                        val courts: List<Court>? = parseApiResponseData(apiReponse.data)
+//
+//                        courts.let {
+//                            selectCourtAdapter.updateData(it!!.toMutableList())
+//                        }
+//
+//                    }
+//                }
+//            }
+//
+//            override fun onFailure(call: Call<APIResponse>, t: Throwable) {
+//            }
+//        })
+    }
+
+    private fun loadAddressById(addressId: String) {
+        RetrofitClient.ApiClient.apiService.getAddressById(addressId).enqueue(object : Callback<APIResponse> {
             override fun onResponse(call: Call<APIResponse>, response: Response<APIResponse>) {
                 if (response.isSuccessful) {
                     response.body()?.let { apiResponse ->
-                        val courtCluster: CourtCluster? = parseApiResponseData(apiResponse.data)
-                        courtCluster?.let {
-                            binding.courtNameTextView.text = courtCluster.name
-                            binding.courtDescriptionTextView.text =
-                                courtCluster.description ?: "Không có mô tả"
-                            binding.addressCourtTextView.text =
-                                courtCluster.addressId
-                            binding.workingTimeTextView.text =
-                                "${courtCluster.openingTime} - ${courtCluster.closingTime}"
-                            courtCluster.imageUrl?.let {
-                                binding.courtClusterImage.loadImageWithUrl(it)
-                            }
+                        val address: Address? = parseApiResponseData(apiResponse.data)
+                        address?.let {
+                            // Hiển thị địa chỉ đầy đủ
+                            val fullAddress = "${it.street}, ${it.ward}, ${it.district}, ${it.city}"
+                            binding.addressCourtTextView.text = fullAddress
                         }
                     }
+                } else {
+                    binding.addressCourtTextView.text = "Không có thông tin địa chỉ"
                 }
             }
 
             override fun onFailure(call: Call<APIResponse>, t: Throwable) {
+                binding.addressCourtTextView.text = "Lỗi khi lấy thông tin địa chỉ"
             }
         })
     }
 
-    private fun loadCourts() {
-        RetrofitClient.ApiClient.apiService.getCourtsByCourtClusterId(courtClusterId).enqueue(object : Callback<APIResponse> {
-            override fun onResponse(call: Call<APIResponse>, response: Response<APIResponse>) {
-                if (response.isSuccessful) {
-                    response.body()?.let { apiReponse ->
-                        val courts: List<Court>? = parseApiResponseData(apiReponse.data)
-
-                        courts.let {
-                            selectCourtAdapter.updateData(it!!.toMutableList())
-                        }
-
-                    }
-                }
-            }
-
-            override fun onFailure(call: Call<APIResponse>, t: Throwable) {
-            }
-        })
-    }
 
     private fun loadDays() {
         val calendar = Calendar.getInstance()

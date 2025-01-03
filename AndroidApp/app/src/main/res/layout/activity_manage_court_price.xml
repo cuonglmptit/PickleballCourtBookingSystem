@@ -9,7 +9,7 @@
         android:id="@+id/ivBack"
         android:layout_width="@dimen/dp_24"
         android:layout_height="@dimen/dp_24"
-        android:src="@drawable/ic_arrrow_back"
+        android:src="@drawable/ic_arrow_back"
         android:contentDescription="Back Button"
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_16"

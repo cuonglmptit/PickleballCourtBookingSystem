@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#E0F3FF"
+    android:padding="@dimen/dp_10">
+
+    <ImageView
+        android:id="@+id/imageCourt"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/image_court_1"
+        android:scaleType="centerCrop"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <TextView
+        android:id="@+id/tvCourtName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Pickle ball ABC Hà Nội"
+        android:textColor="#000000"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        app:layout_constraintStart_toEndOf="@id/imageCourt"
+        app:layout_constraintTop_toTopOf="@id/imageCourt"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0"
+        android:paddingStart="@dimen/dp_10" />
+
+    <TextView
+        android:id="@+id/tvLocation"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Học viện công nghệ bưu chính viễn thông"
+        android:textColor="#000000"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="@id/tvCourtName"
+        app:layout_constraintTop_toBottomOf="@id/tvCourtName"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="@dimen/dp_5"
+        android:paddingTop="4dp" />
+
+    <!-- Revenue Section (Replaced LinearLayout) -->
+    <ImageView
+        android:id="@+id/icRevenue"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@drawable/ic_revenue"
+        app:layout_constraintStart_toStartOf="@id/tvLocation"
+        app:layout_constraintTop_toBottomOf="@id/tvLocation"
+        android:layout_marginTop="8dp"/>
+
+    <TextView
+        android:id="@+id/tvRevenue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Doanh thu: 1.500.000đ"
+        android:textColor="#000000"
+        android:textSize="14sp"
+        app:layout_constraintStart_toEndOf="@id/icRevenue"
+        app:layout_constraintTop_toTopOf="@id/icRevenue"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"/>
+
+    <ImageView
+        android:id="@+id/icBookings"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@drawable/ic_booking"
+        app:layout_constraintStart_toStartOf="@id/tvLocation"
+        app:layout_constraintTop_toBottomOf="@id/tvRevenue"
+        android:layout_marginTop="8dp"/>
+
+    <TextView
+        android:id="@+id/tvBookings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Số lượt đặt sân: 15"
+        android:textColor="#000000"
+        android:textSize="14sp"
+        app:layout_constraintStart_toEndOf="@id/icBookings"
+        app:layout_constraintTop_toTopOf="@id/icBookings"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

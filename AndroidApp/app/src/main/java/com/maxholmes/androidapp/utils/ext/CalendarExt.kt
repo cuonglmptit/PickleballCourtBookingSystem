@@ -1,6 +1,8 @@
 package com.maxholmes.androidapp.utils.ext
 
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.Calendar
 import java.util.Locale
 
@@ -26,4 +28,12 @@ fun Calendar.getDayOfWeekName(): String {
 fun Calendar.formatDate(pattern: String = "yyyy-MM-dd"): String {
     val dateFormat = SimpleDateFormat(pattern, Locale.getDefault())
     return dateFormat.format(this.time)
+}
+
+fun String.toCustomDateFormat(): String {
+    val inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+    val outputFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+
+    val date = LocalDate.parse(this, inputFormatter)
+    return date.format(outputFormatter)
 }

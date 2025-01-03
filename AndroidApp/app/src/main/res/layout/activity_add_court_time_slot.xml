@@ -9,12 +9,10 @@
         android:id="@+id/backButton"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:src="@drawable/ic_arrrow_back"
+        android:src="@drawable/ic_arrow_back"
         android:contentDescription="Back"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintTop_margin="16dp"
-        app:layout_constraintStart_margin="16dp" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/titleText"
@@ -54,7 +52,7 @@
         app:layout_constraintStart_toEndOf="@id/dateTextInputLayout"
         app:layout_constraintTop_toTopOf="@id/dateTextInputLayout"
         app:layout_constraintBottom_toBottomOf="@id/dateTextInputLayout"
-        app:layout_constraintStart_margin="8dp" />
+        />
 
     <ImageView
         android:id="@+id/addDateButton"
@@ -65,7 +63,7 @@
         app:layout_constraintStart_toEndOf="@id/selectDateButton"
         app:layout_constraintTop_toTopOf="@id/dateTextInputLayout"
         app:layout_constraintBottom_toBottomOf="@id/dateTextInputLayout"
-        app:layout_constraintStart_margin="8dp"/>
+        />
 
     <TextView
         android:id="@+id/dateListLabel"
@@ -75,9 +73,7 @@
         android:textStyle="bold"
         android:textSize="16sp"
         app:layout_constraintTop_toBottomOf="@id/dateTextInputLayout"
-        app:layout_constraintTop_margin="16dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintStart_margin="16dp" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/dateRecyclerView"
@@ -86,7 +82,6 @@
         app:layout_constraintTop_toBottomOf="@id/dateListLabel"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_margin="8dp"
         android:paddingStart="16dp"
         android:paddingEnd="16dp" />
 
@@ -98,9 +93,7 @@
         android:textStyle="bold"
         android:textSize="16sp"
         app:layout_constraintTop_toBottomOf="@id/dateRecyclerView"
-        app:layout_constraintTop_margin="16dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintStart_margin="16dp" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/priceRecyclerView"
@@ -110,18 +103,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        app:layout_constraintTop_margin="8dp" />
+        android:paddingEnd="16dp" />
 
     <Button
         android:id="@+id/confirmButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Xác nhận"
-        android:backgroundTint="@color/blue"
+        android:backgroundTint="@color/blue500"
         android:textColor="@android:color/white"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_margin="16dp"
-        app:layout_constraintEnd_margin="16dp" />
+        app:layout_constraintEnd_toEndOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
