@@ -35,4 +35,7 @@ interface APIService {
 
     @GET("/api/CourtTimeSlot/getAvailableSlots")
     fun getAvailableTimeSlots(@Query("courtId") courtId: String, @Query("date") date: String): Call<APIResponse>
+
+    @GET("/api/Address/{id}")
+    fun getAddressById(@Path("id") id: String): Call<APIResponse>
 }

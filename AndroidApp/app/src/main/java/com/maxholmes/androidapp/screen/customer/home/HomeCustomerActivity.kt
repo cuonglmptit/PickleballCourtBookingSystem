@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.maxholmes.androidapp.R
 import com.maxholmes.androidapp.data.dto.response.APIResponse
 import com.maxholmes.androidapp.data.dto.response.parseApiResponseData
+import com.maxholmes.androidapp.data.model.Address
 import com.maxholmes.androidapp.data.model.CourtCluster
 import com.maxholmes.androidapp.screen.customer.home.adapter.CourtClusterAdapter
 import com.maxholmes.androidapp.data.service.RetrofitClient
@@ -50,27 +51,41 @@ class HomeCustomerActivity : AppCompatActivity() {
     }
 
     private fun fetchCourtClusters() {
-        // Fetch data from the API using Retrofit
         RetrofitClient.ApiClient.apiService.getAllCourtClusters().enqueue(object : Callback<APIResponse> {
             override fun onResponse(call: Call<APIResponse>, response: Response<APIResponse>) {
                 if (response.isSuccessful) {
                     response.body()?.let { apiResponse ->
-                        val courtClusters: List<CourtCluster>? =
-                            parseApiResponseData(apiResponse.data)
-                        courtClusters.let {
-                            courtClusterAdapter.updateData(it!!.toMutableList())
+                        val courtClusters: List<CourtCluster>? = parseApiResponseData(apiResponse.data)
+                        courtClusters?.forEach { courtCluster ->
+                            // Gọi API để lấy thông tin địa chỉ từ addressId
+                            RetrofitClient.ApiClient.apiService.getAddressById(courtCluster.addressId).enqueue(object : Callback<APIResponse> {
+                                override fun onResponse(call: Call<APIResponse>, response: Response<APIResponse>) {
+                                    if (response.isSuccessful) {
+                                        response.body()?.let { apiResponse ->
+                                            val address: Address? = parseApiResponseData(apiResponse.data)
+                                            // Sau khi lấy được address, cập nhật UI
+                                            courtClusterAdapter.updateData(courtClusters.toMutableList())
+                                        }
+                                    }
+                                }
+
+                                override fun onFailure(call: Call<APIResponse>, t: Throwable) {
+                                    // Xử lý lỗi nếu không thể lấy thông tin địa chỉ
+                                    Toast.makeText(this@HomeCustomerActivity, "Error fetching address: ${t.message}", Toast.LENGTH_SHORT).show()
+                                }
+                            })
                         }
+                        courtClusterAdapter.updateData(courtClusters?.toMutableList())
                     }
                 } else {
-                    // Handle unsuccessful response
-                    Toast.makeText(this@HomeCustomerActivity, "Failed to load data", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@HomeCustomerActivity, "Failed to load CourtClusters", Toast.LENGTH_SHORT).show()
                 }
             }
 
             override fun onFailure(call: Call<APIResponse>, t: Throwable) {
-                // Handle failure, e.g., no internet connection
                 Toast.makeText(this@HomeCustomerActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
             }
         })
     }
+
 }
