@@ -12,6 +12,7 @@ import com.maxholmes.androidapp.data.dto.response.parseApiResponseData
 import com.maxholmes.androidapp.data.model.Address
 import com.maxholmes.androidapp.data.model.CourtCluster
 import com.maxholmes.androidapp.data.service.RetrofitClient
+import com.maxholmes.androidapp.databinding.ItemCourtClusterCourtownerBinding
 import com.maxholmes.androidapp.utils.OnItemRecyclerViewClickListener
 import com.maxholmes.androidapp.utils.ext.loadImageCircleWithUrl
 import retrofit2.Call
@@ -26,8 +27,8 @@ class CourtClusterCourtOwnerAdapter : RecyclerView.Adapter<CourtClusterCourtOwne
         parent: ViewGroup,
         viewType: Int,
     ): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_court_cluster_courtowner, parent, false)
-        return ViewHolder(view, onItemClickListener)
+        val binding = ItemCourtClusterCourtownerBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ViewHolder(binding, onItemClickListener)
     }
 
     override fun onBindViewHolder(
@@ -54,58 +55,32 @@ class CourtClusterCourtOwnerAdapter : RecyclerView.Adapter<CourtClusterCourtOwne
     }
 
     class ViewHolder(
-        view: View,
+        private val binding: ItemCourtClusterCourtownerBinding,
         private val itemClickListener: OnItemRecyclerViewClickListener<CourtCluster>?,
-    ) : RecyclerView.ViewHolder(view), View.OnClickListener {
+    ) : RecyclerView.ViewHolder(binding.root), View.OnClickListener {
         private var courtClusterData: CourtCluster? = null
 
-        // Initialize views
-        private val courtClusterImage: ImageView = view.findViewById(R.id.courtClusterImage)
-        private val courtClusterNameTextView: TextView = view.findViewById(R.id.courtClusterNameTextView)
-        private val addressCourtClusterTextView: TextView = view.findViewById(R.id.addressCourtClusterTextView)
-
         init {
-            view.setOnClickListener(this)
+            binding.root.setOnClickListener(this)
         }
 
         fun bindViewData(courtCluster: CourtCluster) {
             courtClusterData = courtCluster
 
-            // Load court image
             courtCluster.imageUrl?.let {
-                courtClusterImage.loadImageCircleWithUrl(
-                    it, R.drawable.image_court_1
-                )
+                binding.courtClusterImage.loadImageCircleWithUrl(it, R.drawable.image_court_1)
             }
 
-            // Fetch address using Retrofit
-            RetrofitClient.ApiClient.apiService.getAddressById(courtCluster.addressId).enqueue(object :
-                Callback<APIResponse> {
-                override fun onResponse(call: Call<APIResponse>, response: Response<APIResponse>) {
-                    if (response.isSuccessful) {
-                        response.body()?.let { apiResponse ->
-                            val address: Address? = parseApiResponseData(apiResponse.data)
-                            address?.let {
-                                addressCourtClusterTextView.text =
-                                    "${it.street}, ${it.ward}, ${it.district}, ${it.city}"
-                            }
-                        }
-                    } else {
-                        addressCourtClusterTextView.text = "Address not available"
-                    }
-                }
+            binding.courtClusterNameTextView.text = courtCluster.name
 
-                override fun onFailure(call: Call<APIResponse>, t: Throwable) {
-                    addressCourtClusterTextView.text = "Error fetching address"
-                }
-            })
+            binding.addressCourtClusterTextView.text = courtCluster.address.toString()
 
-            // Set court cluster name
-            courtClusterNameTextView.text = courtCluster.name
+            binding.ratingText.text = "0 (rate)"
         }
 
         override fun onClick(view: View?) {
             itemClickListener?.onItemClick(courtClusterData)
         }
     }
+
 }

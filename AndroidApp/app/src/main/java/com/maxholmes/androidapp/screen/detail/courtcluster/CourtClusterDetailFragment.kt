@@ -18,7 +18,7 @@ class CourtClusterDetailFragment :
         itemCourtCluster?.let {
             viewBinding.courtNameTextView.text = it.name
             viewBinding.courtDescriptionTextView.text = it.description
-            viewBinding.addressCourtTextView.text = it.addressId
+//            viewBinding.addressCourtTextView.text = it.addressId
         } ?: run {
             Toast.makeText(requireContext(), "Du lieu san bi loi", Toast.LENGTH_SHORT).show()
         }

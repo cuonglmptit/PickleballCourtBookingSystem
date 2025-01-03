@@ -30,4 +30,6 @@ public interface IUserService : IBaseService<User>
     /// <param name="id">Id người dùng</param>
     /// <returns>Kết quả service</returns>
     public ServiceResult ChangePassword(UpdatePasswordDTO updatePasswordDTO, Guid id);
+
+    public ServiceResult GetPublicInfoService(Guid userId);
 }

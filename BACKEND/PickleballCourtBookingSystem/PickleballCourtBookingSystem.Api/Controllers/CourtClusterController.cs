@@ -137,5 +137,20 @@ namespace PickleballCourtBookingSystem.Api.Controllers
                     Failed = failedRecords
                 });
         }
+        
+        [HttpGet("Owner")]
+        [Authorize(Roles = nameof(RoleEnum.CourtOwner))]
+        public IActionResult GetAllCourtClusterOfOwner()
+        {
+            var authorizationHeader = HttpContext.Request.Headers["Authorization"].ToString();
+            var token = authorizationHeader["Bearer ".Length..].Trim();
+            var userId = _authService.GetUserIdFromToken(token);
+            if (userId == null)
+            {
+                return BadRequest("Token bi loi khong co User Id");
+            }
+            var result = _courtClusterService.GetCourtClusterByOwner(Guid.Parse(userId));
+            return StatusCode(result.StatusCode, result);
+        }
     }
 }

@@ -21,13 +21,19 @@ public class AuthService : IAuthService
     private readonly IConfiguration _configuration;
     private readonly IAddressService _addressService;
     private readonly IUserService _userService;
+    private readonly ICustomerService _customerService;
+    private readonly IAdminService _adminService;
+    private readonly ICourtOwnerService _courtOwnerService;
 
-    public AuthService(IConfiguration configuration, IUserRepository userRepository, IAddressService addressService, IUserService userService)
+    public AuthService(IConfiguration configuration, IUserRepository userRepository, IAddressService addressService, IUserService userService, ICourtOwnerService courtOwnerService, IAdminService adminService, ICustomerService customerService)
     {
         _configuration = configuration;
         _userRepository = userRepository;
         _addressService = addressService;
         _userService = userService;
+        _courtOwnerService = courtOwnerService;
+        _adminService = adminService;
+        _customerService = customerService;
     }
 
     public ServiceResult Register(string username, string password, string confirmPassword, string name, string phoneNumber, string email, RoleEnum role)
@@ -58,8 +64,40 @@ public class AuthService : IAuthService
             };
 
             //Trả về kết quả đăng ký (cộng thêm các lỗi valid trước đó)
-            return _userService.Register(user, errorData);
+            var userRegisterResult = _userService.Register(user, errorData);
+            if (!userRegisterResult.Success)
+            {
+                return userRegisterResult;
+            }
 
+            if (role == RoleEnum.Customer)
+            {
+                var customer = new Customer
+                {
+                    Id = user.Id,
+                    UserId = user.Id
+                };
+                var customerAddResult = _customerService.InsertService(customer);
+                if (!customerAddResult.Success)
+                {
+                    return customerAddResult;
+                }
+            }
+            
+            if (role == RoleEnum.CourtOwner)
+            {
+                var courtOwner = new CourtOwner
+                {
+                    Id = user.Id,
+                    UserId = user.Id
+                };
+                var courtOwnerAddResult = _courtOwnerService.InsertService(courtOwner);
+                if (!courtOwnerAddResult.Success)
+                {
+                    return courtOwnerAddResult;
+                }
+            }
+            return userRegisterResult;
         }
         catch (Exception e)
         {

@@ -68,7 +68,7 @@ class CourtClusterAdapter : RecyclerView.Adapter<CourtClusterAdapter.ViewHolder>
 
             binding.courtClusterNameTextView.text = courtCluster.name
 
-            binding.addressCourtClusterTextView.text = courtCluster.addressId
+//            binding.addressCourtClusterTextView.text = courtCluster.addressId
 
         }
 

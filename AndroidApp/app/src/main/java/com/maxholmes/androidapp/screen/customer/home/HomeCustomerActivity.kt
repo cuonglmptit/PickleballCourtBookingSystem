@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.maxholmes.androidapp.R
 import com.maxholmes.androidapp.data.dto.response.APIResponse
+import com.maxholmes.androidapp.data.dto.response.CourtClusterResponse
 import com.maxholmes.androidapp.data.dto.response.parseApiResponseData
 import com.maxholmes.androidapp.data.model.Address
 import com.maxholmes.androidapp.data.model.CourtCluster
@@ -27,22 +28,18 @@ class HomeCustomerActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home_customer)
 
-        // Set up RecyclerView and Adapter
         courtClusterAdapter = CourtClusterAdapter()
         val recyclerView = findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.recyclerViewCourtCluster)
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = courtClusterAdapter
 
-        // Fetch the CourtCluster data from the API
         fetchCourtClusters()
 
-        // Handle item click events
         courtClusterAdapter.registerItemRecyclerViewClickListener(object : OnItemRecyclerViewClickListener<CourtCluster> {
             override fun onItemClick(item: CourtCluster?) {
                 item?.let {
-                    // Handle item click, e.g., navigate to a detailed screen or show details
                     val intent = Intent(this@HomeCustomerActivity, CourtClusterDetailActivity::class.java)
-                    intent.putExtra("courtClusterId", it.id)
+                    intent.putExtra("courtCluster", it)
                     startActivity(intent)
                     Toast.makeText(this@HomeCustomerActivity, "Clicked on: ${it.name}", Toast.LENGTH_SHORT).show()
                 }
@@ -55,30 +52,43 @@ class HomeCustomerActivity : AppCompatActivity() {
             override fun onResponse(call: Call<APIResponse>, response: Response<APIResponse>) {
                 if (response.isSuccessful) {
                     response.body()?.let { apiResponse ->
-                        val courtClusters: List<CourtCluster>? = parseApiResponseData(apiResponse.data)
-                        courtClusters?.forEach { courtCluster ->
-                            // Gọi API để lấy thông tin địa chỉ từ addressId
-                            RetrofitClient.ApiClient.apiService.getAddressById(courtCluster.addressId).enqueue(object : Callback<APIResponse> {
+                        val courtClusterResponses: List<CourtClusterResponse>? = parseApiResponseData(apiResponse.data)
+                        var courtClusters: MutableList<CourtCluster> = mutableListOf()
+                        courtClusterResponses?.forEach { courtClusterResponse ->
+                            RetrofitClient.ApiClient.apiService.getAddressById(courtClusterResponse.addressId).enqueue(object : Callback<APIResponse> {
                                 override fun onResponse(call: Call<APIResponse>, response: Response<APIResponse>) {
                                     if (response.isSuccessful) {
                                         response.body()?.let { apiResponse ->
                                             val address: Address? = parseApiResponseData(apiResponse.data)
-                                            // Sau khi lấy được address, cập nhật UI
+                                            if(address == null)
+                                            {
+                                                println("Dia chi loi kiem tra lai backend")
+                                            }
+                                            var courtCluster = CourtCluster(
+                                                id = courtClusterResponse.id,
+                                                name = courtClusterResponse.name,
+                                                openingTime = courtClusterResponse.openingTime,
+                                                closingTime = courtClusterResponse.closingTime,
+                                                description = courtClusterResponse.description,
+                                                address = address!!,
+                                                courtOwnerId = courtClusterResponse.courtOwnerId,
+                                                imageUrl = courtClusterResponse.imageUrl
+                                            )
+                                            courtClusters.add(courtCluster)
                                             courtClusterAdapter.updateData(courtClusters.toMutableList())
                                         }
                                     }
                                 }
 
                                 override fun onFailure(call: Call<APIResponse>, t: Throwable) {
-                                    // Xử lý lỗi nếu không thể lấy thông tin địa chỉ
-                                    Toast.makeText(this@HomeCustomerActivity, "Error fetching address: ${t.message}", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(this@HomeCustomerActivity, "Không lấy được dữ liệu địa chỉ: ${t.message}", Toast.LENGTH_SHORT).show()
                                 }
                             })
                         }
-                        courtClusterAdapter.updateData(courtClusters?.toMutableList())
+                        courtClusterAdapter.updateData(courtClusters.toMutableList())
                     }
                 } else {
-                    Toast.makeText(this@HomeCustomerActivity, "Failed to load CourtClusters", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@HomeCustomerActivity, "Lấy dữ liệu sân bị lỗi vui lòng thử lại sau.", Toast.LENGTH_SHORT).show()
                 }
             }
 

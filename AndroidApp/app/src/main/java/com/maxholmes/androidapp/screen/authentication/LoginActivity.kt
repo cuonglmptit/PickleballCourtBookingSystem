@@ -10,9 +10,12 @@ import com.maxholmes.androidapp.data.dto.request.LoginRequest
 import com.maxholmes.androidapp.data.dto.response.LoginResponse
 import com.maxholmes.androidapp.data.service.RetrofitClient
 import com.maxholmes.androidapp.databinding.ActivityLoginBinding
+import com.maxholmes.androidapp.screen.admin.HomeAdminActivity
+import com.maxholmes.androidapp.screen.courtowner.home.HomeCourtOwnerActivity
 import com.maxholmes.androidapp.screen.customer.home.HomeCustomerActivity
 import com.maxholmes.androidapp.screen.test.TestActivity
 import com.maxholmes.androidapp.screen.register.RegisterActivity
+import com.maxholmes.androidapp.utils.ext.SharedPreferencesUtils
 import com.maxholmes.androidapp.utils.ext.authentication.decodeJWT
 import retrofit2.Call
 import retrofit2.Callback
@@ -60,22 +63,29 @@ class LoginActivity : AppCompatActivity() {
                     Toast.makeText(this@LoginActivity, "Login successful", Toast.LENGTH_SHORT).show()
 
                     if (token != null) {
+                        SharedPreferencesUtils.saveToken(this@LoginActivity, token)
                         val claims = decodeJWT(token)
                         val role = claims["role"] as String
 
-                        val intent = if (role == "Customer") {
-                            Intent(this@LoginActivity, HomeCustomerActivity::class.java)
-                        } else {
-                            Intent(this@LoginActivity, TestActivity::class.java)
-                        }
 
-                        // Pass token to the next activity
-                        intent.putExtra("TOKEN", token)
+                        val nextActivity = when (role) {
+                            "Customer" -> HomeCustomerActivity::class.java
+                            "CourtOwner" -> HomeCourtOwnerActivity::class.java
+                            "Admin" -> HomeAdminActivity::class.java
+                            else -> {
+                                val loginIntent = Intent(this@LoginActivity, LoginActivity::class.java)
+                                println("Loi role, check lai ben backend")
+                                startActivity(loginIntent)
+                                finish()
+                                return
+                            }
+                        }
+                        val intent = Intent(this@LoginActivity, nextActivity)
                         startActivity(intent)
                         finish()
                     }
                 } else {
-                    val errorMsg = response.body()?.userMsg ?: "Login failed"
+                    val errorMsg = response.body()?.userMsg ?: "Login error"
                     Toast.makeText(this@LoginActivity, errorMsg, Toast.LENGTH_SHORT).show()
                 }
             }
