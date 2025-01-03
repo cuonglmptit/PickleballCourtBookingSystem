@@ -65,5 +65,13 @@ namespace PickleballCourtBookingSystem.Infrastructure.Repository
             var result = dbContext.Connection.Query<CourtCluster>(sql: sqlCommand, param: parameter);
             return result;
         }
+        
+        public IEnumerable<CourtCluster> GetActiveCourtClusters()
+        {
+            var sqlCommand = $" SELECT * FROM {className} WHERE status = 1";
+
+            var result = dbContext.Connection.Query<CourtCluster>(sql: sqlCommand);
+            return result;
+        }
     }
 }

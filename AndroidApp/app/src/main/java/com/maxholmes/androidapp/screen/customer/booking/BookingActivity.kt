@@ -25,16 +25,22 @@ class BookingActivity : AppCompatActivity() {
     private lateinit var selectDayAdapter: SelectDayAdapter
     lateinit var courtTimeSlotAdapter: CourtTimeSlotAdapter
 
+    private var selectedDay: Calendar? = null
+    private var selectedCourt: Court? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = ActivityBookingBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Setup RecyclerViews
         selectCourtAdapter = SelectCourtAdapter()
         selectDayAdapter = SelectDayAdapter()
         courtTimeSlotAdapter = CourtTimeSlotAdapter()
+
+        selectedDay = intent.getSerializableExtra("selectedDay", Calendar::class.java)
+        selectedCourt = intent.getParcelableExtra("court", Court::class.java)
+
+        updateSelectedDayAndCourt()
 
         binding.recyclerViewCourt.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         binding.recyclerViewCourt.adapter = selectCourtAdapter
@@ -45,7 +51,6 @@ class BookingActivity : AppCompatActivity() {
         binding.recyclerViewTimeSlot.layoutManager = GridLayoutManager(this, 3, GridLayoutManager.VERTICAL, false)
         binding.recyclerViewTimeSlot.adapter = courtTimeSlotAdapter
 
-        // Load data into adapters
         loadCourts()
         loadDays()
         loadTimeSlots()
@@ -55,7 +60,8 @@ class BookingActivity : AppCompatActivity() {
                 item?.let {
                     val position = selectDayAdapter.getSelectDays().indexOf(it)
                     selectDayAdapter.setSelectedItem(position)
-//                    selectedDay = it
+                    selectedDay = it
+                    updateSelectedDayAndCourt()
                 }
             }
         })
@@ -65,7 +71,8 @@ class BookingActivity : AppCompatActivity() {
                 item?.let {
                     val position = selectCourtAdapter.getCourts().indexOf(it)
                     selectCourtAdapter.setSelectedItem(position)
-//                    selectedCourt = it
+                    selectedCourt = it
+                    updateSelectedDayAndCourt()
                 }
             }
         })
@@ -73,37 +80,31 @@ class BookingActivity : AppCompatActivity() {
         courtTimeSlotAdapter.registerItemRecyclerViewClickListener(object : OnItemRecyclerViewClickListener<CourtTimeSlot> {
             override fun onItemClick(item: CourtTimeSlot?) {
                 item?.let {
-                    // Lấy vị trí của khung giờ trong danh sách
                     val position = courtTimeSlotAdapter.getCourtTimeSlots().indexOf(it)
                     if (position != RecyclerView.NO_POSITION) {
-                        // Gọi toggleSelection để xử lý thay đổi trạng thái
                         courtTimeSlotAdapter.toggleSelection(position)
                     }
                 }
             }
         })
+    }
 
+
+
+    private fun updateSelectedDayAndCourt() {
+        selectedDay?.let {
+            val position = selectDayAdapter.getSelectDays().indexOf(it)
+            selectDayAdapter.setSelectedItem(position)
+        }
+
+        selectedCourt?.let {
+            val position = selectCourtAdapter.getCourts().indexOf(it)
+            selectCourtAdapter.setSelectedItem(position)
+        }
     }
 
     private fun loadTimeSlots() {
-        val timeSlots = mutableListOf<CourtTimeSlot>()
-        val formatter = DateTimeFormatter.ofPattern("HH:mm")
-        var currentTime = LocalTime.of(5, 0) // Bắt đầu từ 05:00
-
-        for (i in 0 until 18) { // Tạo 18 khung giờ (từ 05:00 đến 22:00)
-            val timeString = currentTime.format(formatter)
-            timeSlots.add(CourtTimeSlot(
-                id = "time_slot_$i",
-                date = "2024-12-31", // Ngày 31/12/2024
-                time = timeString,
-                isAvailable = 1, // Giả sử tất cả các khung giờ đều có sẵn
-                price = 100000.0, // Giá 100.000 VND
-                courtId = "1" // Sân 1
-            ))
-            currentTime = currentTime.plusHours(1) // Tăng thêm 1 giờ
-        }
-
-        courtTimeSlotAdapter.updateData(timeSlots)
+//        courtTimeSlotAdapter.updateData(timeSlots)
     }
 
     private fun loadDays() {
@@ -120,20 +121,7 @@ class BookingActivity : AppCompatActivity() {
     }
 
     private fun loadCourts() {
-        var courts = mutableListOf(
-            Court(
-                id = "test",
-                courtNumber = 1,
-                description = null,
-                courtClusterId = "test"
-            ),
-            Court(
-                id = "test",
-                courtNumber = 2,
-                description = null,
-                courtClusterId = "test"
-            )
-        )
+        val courts = intent.getParcelableArrayListExtra("courts", Court::class.java)
         selectCourtAdapter.updateData(courts)
     }
 }

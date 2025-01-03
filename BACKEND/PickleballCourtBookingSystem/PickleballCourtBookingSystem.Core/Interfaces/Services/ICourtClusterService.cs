@@ -33,4 +33,7 @@ public interface ICourtClusterService: IBaseService<CourtCluster>
     /// <param name="userId"></param>
     /// <returns></returns>
     public ServiceResult GetCourtClusterByCourtOwner(Guid userId);
+
+    public ServiceResult GetAllActiveCourtClusters();
+    public ServiceResult GetImageUrl(Guid courtClusterId);
 }

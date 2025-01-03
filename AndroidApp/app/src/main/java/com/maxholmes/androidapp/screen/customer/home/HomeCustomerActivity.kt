@@ -48,7 +48,7 @@ class HomeCustomerActivity : AppCompatActivity() {
     }
 
     private fun fetchCourtClusters() {
-        RetrofitClient.ApiClient.apiService.getAllCourtClusters().enqueue(object : Callback<APIResponse> {
+        RetrofitClient.ApiClient.apiService.getActiveCourtClusters().enqueue(object : Callback<APIResponse> {
             override fun onResponse(call: Call<APIResponse>, response: Response<APIResponse>) {
                 if (response.isSuccessful) {
                     response.body()?.let { apiResponse ->

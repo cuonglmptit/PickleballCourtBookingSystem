@@ -42,4 +42,13 @@ interface APIService {
 
     @GET("/api/Address/{id}")
     fun getAddressById(@Path("id") id: String): Call<APIResponse>
+
+    @GET("/api/User/CourtOwner/GetInfo/{id}")
+    fun getCourtOwnerInfo(@Path("id") id: String, @Header("Authorization") token: String): Call<APIResponse>
+
+    @GET("/api/CourtCluster/Active")
+    fun getActiveCourtClusters(): Call<APIResponse>
+
+    @GET("/api/CourtCluster/{id}/Image")
+    fun getImagesByCourtClusterId(@Path("id") courtClusterId: String): Call<APIResponse>
 }

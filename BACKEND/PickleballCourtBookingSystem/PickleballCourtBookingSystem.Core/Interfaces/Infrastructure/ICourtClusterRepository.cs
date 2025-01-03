@@ -19,6 +19,8 @@ namespace PickleballCourtBookingSystem.Core.Interfaces.Infrastructure
         IEnumerable<CourtCluster> SearchCourtClusterWithFilters(string? cityName, string? courtClusterName,
             DateTime date, TimeSpan startTime, TimeSpan endTime,
             int pageSize, int pageIndex, string orderByColumn, bool DESC = false);
+
+        public IEnumerable<CourtCluster> GetActiveCourtClusters();
     }
 
 }
