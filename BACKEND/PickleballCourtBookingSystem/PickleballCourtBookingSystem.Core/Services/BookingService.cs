@@ -101,14 +101,22 @@ public class BookingService : BaseService<Booking>, IBookingService
                 return customerServiceResult;
             }
 
+            var courtClusterServiceResult = _courtClusterService.GetByIdService(court.CourtClusterId!.Value);
+            if (!courtClusterServiceResult.Success)
+            {
+                return courtClusterServiceResult;
+            }
+
             var customer = (Customer)customerServiceResult.Data!;
-            var customerId = customer.Id;
+
+            var courtCluster = (CourtCluster)courtClusterServiceResult.Data!;
             var booking = new Booking
             {
                 Id = Guid.NewGuid(),
                 CourtId = court.Id,
-                CustomerId = customerId,
+                CustomerId = customer.Id,
                 CourtClusterId = court.CourtClusterId,
+                CourtOwnerId = courtCluster.CourtOwnerId,
                 TimeBooking = _timeService.GetCurrentTime(),
                 Status = (int)BookingStatusEnum.Pending,
                 PaymentStatus = 0,
@@ -186,11 +194,11 @@ public class BookingService : BaseService<Booking>, IBookingService
         {
             return CreateServiceResult(Success: false, StatusCode: 403, UserMsg: "Ban khong phai la chu san trong Booking", DevMsg: "Id chu san khong phai cua chu san trong Booking");
         }
-        if (booking.Status != (int)BookingStatusEnum.Pending)
+        if (booking.Status != BookingStatusEnum.Pending)
         {
             return CreateServiceResult(Success: false, StatusCode: 400, UserMsg: "Booking khong o trang thai dang dat", DevMsg: "Booking khong o trang thai dang dat");
         }
-        booking.Status = (int)BookingStatusEnum.CourtOwnerConfirmed;
+        booking.Status = BookingStatusEnum.CourtOwnerConfirmed;
         var result = _bookingRepository.Update(booking, bookingId);
         if (result != 0)
         {
@@ -218,11 +226,11 @@ public class BookingService : BaseService<Booking>, IBookingService
             return CreateServiceResult(Success: false, StatusCode: 403, UserMsg: "Ban khong co quyen xac nhan", DevMsg: "Booking khong phai cua customer");
         }
 
-        if (booking.Status != (int)BookingStatusEnum.CourtOwnerConfirmed)
+        if (booking.Status != BookingStatusEnum.CourtOwnerConfirmed)
         {
             return CreateServiceResult(Success: false, StatusCode: 400, UserMsg: "Booking khong o trang thai duoc chu san xac nhan", DevMsg: "Booking khong o trang thai duoc chu san xac nhan");
         }
-        booking.Status = (int)BookingStatusEnum.Completed;
+        booking.Status = BookingStatusEnum.Completed;
         var result = _bookingRepository.Update(booking, bookingId);
         if (result != 0)
         {
@@ -270,7 +278,7 @@ public class BookingService : BaseService<Booking>, IBookingService
             {
                 return resultCreateCancelBooking;
             }
-            booking.Status = (int)BookingStatusEnum.Canceled;
+            booking.Status = BookingStatusEnum.Canceled;
             var resultUpdateBooking = _bookingRepository.Update(booking, booking.Id!.Value);
             if (resultUpdateBooking != 0)
             {
@@ -294,20 +302,37 @@ public class BookingService : BaseService<Booking>, IBookingService
             {
                 return CreateServiceResult(Success: false, StatusCode: 404, UserMsg: "User not found", DevMsg: "User not found");
             }
-            Customer customer = _customerService.GetCustomerByUserIdService(userId).Data as Customer;
             if (user.RoleId == (int)RoleEnum.Customer)
             {
-                Console.WriteLine("cusid "+customer.Id + " userid "+customer.UserId);
-                Console.WriteLine("status "+(int)status);
+                Customer customer = _customerService.GetCustomerByUserIdService(userId).Data as Customer;
                 Dictionary<string, object> conditions = new Dictionary<string, object>
                 {
                     {nameof(Booking.CustomerId), customer.Id},
                     {nameof(Booking.Status), (int)status}
                 };
-                var res = _bookingRepository.GetByMultipleConditions(conditions);
+                Dictionary<string, string> order = new Dictionary<string, string>
+                {
+                    {nameof(Booking.TimeBooking), "desc"}
+                };
+                var res = _bookingRepository.GetByMultipleConditions(conditions, order);
                 return CreateServiceResult(Success: true, StatusCode: 200, Data: res);
             }
-            return CreateServiceResult(Success: false, StatusCode: 403, UserMsg: "Ban khong co quyen truy cap", DevMsg: "Ban khong co quyen truy cap");
+            else if (user.RoleId == (int)RoleEnum.CourtOwner)
+            {
+                CourtOwner courtOwner = _courtOwnerService.GetCourtOwnerByUserIdService(userId).Data as CourtOwner;
+                Dictionary<string, object> conditions = new Dictionary<string, object>
+                {
+                    {nameof(Booking.CourtOwnerId), courtOwner.Id},
+                    {nameof(Booking.Status), (int)status}
+                };
+                Dictionary<string, string> order = new Dictionary<string, string>
+                {
+                    {nameof(Booking.TimeBooking), "desc"}
+                };
+                var res = _bookingRepository.GetByMultipleConditions(conditions, order);
+                return CreateServiceResult(Success: true, StatusCode: 200, Data: res);
+            }
+            return CreateServiceResult(Success: false, StatusCode: 400, UserMsg: "Role not found", DevMsg: "Role not found");
         }
         catch (Exception e)
         {

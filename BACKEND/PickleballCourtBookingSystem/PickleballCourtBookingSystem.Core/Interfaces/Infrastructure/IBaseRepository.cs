@@ -126,11 +126,12 @@ namespace PickleballCourtBookingSystem.Core.Interfaces.Infrastructure
 
         /// <summary>
         /// Lấy các bản ghi dựa trên nhiều điều kiện cột.
-        /// Author: CuongLM (25/12/2024) 
+        /// Author: CuongLM (25/12/2024)
         /// </summary>
         /// <param name="conditions">Danh sách các điều kiện (cột và giá trị tương ứng).</param>
+        /// <param name="orderBy">các cặp order by cột</param>
         /// <returns>Danh sách các thực thể phù hợp với điều kiện; danh sách rỗng nếu không có bản ghi nào phù hợp.</returns>
-        IEnumerable<T> GetByMultipleConditions(Dictionary<string, object> conditions);
+        IEnumerable<T> GetByMultipleConditions(Dictionary<string, object> conditions, Dictionary<string, string> orderBy = null);
         #endregion
     }
 }

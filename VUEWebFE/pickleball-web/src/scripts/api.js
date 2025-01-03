@@ -6,42 +6,38 @@ const api = axios.create({
     timeout: 10000, // Thời gian timeout cho mỗi request
 });
 
+// Thêm interceptor để luôn trả về data
+api.interceptors.response.use(
+    (response) => {
+        // Luôn trả về response.data
+        return response.data;
+    },
+    (error) => {
+        // Nếu lỗi vẫn có response, trả về phần data từ response
+        if (error.response) {
+            return Promise.resolve(error.response.data);
+        }
+        // Nếu không có response (lỗi kết nối, timeout), ném lỗi
+        return Promise.reject(error);
+    }
+);
+
 // Hàm gọi API GET
 export const getData = (endpoint, params = {}) => {
-    return api.get(endpoint, { params })
-        .then(response => response.data)
-        .catch(error => {
-            console.error('API GET error: ', error);
-            throw error;
-        });
+    return api.get(endpoint, { params });
 };
 
 // Hàm gọi API POST
 export const postData = (endpoint, data) => {
-    return api.post(endpoint, data)
-        .then(response => response.data)
-        .catch(error => {
-            console.error('API POST error: ', error);
-            throw error; // Ném lỗi để các component có thể xử lý
-        });
+    return api.post(endpoint, data);
 };
 
 // Hàm gọi API PUT
 export const putData = (endpoint, data) => {
-    return api.put(endpoint, data)
-        .then(response => response.data)
-        .catch(error => {
-            console.error('API PUT error: ', error);
-            throw error;
-        });
+    return api.put(endpoint, data);
 };
 
 // Hàm gọi API DELETE
 export const deleteData = (endpoint) => {
-    return api.delete(endpoint)
-        .then(response => response.data)
-        .catch(error => {
-            console.error('API DELETE error: ', error);
-            throw error;
-        });
+    return api.delete(endpoint);
 };

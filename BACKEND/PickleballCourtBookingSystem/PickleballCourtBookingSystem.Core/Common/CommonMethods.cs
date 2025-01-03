@@ -1,4 +1,5 @@
-﻿using PickleballCourtBookingSystem.Core.DTOs;
+﻿using Microsoft.AspNetCore.Http;
+using PickleballCourtBookingSystem.Core.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,5 +34,32 @@ namespace PickleballCourtBookingSystem.Core.Common
             result.Data = Data;
             return result;
         }
+
+        /// <summary>
+        /// Lấy token từ header
+        /// </summary>
+        /// <param name="context">Context</param>
+        /// <returns>Token dưới dạng string</returns>
+        public static string GetTokenFromHeader(HttpContext context)
+        {
+            try
+            {
+                if (context.Request.Headers.TryGetValue("Authorization", out var authorizationHeader))
+                {
+                    var token = authorizationHeader.ToString();
+                    if (token.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
+                    {
+                        return token["Bearer ".Length..].Trim();
+                    }
+                }
+                return null; // Trả về null nếu không có token hợp lệ
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return null; // Trả về null nếu không có token hợp lệ
+            }
+        }
+
     }
 }

@@ -499,7 +499,9 @@ public class MySqlDbContext : IDbContext
         return res;
     }
 
-    public IEnumerable<T> GetByMultipleConditions<T>(Dictionary<string, object> conditions)
+    public IEnumerable<T> GetByMultipleConditions<T>(
+    Dictionary<string, object> conditions,
+    Dictionary<string, string> orderBy = null)
     {
         // Nếu không có điều kiện, trả về danh sách trống
         if (conditions == null || conditions.Count == 0)
@@ -520,8 +522,16 @@ public class MySqlDbContext : IDbContext
         // Loại bỏ " AND " cuối cùng
         whereClause.Length -= 5;
 
+        // Xây dựng câu lệnh ORDER BY nếu có
+        var orderByClause = string.Empty;
+        if (orderBy != null && orderBy.Count > 0)
+        {
+            var orderParts = orderBy.Select(o => $"{o.Key} {o.Value}");
+            orderByClause = " ORDER BY " + string.Join(", ", orderParts);
+        }
+
         // Tạo câu truy vấn SQL
-        var sql = $"SELECT * FROM {typeof(T).Name} {whereClause}";
+        var sql = $"SELECT * FROM {typeof(T).Name} {whereClause}{orderByClause}";
 
         Console.WriteLine(sql);
         // Thực thi truy vấn và trả về kết quả

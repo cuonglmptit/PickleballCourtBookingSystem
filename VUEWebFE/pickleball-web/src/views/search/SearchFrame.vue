@@ -79,7 +79,7 @@ export default {
       this.provinesSuggestionList = listProvinesRes.data.map(
         (item) => item.name
       );
-      console.log(this.provinesSuggestionList);
+      // console.log(this.provinesSuggestionList);
     } catch (error) {
       console.log(error);
     }

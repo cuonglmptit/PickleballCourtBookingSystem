@@ -5,18 +5,42 @@
         <div class="left-top">
           <div class="font-size-32">Đăng nhập</div>
         </div>
-        <form class="signin-form" action="">
+        <form class="signin-form" @submit.prevent="handleLogin">
           <div class="p-input-container">
             <label for="username">Tài khoản</label>
-            <input type="text" id="username" placeholder="" />
+            <input
+              type="text"
+              id="username"
+              v-model="username"
+              :class="{ 'input-error': usernameError }"
+              @input="validateField('username')"
+            />
           </div>
           <div class="p-input-container">
-            <label for="">Mật khẩu</label>
-            <input type="password" id="password" />
+            <label for="password">Mật khẩu</label>
+            <input
+              :type="showPassword ? 'text' : 'password'"
+              id="password"
+              v-model="password"
+              :class="{ 'input-error': passwordError }"
+              @input="validateField('password')"
+            />
+            <div
+              v-if="password"
+              class="toggle-password"
+              :class="showPassword ? 'p-icon-view' : 'p-icon-hide'"
+              @click="togglePasswordVisibility"
+            ></div>
           </div>
+          <div class="error-message" v-if="errors">
+            {{ errors }}
+          </div>
+          <button type="submit" style="display: none"></button>
         </form>
         <div class="left-bottom">
-          <button class="p-button this-scoped-btn">Đăng nhập</button>
+          <button class="p-button this-scoped-btn" @click="handleLogin">
+            Đăng nhập
+          </button>
         </div>
       </div>
       <div class="right-part p-banner">
@@ -39,10 +63,10 @@
             </PrimaryButtonBorder>
           </div>
           <div class="text-white">
-            Hay bạn là chủ sân và muốn dùng hệ thống?
+            Hoặc bạn là chủ sân và muốn dùng hệ thống?
             <router-link
               class="text-white roboto-italic"
-              :to="{ name: 'home' }"
+              :to="{ name: 'register' }"
             >
               Đăng ký thành chủ sân
             </router-link>
@@ -60,9 +84,62 @@
 
 <script>
 import PrimaryButtonBorder from "../../components/buttons/PrimaryButtonBorder.vue";
+import { login } from "@/scripts/apiService.js";
 export default {
   components: {
     PrimaryButtonBorder,
+  },
+  data() {
+    return {
+      username: "",
+      password: "",
+      errors: "",
+      usernameError: false,
+      passwordError: false,
+      showPassword: false,
+    };
+  },
+  methods: {
+    togglePasswordVisibility() {
+      this.showPassword = !this.showPassword;
+    },
+    validateField(field) {
+      if (field === "username") {
+        this.usernameError = !this.username.trim();
+      } else if (field === "password") {
+        this.passwordError = !this.password.trim();
+      }
+    },
+    async handleLogin() {
+      // Kiểm tra xem username và password đã được nhập chưa
+      this.usernameError = !this.username.trim();
+      this.passwordError = !this.password.trim();
+
+      // Nếu có lỗi, không tiếp tục
+      if (this.usernameError || this.passwordError) {
+        return;
+      }
+
+      try {
+        // Gọi service login
+        const response = await login(this.username, this.password);
+        console.log(response);
+        // Kiểm tra kết quả trả về (ví dụ token)
+        if (response.success) {
+          // Lưu token vào Vuex
+          this.$store.dispatch("login", {
+            user: response.data.user,
+            token: response.data.token,
+          });
+          // Điều hướng đến trang chính
+          this.$router.push("/");
+        } else {
+          this.errors = response.userMsg;
+        }
+      } catch (error) {
+        console.log(`handleLogin ${error}`);
+      }
+    },
   },
 };
 </script>
@@ -132,6 +209,27 @@ input:focus {
   background-color: white;
 }
 
+.input-error {
+  background: url("@/assets/icon/error.png");
+  background-repeat: no-repeat;
+  background-position-x: calc(100% - 12px);
+  background-position-y: center;
+  background-size: 24px;
+  border: 1px solid var(--topic-color3-400);
+}
+
+.toggle-password {
+  width: 16px;
+  height: 16px;
+  position: absolute;
+  right: 12px;
+  bottom: 10px;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  background-repeat: no-repeat;
+  background-size: 16px;
+}
 /* input:not(:placeholder-shown):not(:focus) {
   background-color: white;
   border: 1px solid rgba(0, 0, 0, 0.5);
@@ -198,5 +296,9 @@ input:focus {
   row-gap: 6px;
   flex-direction: column;
   align-items: center;
+}
+
+.error-message {
+  color: var(--topic-color3-400);
 }
 </style>

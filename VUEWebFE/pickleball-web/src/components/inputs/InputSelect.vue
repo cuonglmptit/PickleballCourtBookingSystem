@@ -59,13 +59,24 @@ export default {
   },
   computed: {
     filteredSuggestions() {
-      // Lọc danh sách dựa trên giá trị nhập vào
+      const query = this.removeVietnameseTones(this.modelValue.toLowerCase());
       return this.suggestions.filter((item) =>
-        item.toLowerCase().includes(this.modelValue.toLowerCase())
+        this.removeVietnameseTones(item.toLowerCase()).includes(query)
       );
     },
   },
   methods: {
+    removeVietnameseTones(str) {
+      try {
+        return str
+          .normalize("NFD") // Tách các ký tự đặc biệt khỏi chữ cái
+          .replace(/[\u0300-\u036f]/g, "") // Loại bỏ dấu
+          .replace(/đ/g, "d") // Thay chữ "đ" thành "d"
+          .replace(/Đ/g, "D"); // Thay chữ "Đ" thành "D"
+      } catch (error) {
+        console.log(`removeVietnameseTones InputSelect: ${error}`);
+      }
+    },
     handleBlur() {
       try {
         if (

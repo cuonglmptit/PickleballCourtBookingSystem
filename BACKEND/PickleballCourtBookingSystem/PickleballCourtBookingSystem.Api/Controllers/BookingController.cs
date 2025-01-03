@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Extensions;
 using PickleballCourtBookingSystem.Api.DTOs;
 using PickleballCourtBookingSystem.Api.Models;
+using PickleballCourtBookingSystem.Core.Common;
 using PickleballCourtBookingSystem.Core.Entities;
 using PickleballCourtBookingSystem.Core.Interfaces.Infrastructure;
 using PickleballCourtBookingSystem.Core.Interfaces.Services;
@@ -121,16 +122,21 @@ namespace PickleballCourtBookingSystem.Api.Controllers
             return BadRequest(new { success = false, statusCode = result.StatusCode, userMessage = result.UserMsg, developerMessage = result.DevMsg });
         }
 
-        //[Authorize(Roles = $"{nameof(RoleEnum.Customer)},{nameof(RoleEnum.CourtOwner)}")]
-        [HttpGet("/status/{status}")]
-        public IActionResult GetBookingByStatus(BookingStatusEnum status, Guid userId)
+        [Authorize(Roles = $"{nameof(RoleEnum.Customer)},{nameof(RoleEnum.CourtOwner)}")]
+        [HttpGet("Status/{status}")]
+        public IActionResult GetBookingByStatus(BookingStatusEnum status)
         {
-            var result = _bookingService.GetBookingByStatusService(userId, status);
-            if (result.Success)
+            var token = CommonMethods.GetTokenFromHeader(HttpContext);
+            string userId = _authService.GetUserIdFromToken(token);
+            if (userId == null)
             {
-                return Ok(result.Data);
+                return BadRequest("Token không hợp lệ, không tìm thấy Id người dùng.");
             }
-            return BadRequest();
+            else
+            {
+                var result = _bookingService.GetBookingByStatusService(Guid.Parse(userId), status);
+                return StatusCode(result.StatusCode, result);
+            }
         }
 
     }

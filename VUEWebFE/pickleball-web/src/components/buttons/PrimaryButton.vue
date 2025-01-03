@@ -46,7 +46,7 @@ export default {
   background-color: rgba(255, 255, 255, 0.5);
   cursor: pointer;
 }
-.router-link-active {
+.router-link-exact-active {
   background-color: white;
   color: var(--topic-color-700);
 }

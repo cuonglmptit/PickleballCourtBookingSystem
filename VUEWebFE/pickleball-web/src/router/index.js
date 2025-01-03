@@ -5,9 +5,15 @@ import MainLayout from '../views/layouts/MainLayout.vue';
 import EmptyLayout from '../views/layouts/EmptyLayout.vue';
 import CourtClusterDetail from '../views/court/CourtClusterDetail.vue';
 import CourtOwnerManage from '../views/owner/CourtOwnerManage.vue';
+import CourtOwnerBookings from '../views/owner/CourtOwnerBookings.vue';
+import CourtOwnerDashboard from '../views/owner/CourtOwnerDashboard.vue';
 import NotFound from '../views/NotFound.vue';
 import RegisterView from '../views/auth/RegisterView.vue';
 import LoginView from '../views/auth/LoginView.vue';
+import CustomerBookings from '@/views/customer/CustomerBookings.vue';
+import OwnerCourtClusterDetail from '@/views/owner/OwnerCourtClusterDetail.vue';
+
+import store from '@/store';  // Import store
 
 const routes = [
   {
@@ -18,6 +24,13 @@ const routes = [
         path: "",
         name: "home",
         component: HomeSearch,
+        meta: { requiresAuth: false, allowedRoles: ['Customer', undefined], title: 'Đặt sân Pickleball' },
+      },
+      {
+        path: '/customer/bookings',
+        name: 'customer-bookings',
+        component: CustomerBookings,
+        meta: { requiresAuth: true, allowedRoles: ['Customer'], title: 'Lịch đặt' },
       },
       {
         path: '/search/result',
@@ -32,7 +45,32 @@ const routes = [
       {
         path: '/manage/court-cluster',
         name: 'manage-court-cluster',
-        component: CourtOwnerManage
+        component: CourtOwnerManage,
+        meta: { requiresAuth: true, allowedRoles: ['CourtOwner'], title: 'Quản lý sân' },
+      },
+      {
+        path: '/manage/court-cluster/:id',
+        name: 'manage-court-cluster-detail',
+        component: OwnerCourtClusterDetail,
+        meta: { requiresAuth: true, allowedRoles: ['CourtOwner'], title: 'Quản lý sân' },
+      },
+      {
+        path: '/manage/bookings',
+        name: 'owner-manage-booking',
+        component: CourtOwnerBookings,
+        meta: { requiresAuth: true, allowedRoles: ['CourtOwner'], title: 'Quản lý booking' },
+      },
+      {
+        path: '/dashboard',
+        name: 'owner-dashboard',
+        component: CourtOwnerDashboard,
+        meta: { requiresAuth: true, allowedRoles: ['CourtOwner'], title: 'Thống kê' },
+      },
+      {
+        path: '/admin',
+        name: 'admin',
+        component: CourtOwnerDashboard,
+        meta: { requiresAuth: true, allowedRoles: ['Admin'], title: 'Admin' },
       },
     ],
   },
@@ -72,6 +110,32 @@ const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
 })
+
+router.beforeEach((to, from, next) => {
+  const { isAuthenticated, getUser: user } = store.getters;
+  // Nếu người dùng đã đăng nhập và cố gắng vào trang login hoặc trang đăng ký, chuyển hướng về trang chủ
+  if ((to.name === 'login' || to.name === 'register') && isAuthenticated) {
+    return next({ name: 'home' });  // Hoặc bạn có thể điều hướng đến bất kỳ trang nào khác bạn muốn
+  }
+
+  // Nếu route yêu cầu auth và người dùng chưa đăng nhập
+  if (to.meta.requiresAuth && !isAuthenticated) {
+    return next({ name: 'login' });
+  }
+
+  // Nếu route yêu cầu quyền người dùng và role của người dùng không có trong allowedRoles
+  if (to.meta.allowedRoles && !to.meta.allowedRoles.includes(user?.role)) {
+    if (user?.role === 'CourtOwner') {
+      return next({ name: 'manage-court-cluster' })
+    }
+    if (user?.role === 'Admin') {
+      return next({ name: 'admin' })
+    }
+    return next({ name: 'home' });  // Hoặc điều hướng tới trang khác
+  }
+
+  next();  // Cho phép truy cập route
+});
 
 router.afterEach((to) => {
   document.title = to.meta.title || "PickleBall Booking";

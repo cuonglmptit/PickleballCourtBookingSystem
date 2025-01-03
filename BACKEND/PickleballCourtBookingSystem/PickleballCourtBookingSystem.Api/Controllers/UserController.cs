@@ -17,9 +17,11 @@ namespace PickleballCourtBookingSystem.Api.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
-        public UserController(IUserService userService)
+        private readonly IAuthService _authService;
+        public UserController(IUserService userService, IAuthService authService)
         {
             _userService = userService;
+            _authService = authService;
         }
 
         [HttpGet]
@@ -98,7 +100,29 @@ namespace PickleballCourtBookingSystem.Api.Controllers
                     Email = user.Email,
                     RoleId = (int)user.Role
                 };
-                var result = _userService.Register(newUser);
+                var result = _authService.Register(newUser.Username, newUser.Password, newUser.Password, newUser.Name, newUser.PhoneNumber, newUser.Email, (RoleEnum)newUser.RoleId);
+                if (!result.Success)
+                {
+                    failedRecords.Add(user.Username, result); // Use Username as the key
+                }
+            }
+
+            return StatusCode(201,
+                new
+                {
+                    Result = $"insert thành công {users.Count - failedRecords.Count}/{users.Count} bản ghi",
+                    Failed = failedRecords
+                });
+        }
+
+        [HttpPost("dummy/Owner")]
+        public IActionResult PostListOwner([FromBody] List<User> users)
+        {
+            Dictionary<string, ServiceResult> failedRecords = new Dictionary<string, ServiceResult>();
+            //Write too insert the list and return the number of rows inserted
+            foreach (var user in users)
+            {
+                var result = _userService.InsertService(user);
                 if (!result.Success)
                 {
                     failedRecords.Add(user.Username, result); // Use Username as the key
