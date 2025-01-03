@@ -13,7 +13,7 @@
         android:layout_height="@dimen/dp_35"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:scaleType="fitXY"
-        android:src="@drawable/ic_arrrow_back"
+        android:src="@drawable/ic_arrow_back"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         />
@@ -111,18 +111,21 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewTimeSlot"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/dp_0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/selectTimeSlotTextView"
         android:layout_marginTop="@dimen/dp_10"
-        app:layout_constraintBottom_toTopOf="@id/PayButton"/>
+        android:layout_marginBottom="@dimen/dp_10"
+        app:layout_constraintBottom_toTopOf="@id/confirmButton"/>
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/PayButton"
+    <Button
+        android:id="@+id/confirmButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/book_court"
+        android:background="@drawable/custom_button"
+        android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginBottom="@dimen/dp_20"

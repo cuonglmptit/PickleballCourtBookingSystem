@@ -8,8 +8,8 @@ import java.time.LocalTime
 @Parcelize
 data class CourtTimeSlot(
     var id: String,
-    var date: LocalDate,
-    var time: LocalTime,
+    var date: String,
+    var time: String,
     var isAvailable: Int,
     var price: Double,
     var courtId: String

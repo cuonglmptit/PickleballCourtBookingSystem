@@ -14,7 +14,33 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AndroidApp"
         tools:targetApi="31">
-
+        <activity
+            android:name=".screen.courtowner.add.AddCourtTimeSlotActivity"
+            android:exported="false" />
+        <activity
+            android:name=".screen.courtowner.update.UpdateCourtClusterActivity"
+            android:exported="false" />
+        <activity
+            android:name=".screen.courtowner.home.HomeCourtOwnerActivity"
+            android:exported="false" />
+        <activity
+            android:name=".screen.address.UpdateAddressActivity"
+            android:exported="false" />
+        <activity
+            android:name=".screen.user.UpdateUserActivity"
+            android:exported="false" />
+        <activity
+            android:name=".screen.customer.booking.confirmbooking.ConfirmBookingActivity"
+            android:exported="false" />
+        <activity
+            android:name=".screen.courtowner.register.RegisterCourtClusterActivity"
+            android:exported="false" />
+        <activity
+            android:name=".screen.courtowner.detail.CourtClusterEditActivity"
+            android:exported="false" />
+        <activity
+            android:name=".screen.courtowner.statistics.StatisticActivity"
+            android:exported="false" />
         <!--
              TODO: Before you run your application, you need a Google Maps API key.
 

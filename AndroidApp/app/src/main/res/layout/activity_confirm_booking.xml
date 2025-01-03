@@ -1,0 +1,243 @@
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Guidelines for alignment -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.25" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.55" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.75" />
+
+    <!-- Back Button -->
+    <ImageView
+        android:id="@+id/backButton"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:contentDescription="back"
+        android:src="@drawable/ic_arrow_back"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/titleText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="Thông tin đặt sân"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/userInfoText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_10"
+        android:layout_marginTop="16dp"
+        android:text="Thông tin khách hàng"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/titleText" />
+
+    <TextView
+        android:id="@+id/customerName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Hoàng Minh Đức"
+        android:drawableStart="@drawable/ic_user"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_marginStart="@dimen/dp_10"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/userInfoText" />
+
+    <TextView
+        android:id="@+id/customerPhone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_10"
+        android:drawablePadding="@dimen/dp_5"
+        android:text="0123456789"
+        app:drawableLeftCompat="@drawable/ic_phone"
+        app:layout_constraintStart_toStartOf="@id/customerName"
+        app:layout_constraintTop_toBottomOf="@id/customerName" />
+
+    <TextView
+        android:id="@+id/customerEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_10"
+        android:drawableLeft="@drawable/ic_email"
+        android:drawablePadding="8dp"
+        android:text="maxholmes@gmail.com"
+        app:layout_constraintStart_toStartOf="@id/customerPhone"
+        app:layout_constraintTop_toBottomOf="@id/customerPhone" />
+
+    <TextView
+        android:id="@+id/bookingInfoText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="@dimen/dp_10"
+        android:text="Thông tin đặt sân"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/customerEmail" />
+
+    <ImageView
+        android:id="@+id/courtImage"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginEnd="8dp"
+        android:src="@drawable/image_court_1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/bookingInfoText" />
+
+    <TextView
+        android:id="@+id/courtName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Pickle ball ABC Đức"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@id/courtImage"
+        app:layout_constraintTop_toTopOf="@id/courtImage" />
+
+    <TextView
+        android:id="@+id/courtAddress"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_30"
+        android:layout_marginTop="@dimen/dp_8"
+        android:textSize="@dimen/sp_12"
+        android:drawableStart="@drawable/ic_location"
+        android:text="Học viện công nghệ bưu chính viễn thông"
+        android:ellipsize="none"
+        android:maxLines="5"
+        android:breakStrategy="simple"
+        app:layout_constraintStart_toStartOf="@id/courtName"
+        app:layout_constraintTop_toBottomOf="@id/courtName" />
+
+
+    <TextView
+        android:id="@+id/courtPhone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawablePadding="8dp"
+        android:text="0123456789"
+        android:layout_marginTop="@dimen/dp_8"
+        app:drawableLeftCompat="@drawable/ic_phone"
+        app:layout_constraintStart_toStartOf="@id/courtAddress"
+        app:layout_constraintTop_toBottomOf="@id/courtAddress" />
+
+    <!-- Header Row -->
+    <TextView
+        android:id="@+id/dateHeader"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Ngày"
+        android:layout_marginTop="@dimen/dp_10"
+        app:layout_constraintEnd_toStartOf="@id/guideline1"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="@dimen/dp_8"
+        app:layout_constraintTop_toBottomOf="@id/courtPhone" />
+
+    <TextView
+        android:id="@+id/timeHeader"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Thời gian"
+        app:layout_constraintEnd_toStartOf="@id/guideline2"
+        app:layout_constraintStart_toEndOf="@id/guideline1"
+        app:layout_constraintTop_toTopOf="@id/dateHeader" />
+
+    <TextView
+        android:id="@+id/courtHeader"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Sân"
+        app:layout_constraintEnd_toStartOf="@id/guideline3"
+        app:layout_constraintStart_toEndOf="@id/guideline2"
+        app:layout_constraintTop_toTopOf="@id/timeHeader" />
+
+    <TextView
+        android:id="@+id/priceHeader"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Giá"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/guideline3"
+        app:layout_constraintTop_toTopOf="@id/courtHeader" />
+
+    <!-- RecyclerView -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewTimeSlots"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintBottom_toTopOf="@id/totalPriceLabel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/priceHeader" />
+
+    <!-- Total Price -->
+    <TextView
+        android:id="@+id/totalPriceLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_5"
+        android:text="Tổng giá thuê:"
+        android:textStyle="bold"
+        android:layout_marginBottom="@dimen/dp_10"
+        app:layout_constraintEnd_toStartOf="@+id/totalPrice"
+        app:layout_constraintBottom_toTopOf="@id/bookButton" />
+
+    <TextView
+        android:id="@+id/totalPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_10"
+        android:layout_marginBottom="@dimen/dp_10"
+        android:text="200.000đ"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bookButton" />
+
+    <!-- Book Button -->
+    <Button
+        android:id="@+id/bookButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dp_10"
+        android:backgroundTint="@color/blue500"
+        android:text="Đặt sân"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
