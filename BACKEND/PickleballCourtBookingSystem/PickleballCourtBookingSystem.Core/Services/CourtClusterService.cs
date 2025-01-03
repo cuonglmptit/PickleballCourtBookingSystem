@@ -16,7 +16,8 @@ namespace PickleballCourtBookingSystem.Core.Services
         private readonly ICourtTimeSlotService _courtTimeSlotService;
         private readonly IAddressService _addressService;
         private readonly ICourtOwnerService _courtOwnerService;
-        public CourtClusterService(ICourtClusterRepository repository, ICourtClusterRepository courtClusterRepository, ICourtService courtService, ICourtPriceService courtPriceService, ICourtTimeSlotService courtTimeSlotService, IAddressService addressService, ICourtOwnerService courtOwnerService) : base(repository)
+        private readonly IImageCourtUrlService _imageCourtUrlService;
+        public CourtClusterService(ICourtClusterRepository repository, ICourtClusterRepository courtClusterRepository, ICourtService courtService, ICourtPriceService courtPriceService, ICourtTimeSlotService courtTimeSlotService, IAddressService addressService, ICourtOwnerService courtOwnerService, IImageCourtUrlService imageCourtUrlService) : base(repository)
         {
             _courtClusterRepository = courtClusterRepository;
             _courtService = courtService;
@@ -24,8 +25,9 @@ namespace PickleballCourtBookingSystem.Core.Services
             _courtTimeSlotService = courtTimeSlotService;
             _addressService = addressService;
             _courtOwnerService = courtOwnerService;
+            _imageCourtUrlService = imageCourtUrlService;
         }
-
+        
         public ServiceResult RegisterNewCourtCluster(Guid userId, string name, string? description, TimeSpan openingTime,
             TimeSpan closingTime, string city, string district, string ward, string street, int numberOfCourts)
         {
@@ -352,5 +354,38 @@ namespace PickleballCourtBookingSystem.Core.Services
                 return CreateServiceResult(Success: false, StatusCode: 500, UserMsg: "Error", DevMsg: e.Message);
             }
         }
+
+        public ServiceResult GetAllActiveCourtClusters()
+        {
+            try
+            {
+                var result = _courtClusterRepository.GetActiveCourtClusters().ToList();
+                if (result.Count == 0)
+                {
+                    return CreateServiceResult(Success: true, StatusCode: 200, UserMsg: "Không có cụm sân nào đang hoạt động", DevMsg: "Danh sách cụm sân rỗng");
+                }
+                return CreateServiceResult(Success: true, StatusCode: 200, Data: result, UserMsg: "Lấy danh sách cụm sân thành công");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return CreateServiceResult(Success: false, StatusCode: 500, UserMsg: "Lỗi khi lấy danh sách cụm sân", DevMsg: e.Message);
+            }
+        }
+
+        public ServiceResult GetImageUrl(Guid courtClusterId)
+        {
+            try
+            {
+                var result = _imageCourtUrlService.GetImageCourtUrlService(courtClusterId);
+                return result;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return CreateServiceResult(Success: false, StatusCode: 500, UserMsg: "Lỗi khi lấy hình ảnh", DevMsg: e.Message);
+            }
+        }
+
     }
 }

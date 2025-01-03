@@ -8,17 +8,22 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.maxholmes.androidapp.R
 import com.maxholmes.androidapp.data.dto.response.APIResponse
+import com.maxholmes.androidapp.data.dto.response.CourtOwnerInfoDto
 import com.maxholmes.androidapp.data.dto.response.parseApiResponseData
 import com.maxholmes.androidapp.data.model.Address
 import com.maxholmes.androidapp.data.service.RetrofitClient
 import com.maxholmes.androidapp.data.model.Court
 import com.maxholmes.androidapp.data.model.CourtCluster
+import com.maxholmes.androidapp.data.model.ImageCourtUrl
 import com.maxholmes.androidapp.databinding.ActivityCourtClusterDetailBinding
+import com.maxholmes.androidapp.screen.customer.booking.BookingActivity
 import com.maxholmes.androidapp.screen.home.adapter.SelectCourtAdapter
 import com.maxholmes.androidapp.screen.home.adapter.SelectDayAdapter
 import com.maxholmes.androidapp.screen.test.TestActivity
 import com.maxholmes.androidapp.utils.OnItemRecyclerViewClickListener
+import com.maxholmes.androidapp.utils.ext.SharedPreferencesUtils
 import com.maxholmes.androidapp.utils.ext.formatDate
+import com.maxholmes.androidapp.utils.ext.loadImageCircleWithUrl
 import com.maxholmes.androidapp.utils.ext.loadImageWithUrl
 import retrofit2.Call
 import retrofit2.Callback
@@ -49,6 +54,8 @@ class CourtClusterDetailActivity : AppCompatActivity() {
         setupRecyclerViews()
 
         loadCourtClusterDetails()
+        loadCourtOwnerInfo()
+        loadImage()
         loadCourts()
         loadDays()
     }
@@ -87,44 +94,119 @@ class CourtClusterDetailActivity : AppCompatActivity() {
         if (selectedDay != null && selectedCourt != null) {
             val formattedDate = selectedDay!!.formatDate()
 
-            val intent = Intent(this, TestActivity::class.java)
+            val intent = Intent(this, BookingActivity::class.java)
             intent.putExtra("selectedDay", formattedDate)
-            intent.putExtra("courtId", selectedCourt!!.id)
+            intent.putExtra("court", selectedCourt!!.id)
+
+            intent.putParcelableArrayListExtra("courts", ArrayList(selectCourtAdapter.getCourts()))
+
             startActivity(intent)
         }
     }
+
 
     private fun loadCourtClusterDetails() {
         binding.courtNameTextView.text = courtCluster!!.name
         binding.courtDescriptionTextView.text = courtCluster!!.description
         binding.addressCourtTextView.text = courtCluster!!.address.toString()
-        binding.phoneNumberTextView.text =
         binding.starValueTextView.text = "0"
-        binding.workingTimeTextView.text = "05:00 - 22:00"
-        binding.courtClusterImage.setImageResource(R.drawable.image_court_1)
+        val timeWorking = courtCluster!!.openingTime + " - " + courtCluster!!.closingTime
+        binding.workingTimeTextView.text = timeWorking
+    }
+
+    private fun loadImage() {
+        RetrofitClient.ApiClient.apiService.getImagesByCourtClusterId(courtCluster!!.id)
+            .enqueue(object : Callback<APIResponse> {
+                override fun onResponse(call: Call<APIResponse>, response: Response<APIResponse>) {
+                    if (response.isSuccessful) {
+                        response.body()?.let { apiResponse ->
+                            val imageList: List<ImageCourtUrl>? = parseApiResponseData(apiResponse.data)
+                            imageList.let {
+                                if(it.isNullOrEmpty())
+                                {
+                                    binding.courtClusterImage.setImageResource(R.drawable.image_court_1)
+                                }
+                                else
+                                {
+                                    binding.courtClusterImage.loadImageCircleWithUrl(
+                                        it[0].url,
+                                        R.drawable.image_court_1
+                                    )
+                                }
+                            }
+                        }
+                    } else {
+                        Toast.makeText(
+                            this@CourtClusterDetailActivity,
+                            "Lỗi khi tải hình ảnh!",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        binding.courtClusterImage.setImageResource(R.drawable.image_court_1)
+                    }
+                }
+
+                override fun onFailure(call: Call<APIResponse>, t: Throwable) {
+                    Toast.makeText(
+                        this@CourtClusterDetailActivity,
+                        "Lỗi kết nối mạng. Vui lòng thử lại!",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    // Load ảnh mặc định nếu kết nối thất bại
+                    binding.courtClusterImage.setImageResource(R.drawable.image_court_1)
+                }
+            })
     }
 
 
     private fun loadCourts() {
-        RetrofitClient.ApiClient.apiService.getCourtsByCourtClusterId(courtCluster!!.id).enqueue(object : Callback<APIResponse> {
+        RetrofitClient.ApiClient.apiService.getCourtsByCourtClusterId(courtCluster!!.id)
+            .enqueue(object : Callback<APIResponse> {
+                override fun onResponse(call: Call<APIResponse>, response: Response<APIResponse>) {
+                    if (response.isSuccessful) {
+                        response.body()?.let { apiResponse ->
+                            val courts: List<Court>? = parseApiResponseData(apiResponse.data)
+                            courts?.let {
+                                val sortedCourts = it.sortedBy { court -> court.courtNumber }
+                                selectCourtAdapter.updateData(sortedCourts.toMutableList())
+                            }
+                        }
+                    }
+                }
+
+                override fun onFailure(call: Call<APIResponse>, t: Throwable) {
+                    Toast.makeText(this@CourtClusterDetailActivity, "Lỗi khi tải danh sách sân!", Toast.LENGTH_SHORT).show()
+                }
+            })
+    }
+
+
+    private fun loadCourtOwnerInfo() {
+        val token = SharedPreferencesUtils.getToken(this)
+        if (token.isNullOrEmpty()) {
+            Toast.makeText(this@CourtClusterDetailActivity, "Token không hợp lệ!", Toast.LENGTH_SHORT).show()
+            return
+        }
+        val tokenHeader = "Bearer $token"
+
+        RetrofitClient.ApiClient.apiService.getCourtOwnerInfo(courtCluster!!.courtOwnerId, tokenHeader).enqueue(object : Callback<APIResponse> {
             override fun onResponse(call: Call<APIResponse>, response: Response<APIResponse>) {
                 if (response.isSuccessful) {
-                    response.body()?.let { apiReponse ->
-                        val courts: List<Court>? = parseApiResponseData(apiReponse.data)
-                        courts.let {
-                            selectCourtAdapter.updateData(it!!.toMutableList())
+                    response.body()?.let { apiResponse ->
+                        val courtOwnerInfo : CourtOwnerInfoDto? = parseApiResponseData(apiResponse.data)
+                        courtOwnerInfo?.let {
+                            binding.phoneNumberTextView.text = it.phoneNumber
                         }
-
                     }
+                } else {
+                    Toast.makeText(this@CourtClusterDetailActivity, "Lỗi khi tải thông tin chủ sân!", Toast.LENGTH_SHORT).show()
                 }
             }
 
             override fun onFailure(call: Call<APIResponse>, t: Throwable) {
+                Toast.makeText(this@CourtClusterDetailActivity, "Lỗi kết nối mạng. Vui lòng thử lại!", Toast.LENGTH_SHORT).show()
             }
         })
     }
-
-
 
     private fun loadDays() {
         val calendar = Calendar.getInstance()

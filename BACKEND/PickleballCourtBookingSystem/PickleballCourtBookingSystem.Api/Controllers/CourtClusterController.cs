@@ -172,5 +172,19 @@ namespace PickleballCourtBookingSystem.Api.Controllers
             var result = _courtClusterService.GetCourtClusterByOwner(Guid.Parse(userId));
             return StatusCode(result.StatusCode, result);
         }
+        
+        [HttpGet("Active")]
+        public IActionResult GetActiveCourtCluster()
+        {
+            var result = _courtClusterService.GetAllActiveCourtClusters();
+            return StatusCode(result.StatusCode, result);
+        }
+        
+        [HttpGet("{id}/Image")]
+        public IActionResult GetImageUrl(Guid id)
+        {
+            var result = _courtClusterService.GetImageUrl(id);
+            return StatusCode(result.StatusCode, result);
+        }
     }
 }
