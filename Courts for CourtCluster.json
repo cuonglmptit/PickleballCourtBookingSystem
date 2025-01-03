@@ -142,5 +142,77 @@
         "courtNumber": 4,
         "description": "Court 4 of Ocean Breeze Courts",
         "courtClusterId": "3e618b02-1f69-4855-9e94-c3e96b92abda"
+    },
+    {
+        "id": "8e4ec48e-421d-4975-85fe-e5694778c45e",
+        "courtNumber": 1,
+        "description": "Court 1 of Sân Cát Vàng",
+        "courtClusterId": "0ff7bd4d-8483-42c5-a29b-7c7996dfcbe5"
+    },
+    {
+        "id": "118d597b-1d8f-48f3-baf6-e92564a5e6ad",
+        "courtNumber": 2,
+        "description": "Court 2 of Sân Cát Vàng",
+        "courtClusterId": "0ff7bd4d-8483-42c5-a29b-7c7996dfcbe5"
+    },
+    {
+        "id": "0c85c8f9-b071-4330-bf99-bf3b89039ab6",
+        "courtNumber": 3,
+        "description": "Court 3 of Sân Cát Vàng",
+        "courtClusterId": "0ff7bd4d-8483-42c5-a29b-7c7996dfcbe5"
+    },
+    {
+        "id": "7743b0ab-b3f6-476d-99a7-b111228b289f",
+        "courtNumber": 1,
+        "description": "Court 1 of Sân Bình Minh",
+        "courtClusterId": "4cf6a6d5-52b1-4854-8365-c72015682e9c"
+    },
+    {
+        "id": "c8cb2f9d-17c7-4b9e-b28b-07e4e62a43c4",
+        "courtNumber": 2,
+        "description": "Court 2 of Sân Bình Minh",
+        "courtClusterId": "4cf6a6d5-52b1-4854-8365-c72015682e9c"
+    },
+    {
+        "id": "7db06316-c1cf-4e65-bef7-daf4dbd2c089",
+        "courtNumber": 3,
+        "description": "Court 3 of Sân Bình Minh",
+        "courtClusterId": "4cf6a6d5-52b1-4854-8365-c72015682e9c"
+    },
+    {
+        "id": "0a95a426-2eb6-400d-a923-22a7b6012057",
+        "courtNumber": 1,
+        "description": "Court 1 of Sân Bãi Biển",
+        "courtClusterId": "dc9e3f2e-6e1f-491f-bbe2-1caa86b0ccf1"
+    },
+    {
+        "id": "10415d45-33f2-474f-9d24-b6a01033f6ea",
+        "courtNumber": 2,
+        "description": "Court 2 of Sân Bãi Biển",
+        "courtClusterId": "dc9e3f2e-6e1f-491f-bbe2-1caa86b0ccf1"
+    },
+    {
+        "id": "25c29e59-75c2-4f90-a07a-dfa1f44586b9",
+        "courtNumber": 3,
+        "description": "Court 3 of Sân Bãi Biển",
+        "courtClusterId": "dc9e3f2e-6e1f-491f-bbe2-1caa86b0ccf1"
+    },
+    {
+        "id": "ed34a8f3-2990-417b-a3e3-c7f315b08371",
+        "courtNumber": 1,
+        "description": "Court 1 of Sân Lộc Bình",
+        "courtClusterId": "e624fe58-657e-419f-bc76-b219b58986e5"
+    },
+    {
+        "id": "1cbf053f-98d3-4c4b-b83b-0d4ef2c41d43",
+        "courtNumber": 2,
+        "description": "Court 2 of Sân Lộc Bình",
+        "courtClusterId": "e624fe58-657e-419f-bc76-b219b58986e5"
+    },
+    {
+        "id": "dfc676ae-f402-42ac-8e89-0d4d2f7f9c4e",
+        "courtNumber": 3,
+        "description": "Court 3 of Sân Lộc Bình",
+        "courtClusterId": "e624fe58-657e-419f-bc76-b219b58986e5"
     }
 ]

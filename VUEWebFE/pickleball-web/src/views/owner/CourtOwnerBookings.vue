@@ -21,10 +21,10 @@
             Lọc theo:
             <select v-model="statusFilter" class="status-select">
               <option value="">Tất cả</option>
-              <option value="Đang chờ">Đang chờ</option>
-              <option value="Đồng ý">Đã xác nhận</option>
-              <option value="Đã thanh toán">Đã thanh toán</option>
-              <option value="Chưa thanh toán">Chưa thanh toán</option>
+              <option value="Pending">Đang chờ</option>
+              <option value="CourtOwnerConfirmed">Đã xác nhận</option>
+              <option value="Paid">Đã thanh toán</option>
+              <option value="Unpaid">Chưa thanh toán</option>
             </select>
           </div>
         </div>
@@ -32,7 +32,7 @@
           <thead>
             <tr>
               <th>STT</th>
-              <th>Booking ID</th>
+              <th>Mã booking</th>
               <th>Thời gian đặt</th>
               <th>Trạng thái</th>
               <th>Thanh toán</th>
@@ -46,12 +46,12 @@
             <tr v-for="(booking, index) in filteredBookings" :key="booking.id">
               <td>{{ (currentPage - 1) * itemsPerPage + index + 1 }}</td>
               <td>{{ booking.code }}</td>
-              <td>{{ formatDate(booking.bookingTime) }}</td>
-              <td>{{ booking.status }}</td>
-              <td>{{ booking.paymentStatus }}</td>
-              <td>{{ booking.courtCluster }}</td>
-              <td>{{ booking.court }}</td>
-              <td>{{ formatCurrency(booking.totalAmount) }}</td>
+              <td>{{ formatDate(booking.timeBooking) }}</td>
+              <td>{{ formatStatus(booking.status) }}</td>
+              <td>{{ formatStatus(booking.paymentStatus) }}</td>
+              <td>{{ getCourtClusterName(booking.courtClusterId) }}</td>
+              <td>{{ getCourtNumber(booking.courtId) }}</td>
+              <td>{{ formatCurrency(booking.amount) }}</td>
               <td>
                 <button class="detail-btn" @click="viewDetails(booking)">
                   Chi tiết
@@ -89,40 +89,62 @@
       <div class="left-form">
         <div class="big-title">Chi tiết lịch đặt</div>
         <div class="detail">
-          <div>Thời gian đặt: 12:00 21/12/2024</div>
-          <div>Cụm sân hà đông</div>
+          <div>Mã booking: {{ selectedBooking.code }}</div>
+          <div>
+            Thời gian đặt: {{ formatDate(selectedBooking.timeBooking) }}
+          </div>
+          <div>
+            Cụm sân: {{ getCourtClusterName(selectedBooking.courtClusterId) }}
+          </div>
           <div>Địa chỉ: Đường Nguyễn Trãi, Hà Đông, Hà Nội</div>
           <ul>
-            <li>Sân 1: 14:00</li>
-            <li>Sân 1: 15:00</li>
+            <li
+              v-for="courtTimeSlot in seletedCourTimeSlotsByBookingId"
+              :key="courtTimeSlot.id"
+            >
+              Sân {{ getCourtNumber(courtTimeSlot.courtId) }}:
+              {{
+                courtTimeSlot.time +
+                " - " +
+                formatDate(courtTimeSlot.date).split(" ")[1]
+              }}
+            </li>
           </ul>
+          <div style="color: var(--topic-color4-500); font-size: 24px">
+            Tổng: {{ formatCurrency(selectedBooking.amount) }}
+          </div>
+          <br />
+          <div>Thông tin người đặt:</div>
+          <div>Tên: {{ selectedBookingCustomerInfo.name }}</div>
+          <div>Sđt: {{ selectedBookingCustomerInfo.phoneNumber }}</div>
+          <div>Email: {{ selectedBookingCustomerInfo.email }}</div>
         </div>
       </div>
       <div class="right-form">
         <div>
           <div class="big-title">Trạng thái</div>
           <div class="big-title" style="color: orange">
-            Đang chờ chủ sân xác nhận
+            {{ formatStatus(selectedBooking.status) }}
           </div>
         </div>
         <div>
           <div class="big-title">Thanh toán</div>
           <div class="big-title" style="color: var(--topic-color2-400)">
-            Chưa thanh toán
+            {{ formatStatus(selectedBooking.paymentStatus) }}
           </div>
         </div>
         <div class="buttons-container">
           <button
             class="reject-btn roboto-bold font-size-24"
             style="width: 200px; height: 36px; margin-right: 24px"
-            @click="cancelBooking(booking)"
+            @click="cancelBooking(selectedBooking)"
           >
-            Hủy
+            Từ chối
           </button>
           <button
             class="accept-btn roboto-bold font-size-24"
             style="width: 200px; height: 36px"
-            @click="cancelBooking(booking)"
+            @click="cancelBooking(selectedBooking)"
           >
             Xác nhận
           </button>
@@ -133,37 +155,60 @@
 </template>
 
 <script>
+import {
+  getBookingStatus,
+  getCourtClusterByCourtOwner,
+  getCourtsOfCourtCluster,
+  getCourtTimeSlotsByBookingId,
+  getCustomerInfo,
+} from "../../scripts/apiService.js";
 export default {
   data() {
     return {
-      isFormVisible: true,
+      isFormVisible: false,
       searchQuery: "",
       statusFilter: "",
-      bookings: [
-        {
-          id: "1",
-          code: "12314",
-          bookingTime: "2024-12-27T08:00:00",
-          status: "Đang chờ",
-          paymentStatus: "Chưa thanh toán",
-          courtCluster: "Golden Pickle Courts",
-          court: "2",
-          totalAmount: 300000,
-        },
-        {
-          id: "2",
-          code: "41423",
-          bookingTime: "2024-12-27T10:00:00",
-          paymentStatus: "Đã thanh toán",
-          status: "Đồng ý",
-          courtCluster: "Silver Court Arena",
-          court: "1",
-          totalAmount: 500000,
-        },
-      ],
+      bookings: [],
       currentPage: 1,
       itemsPerPage: 15,
+      courtClusters: [],
+      courts: [],
+      selectedBooking: null,
+      seletedCourTimeSlotsByBookingId: [],
+      selectedBookingCustomerInfo: {},
     };
+  },
+  async created() {
+    try {
+      // Load booking và courtCluster đồng thời
+      const [bookingRes, courtClusterRes] = await Promise.all([
+        getBookingStatus("All"),
+        getCourtClusterByCourtOwner(),
+      ]);
+
+      // Xử lý kết quả của booking và courtCluster
+      if (bookingRes.success) {
+        this.bookings = bookingRes.data;
+      }
+
+      if (courtClusterRes.success) {
+        this.courtClusters = courtClusterRes.data;
+      }
+      // Sau khi load xong courtCluster, tiếp tục lấy courts của từng cluster
+      if (this.courtClusters.length > 0) {
+        const courtPromises = this.courtClusters.map(
+          (cluster) => getCourtsOfCourtCluster(cluster.id) // API nhận cluster.id
+        );
+        // Chạy tất cả request để lấy courts
+        const courtsRes = await Promise.all(courtPromises);
+        // Gộp tất cả các courts vào một mảng
+        this.courts = courtsRes
+          .filter((res) => res.success) // Lọc các response thành công
+          .flatMap((res) => res.data); // Lấy dữ liệu từ các response
+      }
+    } catch (error) {
+      console.log(`created CowrtOwwnerBookings: ${error}`);
+    }
   },
   computed: {
     filteredBookings() {
@@ -196,6 +241,16 @@ export default {
     },
   },
   methods: {
+    getCourtClusterName(courtClusterId) {
+      const cluster = this.courtClusters.find(
+        (cluster) => cluster.id === courtClusterId
+      );
+      return cluster ? cluster.name : "Không xác định";
+    },
+    getCourtNumber(courtId) {
+      const court = this.courts.find((court) => court.id === courtId);
+      return court ? court.courtNumber : "Không xác định";
+    },
     changePage(page) {
       this.currentPage = page;
     },
@@ -218,8 +273,39 @@ export default {
         currency: "VND",
       }).format(amount);
     },
-    viewDetails(booking) {
-      alert(`Xem chi tiết booking: ${booking.id}`);
+    formatStatus(status) {
+      let statusVie = undefined;
+      switch (status) {
+        case "Paid":
+          statusVie = "Đã thanh toán";
+          break;
+        case "Unpaid":
+          statusVie = "Chưa thanh toán";
+          break;
+        case "Pending":
+          statusVie = "Đang chờ";
+          break;
+        case "CourtOwnerConfirmed":
+          statusVie = "Đã xác nhận";
+          break;
+        default:
+          break;
+      }
+      return statusVie;
+    },
+    async viewDetails(booking) {
+      this.selectedBooking = booking; // Lưu thông tin booking được chọn
+      const [courtTimeSlotsRes, customerInfoRes] = await Promise.all([
+        getCourtTimeSlotsByBookingId(booking.id),
+        getCustomerInfo(booking.customerId),
+      ]);
+      if (courtTimeSlotsRes.success) {
+        this.seletedCourTimeSlotsByBookingId = courtTimeSlotsRes.data;
+      }
+      if (customerInfoRes.success) {
+        this.selectedBookingCustomerInfo = customerInfoRes.data;
+      }
+      this.isFormVisible = true; // Hiển thị form chi tiết
     },
     acceptBooking(booking) {
       alert(`Đồng ý booking: ${booking.id}`);
@@ -420,7 +506,9 @@ export default {
   flex-direction: column;
   row-gap: 12px;
 }
-.left-form .detail div {
+.left-form .detail div,
+ul,
+li {
   font-size: 16px;
 }
 .right-form {

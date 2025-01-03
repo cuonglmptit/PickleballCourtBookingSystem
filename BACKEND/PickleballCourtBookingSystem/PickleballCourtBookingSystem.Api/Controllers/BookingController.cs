@@ -139,5 +139,11 @@ namespace PickleballCourtBookingSystem.Api.Controllers
             }
         }
 
+        [HttpGet("{bookingId}/CourTimeSlots")]
+        public IActionResult GetCourtTimeBookingByBookingId(Guid bookingId)
+        {
+            var result = _bookingService.GetCourtTimeSlotBookingIdService(bookingId);
+            return StatusCode(result.StatusCode, result);
+        }
     }
 }

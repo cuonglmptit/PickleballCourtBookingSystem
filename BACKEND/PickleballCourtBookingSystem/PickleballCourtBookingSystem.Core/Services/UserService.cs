@@ -369,7 +369,7 @@ public class UserService : BaseService<User>, IUserService
             );
         }
     }
-
+    
     public ServiceResult GetPublicInfoService(Guid userId)
     {
         try
@@ -394,6 +394,61 @@ public class UserService : BaseService<User>, IUserService
         {
             Console.WriteLine(e);
             return CreateServiceResult(Success: false, StatusCode: 500, UserMsg: "Error", DevMsg: e.Message);
+        }
+    }
+    
+    public ServiceResult GetInfoByCustomerId(Guid customerId)
+    {
+        try
+        {
+            var customerServiceRs = _customerService.GetByIdService(customerId);
+            Customer customer = customerServiceRs.Data as Customer;
+
+            if (customer == null)
+            {
+                return CommonMethods.CreateServiceResult(
+                    Success: false,
+                    StatusCode: 404,
+                    UserMsg: "Customer not found",
+                    DevMsg: "Customer not found"
+                );
+            }
+
+            User user = _userRepository.GetById(customer.UserId.Value);
+
+            if (user == null)
+            {
+                return CommonMethods.CreateServiceResult(
+                    Success: false,
+                    StatusCode: 404,
+                    UserMsg: "User not found",
+                    DevMsg: "User not found"
+                );
+            }
+            CustomerInfoDto userInfoDTO = new UserInfoDTO
+            {
+                Id = user.Id.Value,
+                CustomerId = customer.Id.Value,
+                Name = user.Name,
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
+                AvatarUrl = user.AvatarUrl
+            };
+            return CommonMethods.CreateServiceResult(
+                Success: true,
+                StatusCode: 200,
+                Data: userInfoDTO
+            );
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return CommonMethods.CreateServiceResult(
+                Success: false,
+                StatusCode: 500,
+                UserMsg: "Failed to get user info",
+                DevMsg: e.Message
+            );
         }
     }
 }

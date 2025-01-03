@@ -1,10 +1,26 @@
 import axios from 'axios';
+import store from '@/store'; // Import Vuex store
 
 // Khai báo base URL
 const api = axios.create({
     baseURL: 'http://localhost:5039',
     timeout: 10000, // Thời gian timeout cho mỗi request
 });
+
+
+// Thêm interceptor để thêm token vào mỗi request
+api.interceptors.request.use(
+    (config) => {
+        const token = store.getters['getToken']; // Sử dụng getter để lấy token
+        if (token) {
+            config.headers['Authorization'] = `Bearer ${token}`;
+        }
+        return config;
+    },
+    (error) => {
+        return Promise.reject(error);
+    }
+);
 
 // Thêm interceptor để luôn trả về data
 api.interceptors.response.use(

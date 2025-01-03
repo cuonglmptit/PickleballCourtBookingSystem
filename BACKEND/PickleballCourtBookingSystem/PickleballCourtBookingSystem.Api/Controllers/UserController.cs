@@ -145,5 +145,13 @@ namespace PickleballCourtBookingSystem.Api.Controllers
             var result = _userService.GetPublicInfoService(id);
             return StatusCode(result.StatusCode, result);
         }
+        
+        [HttpGet("Customer/{id}/info")]
+        public IActionResult GetCustomerInfo(Guid id)
+        {
+            var result = _userService.GetInfoByCustomerId(id);
+            return StatusCode(result.StatusCode, result);
+        }
+
     }
 }

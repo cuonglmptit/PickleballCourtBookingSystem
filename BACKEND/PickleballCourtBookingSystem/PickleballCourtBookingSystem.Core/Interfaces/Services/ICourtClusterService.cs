@@ -24,6 +24,13 @@ public interface ICourtClusterService: IBaseService<CourtCluster>
 
     public ServiceResult RegisterNewCourtCluster(Guid userId, string name, string? description, TimeSpan openingTime,
         TimeSpan closingTime, string city, string district, string ward, string street, int numberOfCourts);
-
+    
     public ServiceResult GetCourtClusterByOwner(Guid userId);
+    
+    /// <summary>
+    /// Lấy ra các court theo CourtOwnerId
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <returns></returns>
+    public ServiceResult GetCourtClusterByCourtOwner(Guid userId);
 }
