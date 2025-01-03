@@ -1,9 +1,9 @@
 ﻿using CloudinaryDotNet.Actions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PickleballCourtBookingSystem.Api.DTOs.AuthDTOs;
 using PickleballCourtBookingSystem.Api.Models;
-using PickleballCourtBookingSystem.Core.Common;
 using PickleballCourtBookingSystem.Core.DTOs;
 using PickleballCourtBookingSystem.Core.DTOs.UserDTOs;
 using PickleballCourtBookingSystem.Core.Entities;
@@ -137,12 +137,21 @@ namespace PickleballCourtBookingSystem.Api.Controllers
                     Failed = failedRecords
                 });
         }
-
+        
+        [HttpGet("GetInfo/{id}")]
+        [Authorize]
+        public IActionResult GetUserInfo(Guid id)
+        {
+            var result = _userService.GetPublicInfoService(id);
+            return StatusCode(result.StatusCode, result);
+        }
+        
         [HttpGet("Customer/{id}/info")]
         public IActionResult GetCustomerInfo(Guid id)
         {
             var result = _userService.GetInfoByCustomerId(id);
             return StatusCode(result.StatusCode, result);
         }
+
     }
 }

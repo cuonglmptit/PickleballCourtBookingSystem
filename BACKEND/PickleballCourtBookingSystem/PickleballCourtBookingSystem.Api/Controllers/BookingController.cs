@@ -112,7 +112,7 @@ namespace PickleballCourtBookingSystem.Api.Controllers
             var userId = _authService.GetUserIdFromToken(token);
             if (userId == null)
             {
-                return BadRequest("Token bi loi khong co Id");
+                return BadRequest("Token bi loi khong co User Id");
             }
             var result = _bookingService.CancelBooking(Guid.Parse(userId), request.BookingId, request.Reason);
             if (result.Success)

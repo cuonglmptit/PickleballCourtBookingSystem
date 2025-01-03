@@ -109,8 +109,8 @@ class RegisterActivity : AppCompatActivity() {
                         finish()
                     } else {
                         binding.progressBar.visibility = View.GONE
-                        Toast.makeText(this@RegisterActivity, apiResponse?.userMsg ?: "Lỗi đăng ký", Toast.LENGTH_SHORT).show()
-                        val intent = Intent(this@RegisterActivity, TestActivity::class.java)
+                    Toast.makeText(this@RegisterActivity, apiResponse?.userMsg ?: "Lỗi đăng ký, vui lòng đăng ký lại", Toast.LENGTH_SHORT).show()
+                        val intent = Intent(this@RegisterActivity, RegisterActivity::class.java)
                         startActivity(intent)
                     }
                 } else {

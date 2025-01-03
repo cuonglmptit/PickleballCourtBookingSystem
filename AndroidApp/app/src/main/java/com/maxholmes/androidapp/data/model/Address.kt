@@ -10,4 +10,9 @@ data class Address(
     var district: String,
     var ward: String,
     var street: String
-) : Parcelable
+) : Parcelable {
+
+    override fun toString(): String {
+        return "$street, $ward, $district, $city"
+    }
+}

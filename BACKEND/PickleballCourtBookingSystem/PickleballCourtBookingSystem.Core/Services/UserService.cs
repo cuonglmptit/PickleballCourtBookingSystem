@@ -370,6 +370,33 @@ public class UserService : BaseService<User>, IUserService
         }
     }
 
+    public ServiceResult GetPublicInfoService(Guid userId)
+    {
+        try
+        {
+            var user = _userRepository.GetById(userId);
+            
+            if (user == null)
+            {
+                return CreateServiceResult(Success: false, StatusCode: 404, UserMsg: "User not found", DevMsg: "User not found in database.");
+            }
+            
+            var userResult = new CourtOwnerInfoDto()
+            {
+                Name = user.Name,
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber
+            };
+
+            return CreateServiceResult(Success: true, StatusCode: 200, Data: userResult);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return CreateServiceResult(Success: false, StatusCode: 500, UserMsg: "Error", DevMsg: e.Message);
+        }
+    }
+    
     public ServiceResult GetInfoByCustomerId(Guid customerId)
     {
         try
@@ -398,7 +425,7 @@ public class UserService : BaseService<User>, IUserService
                     DevMsg: "User not found"
                 );
             }
-            UserInfoDTO userInfoDTO = new UserInfoDTO
+            CustomerInfoDto userInfoDTO = new CustomerInfoDto()
             {
                 Id = user.Id.Value,
                 CustomerId = customer.Id.Value,

@@ -27,3 +27,4 @@
 *.bak*
 /BACKEND/PickleballCourtBookingSystem/PickleballCourtBookingSystem.Api/appsettings.json
 .UML.*
+/BACKEND/PickleballCourtBookingSystem/PickleballCourtBookingSystem.Core/Interfaces/DBContext/MySqlDbContext.cs

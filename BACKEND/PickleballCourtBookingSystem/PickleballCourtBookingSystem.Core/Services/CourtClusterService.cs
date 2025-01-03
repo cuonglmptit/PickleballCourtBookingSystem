@@ -307,7 +307,34 @@ namespace PickleballCourtBookingSystem.Core.Services
                 return CreateServiceResult(Success: false, StatusCode: 500, UserMsg: "Error", DevMsg: e.Message);
             }
         }
+        
+        public ServiceResult GetCourtClusterByOwner(Guid userId)
+        {
+            try
+            {
+                if (userId == Guid.Empty)
+                {
+                    return CreateServiceResult(false, StatusCode: 400, UserMsg: "Request error",
+                        DevMsg: "Request error");
+                }
 
+                var resultCourtOwner = _courtOwnerService.GetCourtOwnerByUserIdService(userId);
+                if (!resultCourtOwner.Success)
+                {
+                    return CreateServiceResult(false, StatusCode: 403, UserMsg: "Ban khong phai la chu san",
+                        DevMsg: "Ban khong phai la chu san");
+                }
+                var courtOwner = (CourtOwner) resultCourtOwner.Data!;
+                var result = _courtClusterRepository.FindByColumnValue(courtOwner.Id, "courtOwnerId");
+                return CreateServiceResult(Success: true, StatusCode: 200, Data: result, UserMsg: "Lay thanh cong", DevMsg: "Lay thanh cong");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return CreateServiceResult(Success: false, StatusCode: 500, UserMsg: "Error", DevMsg: e.Message);
+            }
+        }
+        
         public ServiceResult GetCourtClusterByCourtOwner(Guid userId)
         {
             try

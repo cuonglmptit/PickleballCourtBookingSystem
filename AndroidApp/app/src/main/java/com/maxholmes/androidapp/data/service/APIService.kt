@@ -7,6 +7,7 @@ import com.maxholmes.androidapp.data.dto.response.LoginResponse
 import retrofit2.http.GET
 import retrofit2.Call
 import retrofit2.http.Body
+import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -23,6 +24,9 @@ interface APIService {
 
     @GET("api/CourtCluster/{id}")
     fun getCourtClusterById(@Path("id") id: String): Call<APIResponse>
+
+    @GET("api/CourtCluster/Owner")
+    fun getCourtClustersByOwner(@Header("Authorization") token: String): Call<APIResponse>
 
     @GET("api/CourtCluster/{id}/Courts")
     fun getCourtsByCourtClusterId(@Path("id") courtClusterId: String): Call<APIResponse>

@@ -64,28 +64,6 @@ class StatisticAdapter : RecyclerView.Adapter<StatisticAdapter.ViewHolder>() {
         fun bindViewData(statistic: Statistic) {
             statisticData = statistic
 
-            // Load address dynamically
-            RetrofitClient.ApiClient.apiService.getAddressById(statistic.courtCluster.addressId).enqueue(object :
-                Callback<APIResponse> {
-                override fun onResponse(call: Call<APIResponse>, response: Response<APIResponse>) {
-                    if (response.isSuccessful) {
-                        response.body()?.let { apiResponse ->
-                            val address: Address? = parseApiResponseData(apiResponse.data)
-                            address?.let {
-                                binding.tvLocation.text =
-                                    "${it.street}, ${it.ward}, ${it.district}, ${it.city}"
-                            }
-                        }
-                    } else {
-                        binding.tvLocation.text = "Địa chỉ không khả dụng"
-                    }
-                }
-
-                override fun onFailure(call: Call<APIResponse>, t: Throwable) {
-                    binding.tvLocation.text = "Lỗi lấy địa chỉ"
-                }
-            })
-
             // Set court name
             binding.tvCourtName.text = statistic.courtCluster.name
 
