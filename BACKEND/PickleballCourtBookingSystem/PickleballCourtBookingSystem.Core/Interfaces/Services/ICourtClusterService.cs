@@ -4,7 +4,7 @@ using PickleballCourtBookingSystem.Core.Entities;
 
 namespace PickleballCourtBookingSystem.Core.Interfaces.Services;
 
-public interface ICourtClusterService: IBaseService<CourtCluster>
+public interface ICourtClusterService : IBaseService<CourtCluster>
 {
     public ServiceResult GetCourtClustersForTimeRange(DateTime date, TimeSpan startTime, TimeSpan endTime);
     public ServiceResult GetAvailableCourtClusterForTime(DateTime date, TimeSpan startTime, TimeSpan endTime);
@@ -24,4 +24,11 @@ public interface ICourtClusterService: IBaseService<CourtCluster>
 
     public ServiceResult RegisterNewCourtCluster(Guid userId, string name, string? description, TimeSpan openingTime,
         TimeSpan closingTime, string city, string district, string ward, string street, int numberOfCourts);
+
+    /// <summary>
+    /// Lấy ra các court theo CourtOwnerId
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <returns></returns>
+    public ServiceResult GetCourtClusterByCourtOwner(Guid userId);
 }

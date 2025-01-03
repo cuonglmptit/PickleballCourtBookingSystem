@@ -307,5 +307,23 @@ namespace PickleballCourtBookingSystem.Core.Services
                 return CreateServiceResult(Success: false, StatusCode: 500, UserMsg: "Error", DevMsg: e.Message);
             }
         }
+
+        public ServiceResult GetCourtClusterByCourtOwner(Guid userId)
+        {
+            try
+            {
+                Dictionary<string, object> conditions = new Dictionary<string, object>
+                {
+                    {nameof(CourtCluster.CourtOwnerId), userId}
+                };
+                var result = _courtClusterRepository.GetByMultipleConditions(conditions);
+                return CreateServiceResult(Success: true, StatusCode: 200, Data: result);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return CreateServiceResult(Success: false, StatusCode: 500, UserMsg: "Error", DevMsg: e.Message);
+            }
+        }
     }
 }

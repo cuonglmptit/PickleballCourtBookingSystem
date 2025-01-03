@@ -7,6 +7,7 @@ namespace PickleballCourtBookingSystem.Core.Entities
     {
         public Guid? Id { get; set; }
         public DateTime? TimeBooking { get; set; }
+        public string? Code { get; set; }
         public double? Amount { get; set; }
         public BookingStatusEnum? Status { get; set; }
         public PaymentStatusEnum? PaymentStatus { get; set; }

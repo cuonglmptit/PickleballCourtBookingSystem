@@ -24,7 +24,7 @@ public class MySqlDbContext : IDbContext
     /// Author: CuongLM (07/08/2024)
     public MySqlDbContext(IConfiguration config)
     {
-        Connection = new MySqlConnection(config.GetConnectionString("MySQLRemote"));
+        Connection = new MySqlConnection(config.GetConnectionString("MySQLLocalCuongLM"));
     }
 
     #endregion

@@ -17,4 +17,11 @@ public interface IBookingService : IBaseService<Booking>
     /// <param name="status">Trạng thái</param>
     /// <returns>Danh sách booking</returns>
     public ServiceResult GetBookingByStatusService(Guid userId, BookingStatusEnum status);
+
+    /// <summary>
+    /// Lấy ra các booking theo trạng thái
+    /// </summary>
+    /// <param name="bookingId"></param>
+    /// <returns></returns>
+    public ServiceResult GetCourtTimeSlotBookingIdService(Guid bookingId);
 }

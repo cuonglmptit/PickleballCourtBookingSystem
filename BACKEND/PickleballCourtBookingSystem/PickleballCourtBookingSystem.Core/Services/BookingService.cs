@@ -108,11 +108,15 @@ public class BookingService : BaseService<Booking>, IBookingService
             }
 
             var customer = (Customer)customerServiceResult.Data!;
+            var code = _bookingRepository.FindLargestValueEndsWithNumberInColumn(nameof(Booking.Code));
+
+            code = code == null ? "BK0001" : "BK" + (int.Parse(code.Substring(2)) + 1).ToString("D4");
 
             var courtCluster = (CourtCluster)courtClusterServiceResult.Data!;
             var booking = new Booking
             {
                 Id = Guid.NewGuid(),
+                Code = code,
                 CourtId = court.Id,
                 CustomerId = customer.Id,
                 CourtClusterId = court.CourtClusterId,
@@ -307,9 +311,13 @@ public class BookingService : BaseService<Booking>, IBookingService
                 Customer customer = _customerService.GetCustomerByUserIdService(userId).Data as Customer;
                 Dictionary<string, object> conditions = new Dictionary<string, object>
                 {
-                    {nameof(Booking.CustomerId), customer.Id},
-                    {nameof(Booking.Status), (int)status}
+                    {nameof(Booking.CustomerId), customer.Id}
                 };
+                //Nếu chỉ muốn lấy ra booking ở trạng thái nào đó
+                if (status != BookingStatusEnum.All)
+                {
+                    conditions.Add(nameof(Booking.Status), (int)status);
+                }
                 Dictionary<string, string> order = new Dictionary<string, string>
                 {
                     {nameof(Booking.TimeBooking), "desc"}
@@ -323,8 +331,12 @@ public class BookingService : BaseService<Booking>, IBookingService
                 Dictionary<string, object> conditions = new Dictionary<string, object>
                 {
                     {nameof(Booking.CourtOwnerId), courtOwner.Id},
-                    {nameof(Booking.Status), (int)status}
                 };
+                //Nếu chỉ muốn lấy ra booking ở trạng thái nào đó
+                if (status != BookingStatusEnum.All)
+                {
+                    conditions.Add(nameof(Booking.Status), (int)status);
+                }
                 Dictionary<string, string> order = new Dictionary<string, string>
                 {
                     {nameof(Booking.TimeBooking), "desc"}
@@ -338,6 +350,33 @@ public class BookingService : BaseService<Booking>, IBookingService
         {
             Console.WriteLine(e.Message);
             return CreateServiceResult(Success: false, StatusCode: 500, UserMsg: "Failed to get booking", DevMsg: e.Message);
+        }
+    }
+
+    public ServiceResult GetCourtTimeSlotBookingIdService(Guid bookingId)
+    {
+        try
+        {
+            var conditions = new Dictionary<string, object>
+            {
+                {nameof(CourtTimeBooking.BookingId), bookingId}
+            };
+            var courtTimeBooingRes = _courtTimeBookingService.GetByMultipleConditionsService(conditions);
+            List<CourtTimeBooking> courtTimeBookings = courtTimeBooingRes.Data as List<CourtTimeBooking>;
+            var courtTimeSlots = new List<CourtTimeSlot>();
+            foreach (var courtTimeBooking in courtTimeBookings)
+            {
+                if (_courtTimeSlotService.GetByIdService(courtTimeBooking.CourtTimeSlotId.Value).Data is CourtTimeSlot courtTimeSlot)
+                {
+                    courtTimeSlots.Add(courtTimeSlot);
+                }
+            }
+            return CreateServiceResult(Success: true, StatusCode: 200, Data: courtTimeSlots);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+            return CreateServiceResult(Success: false, StatusCode: 500, UserMsg: "Failed to get court time booking", DevMsg: e.Message);
         }
     }
 }

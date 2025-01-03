@@ -8,11 +8,18 @@ const endpoints = {
     CourtCluster: '/api/CourtCluster',
     getProvinces: '/api/Locations/provinces',
     getCourtsOfCourtCluster: (courtClusterId) => `/api/CourtCluster/${courtClusterId}/Courts`,
+    getCustomerInfo: (customerId) => `/api/User/Customer/${customerId}/info`,
 
     // Endpoint đăng nhập
     login: '/api/Auth/Login',
     //Register
     registerUser: '/api/Auth/Register',
+
+    //CourtOwner
+    getBookingStatus: (sts) => `/api/Booking/Status/${sts}`,
+    getCourtClusterByCourtOwner: '/api/CourtCluster/GetCourtClusterByCourtOwner',
+    getCourtTimeSlotsByBookingId: (bookingId) => `/api/Booking/${bookingId}/CourTimeSlots`
+
 };
 
 export const searchCourtClusters = (queryParams) => {
@@ -66,5 +73,26 @@ export const login = (username, password) => {
 };
 
 export const registerUser = (user) => {
-    return postData(endpoints.registerUser, user)
+    return postData(endpoints.registerUser, user);
+}
+
+/**
+ * 
+ * @param {String} sts (Pending, CourtOwnerConfirmed, Completed, Canceled, All) 
+ * @returns Danh sách booking của user này
+ */
+export const getBookingStatus = (sts) => {
+    return getData(endpoints.getBookingStatus(sts));
+}
+
+export const getCourtClusterByCourtOwner = () => {
+    return getData(endpoints.getCourtClusterByCourtOwner)
+}
+
+export const getCourtTimeSlotsByBookingId = (bookingId) => {
+    return getData(endpoints.getCourtTimeSlotsByBookingId(bookingId))
+}
+
+export const getCustomerInfo = (customerId) => {
+    return getData(endpoints.getCustomerInfo(customerId))
 }

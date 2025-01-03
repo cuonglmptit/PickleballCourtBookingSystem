@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PickleballCourtBookingSystem.Api.DTOs;
 using PickleballCourtBookingSystem.Api.Models;
+using PickleballCourtBookingSystem.Core.Common;
 using PickleballCourtBookingSystem.Core.DTOs;
 using PickleballCourtBookingSystem.Core.Entities;
 using PickleballCourtBookingSystem.Core.Interfaces.Infrastructure;
@@ -72,8 +73,7 @@ namespace PickleballCourtBookingSystem.Api.Controllers
         [Authorize(Roles = nameof(RoleEnum.CourtOwner))]
         public IActionResult AddCourtCluster([FromBody] AddCourtClusterRequest addCourtClusterRequest)
         {
-            var authorizationHeader = HttpContext.Request.Headers["Authorization"].ToString();
-            var token = authorizationHeader["Bearer ".Length..].Trim();
+            var token = CommonMethods.GetTokenFromHeader(HttpContext);
             var userId = _authService.GetUserIdFromToken(token);
             if (userId == null)
             {
@@ -105,6 +105,26 @@ namespace PickleballCourtBookingSystem.Api.Controllers
             return StatusCode(result.StatusCode, result);
         }
 
+        //Viết hàm lấy ra các courtcluter của một courtowner
+        [HttpGet("GetCourtClusterByCourtOwner")]
+        [Authorize(Roles = nameof(RoleEnum.CourtOwner))]
+        public IActionResult GetCourtClusterByCourtOwner()
+        {
+            var token = CommonMethods.GetTokenFromHeader(HttpContext);
+            var userId = _authService.GetUserIdFromToken(token);
+            if (userId == null)
+            {
+                return BadRequest("Token bị lỗi, không có id");
+            }
+            var result = _courtClusterService.GetCourtClusterByCourtOwner(Guid.Parse(userId));
+            return StatusCode(result.StatusCode, result);
+        }
+
+        /// <summary>
+        /// Lấy ra các courts của một CourtCluster
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("{id}/Courts")]
         public IActionResult GetCourtsOfACourtCluster(Guid id)
         {
