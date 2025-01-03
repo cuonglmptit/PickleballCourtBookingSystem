@@ -369,7 +369,7 @@ public class UserService : BaseService<User>, IUserService
             );
         }
     }
-    
+
     public ServiceResult GetPublicInfoService(Guid userId)
     {
         try
@@ -381,7 +381,7 @@ public class UserService : BaseService<User>, IUserService
                 return CreateServiceResult(Success: false, StatusCode: 404, UserMsg: "User not found", DevMsg: "User not found in database.");
             }
             
-            var userResult = new UserInfoDto
+            var userResult = new CourtOwnerInfoDto()
             {
                 Name = user.Name,
                 Email = user.Email,
@@ -425,7 +425,7 @@ public class UserService : BaseService<User>, IUserService
                     DevMsg: "User not found"
                 );
             }
-            CustomerInfoDto userInfoDTO = new UserInfoDTO
+            CustomerInfoDto userInfoDTO = new CustomerInfoDto()
             {
                 Id = user.Id.Value,
                 CustomerId = customer.Id.Value,
