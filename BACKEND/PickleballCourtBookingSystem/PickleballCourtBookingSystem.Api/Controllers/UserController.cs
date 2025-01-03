@@ -138,7 +138,7 @@ namespace PickleballCourtBookingSystem.Api.Controllers
                 });
         }
         
-        [HttpGet("GetInfo/{id}")]
+        [HttpGet("CourtOwner/GetInfo/{id}")]
         [Authorize]
         public IActionResult GetUserInfo(Guid id)
         {
