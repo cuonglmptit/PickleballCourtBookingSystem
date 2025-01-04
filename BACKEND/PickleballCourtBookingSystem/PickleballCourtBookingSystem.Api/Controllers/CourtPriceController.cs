@@ -43,11 +43,7 @@ namespace PickleballCourtBookingSystem.Api.Controllers
         [HttpPost("multiple")]
         public IActionResult PostManyCourtPrice([FromBody] List<CourtPrice> courtPrices)
         {
-            foreach (var courtPrice in courtPrices)
-            {
-                courtPrice.Id = Guid.NewGuid();
-            }
-            var result = _courtPriceService.InsertManyService(courtPrices);
+            var result = _courtPriceService.ModifyListCourtPriceService(courtPrices);
             return StatusCode(result.StatusCode, result);
         }
 
@@ -65,5 +61,11 @@ namespace PickleballCourtBookingSystem.Api.Controllers
             return StatusCode(result.StatusCode, result);
         }
 
+        [HttpGet("GetCourtPricesByCourtClusterId/{courtClusterId}")]
+        public IActionResult GetCourtPricesByCourtClusterId(Guid courtClusterId)
+        {
+            var result = _courtPriceService.GetCourtPricesByCourtClusterId(courtClusterId);
+            return StatusCode(result.StatusCode, result);
+        }
     }
 }

@@ -21,7 +21,8 @@ const endpoints = {
     getCourtTimeSlotsByBookingId: (bookingId) => `/api/Booking/${bookingId}/CourTimeSlots`,
     courtOwnerConfirmBooking: `/api/Booking/court-owner-confirm-booking`,
     courtOwnerConfirmPaid: `/api/Booking/court-owner-confirm-paid`,
-    cancelBooking: `/api/Booking/cancel-booking`
+    cancelBooking: `/api/Booking/cancel-booking`,
+    getCourtPricesByCourtClusterId: (courtClusterId) => `/api/CourtPrice/GetCourtPricesByCourtClusterId/${courtClusterId}`
 };
 
 export const searchCourtClusters = (queryParams) => {
@@ -120,3 +121,7 @@ export const cancelBooking = (bookingId) => {
     };
     return postData(endpoints.cancelBooking, body);
 }
+
+export const getCourtPricesByCourtClusterId = (courtClusterId) => {
+    return getData(endpoints.getCourtPricesByCourtClusterId(courtClusterId))
+} 
