@@ -9,15 +9,7 @@ public interface IBookingService : IBaseService<Booking>
 {
     public ServiceResult AddBooking(Guid userId, List<Guid> courtTimeSlotIds, Guid courtId);
     public ServiceResult CourtOwnerConfirmBooking(Guid userId, Guid bookingId);
-    //public ServiceResult CustomerConfirmBooking(Guid userId, Guid bookingId);
-
-    /// <summary>
-    /// Hủy booking theo id
-    /// </summary>
-    /// <param name="userId"></param>
-    /// <param name="bookingId"></param>
-    /// <param name="reason"></param>
-    /// <returns></returns>
+    public ServiceResult CustomerConfirmBooking(Guid userId, Guid bookingId);
     public ServiceResult CancelBooking(Guid userId, Guid bookingId, string? reason);
     /// <summary>
     /// Lấy ra các booking theo trạng thái
@@ -33,6 +25,8 @@ public interface IBookingService : IBaseService<Booking>
     /// <returns></returns>
     public ServiceResult GetCourtTimeSlotBookingIdService(Guid bookingId);
 
+    public ServiceResult GetAllBookingOfUser(Guid userId, RoleEnum role);
+    
     /// <summary>
     /// Xác nhân đã nhận tiền từ khách hàng
     /// </summary>

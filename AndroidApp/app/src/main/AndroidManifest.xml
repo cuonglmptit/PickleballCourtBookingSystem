@@ -15,6 +15,9 @@
         android:theme="@style/Theme.AndroidApp"
         tools:targetApi="31">
         <activity
+            android:name=".screen.customer.bookschedule.BookScheduleActivity"
+            android:exported="false" />
+        <activity
             android:name=".screen.admin.HomeAdminActivity"
             android:exported="false" />
         <activity
