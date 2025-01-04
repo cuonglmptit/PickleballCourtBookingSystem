@@ -53,21 +53,14 @@ namespace PickleballCourtBookingSystem.Api.Controllers
         public IActionResult AddBooking([FromBody] AddBookingRequest request)
         {
             var authorizationHeader = HttpContext.Request.Headers["Authorization"].ToString();
-            Console.WriteLine(authorizationHeader);
             var token = authorizationHeader["Bearer ".Length..].Trim();
-            Console.WriteLine(token);
             var userId = _authService.GetUserIdFromToken(token);
             if (userId == null)
             {
                 return BadRequest("Token bi loi khong co Id");
             }
             var result = _bookingService.AddBooking(Guid.Parse(userId), request.CourtTimeSlotsIds, request.CourtId);
-            if (result.Success)
-            {
-                return Ok(result.StatusCode);
-            }
-
-            return BadRequest(new { success = false, statusCode = result.StatusCode, userMessage = result.UserMsg, developerMessage = result.DevMsg });
+            return StatusCode(result.StatusCode, result);
         }
 
         [HttpPost("court-owner-confirm-booking")]

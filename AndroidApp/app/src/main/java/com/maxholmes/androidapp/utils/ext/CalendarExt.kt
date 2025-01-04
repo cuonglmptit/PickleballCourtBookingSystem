@@ -31,9 +31,11 @@ fun Calendar.formatDate(pattern: String = "yyyy-MM-dd"): String {
 }
 
 fun String.toCustomDateFormat(): String {
-    val inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+    val inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
+
     val outputFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
 
     val date = LocalDate.parse(this, inputFormatter)
+
     return date.format(outputFormatter)
 }

@@ -39,4 +39,6 @@ public interface IUserService : IBaseService<User>
     /// <param name="customerId"></param>
     /// <returns></returns>
     public ServiceResult GetInfoByCustomerId(Guid customerId);
+
+    public ServiceResult GetInfoByUserId(Guid userId);
 }
