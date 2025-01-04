@@ -244,4 +244,25 @@ public class AuthService : IAuthService
             return null;
         }
     }
+
+    public RoleEnum? GetUserRoleFromToken(string token)
+    {
+        try
+        {
+            var principal = ValidateToken(token);
+            var roleClaim = principal?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role);
+
+            if (roleClaim != null && Enum.TryParse<RoleEnum>(roleClaim.Value, out var roleEnum))
+            {
+                return roleEnum;
+            }
+            return null;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return null;
+        }
+    }
+
 }

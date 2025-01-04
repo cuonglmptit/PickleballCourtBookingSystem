@@ -12,4 +12,5 @@ public interface IAuthService
     public ClaimsPrincipal? ValidateToken(string token);
     public Dictionary<string, string> GetClaimsFromToken(string token);
     public string? GetUserIdFromToken(string token);
+    public RoleEnum? GetUserRoleFromToken(string token);
 }

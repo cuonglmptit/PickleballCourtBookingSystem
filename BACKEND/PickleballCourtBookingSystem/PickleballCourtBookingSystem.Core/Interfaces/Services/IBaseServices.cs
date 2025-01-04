@@ -62,6 +62,9 @@ namespace PickleballCourtBookingSystem.Core.Interfaces.Services
         /// <param name="conditions">Danh sách các điều kiện (cột và giá trị tương ứng).</param>
         /// <returns>Danh sách các thực thể phù hợp với điều kiện; danh sách rỗng nếu không có bản ghi nào phù hợp.</returns>
         ServiceResult GetByMultipleConditionsService(Dictionary<string, object> conditions);
+
+        ServiceResult GetByColumnValueService(string columnName, string value);
+
         #endregion
     }
 }
