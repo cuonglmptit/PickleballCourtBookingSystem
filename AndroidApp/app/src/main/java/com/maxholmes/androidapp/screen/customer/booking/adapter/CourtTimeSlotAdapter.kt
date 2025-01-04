@@ -16,7 +16,7 @@ import java.time.format.DateTimeFormatter
 class CourtTimeSlotAdapter : RecyclerView.Adapter<CourtTimeSlotAdapter.ViewHolder>() {
     private val timeSlots = mutableListOf<CourtTimeSlot>()
     private var onItemClickListener: OnItemRecyclerViewClickListener<CourtTimeSlot>? = null
-    private val selectedPositions = mutableSetOf<Int>() // Set để lưu vị trí các phần tử đã chọn
+    private val selectedPositions = mutableSetOf<Int>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = ItemSelectTimeSlotBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -24,7 +24,8 @@ class CourtTimeSlotAdapter : RecyclerView.Adapter<CourtTimeSlotAdapter.ViewHolde
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bindViewData(timeSlots[position], selectedPositions.contains(position)) // Kiểm tra phần tử có được chọn không
+        val isSelected = selectedPositions.contains(position)
+        holder.bindViewData(timeSlots[position], isSelected)
     }
 
     override fun getItemCount(): Int {
@@ -41,21 +42,19 @@ class CourtTimeSlotAdapter : RecyclerView.Adapter<CourtTimeSlotAdapter.ViewHolde
         notifyDataSetChanged()
     }
 
-    // Thêm hoặc giữ trạng thái đã chọn
-    fun toggleSelection(position: Int) {
+    fun setSelectedItem(position: Int) {
         if (selectedPositions.contains(position)) {
-            // Nếu đã chọn, giữ nguyên trạng thái
-            // Không làm gì ở đây vì yêu cầu giữ nguyên
+            selectedPositions.remove(position)
         } else {
-            selectedPositions.add(position) // Thêm vào set
-            notifyItemChanged(position) // Làm mới giao diện của phần tử được chọn
+            selectedPositions.add(position)
         }
+        notifyItemChanged(position)
     }
+
 
     fun getCourtTimeSlots(): List<CourtTimeSlot> {
         return timeSlots
     }
-
 
     class ViewHolder(
         private val binding: ItemSelectTimeSlotBinding,
@@ -70,24 +69,24 @@ class CourtTimeSlotAdapter : RecyclerView.Adapter<CourtTimeSlotAdapter.ViewHolde
         fun bindViewData(timeSlot: CourtTimeSlot, isSelected: Boolean) {
             timeSlotData = timeSlot
 
-            val startTime = LocalTime.parse(timeSlot.time, DateTimeFormatter.ofPattern("HH:mm"))
+            val startTime = LocalTime.parse(timeSlot.time.substring(0, 5), DateTimeFormatter.ofPattern("HH:mm"))
             val endTime = startTime.plusHours(1)
             val timeRange = "${startTime.format(DateTimeFormatter.ofPattern("HH:mm"))} - ${endTime.format(DateTimeFormatter.ofPattern("HH:mm"))}"
 
             binding.timeTextView.text = timeRange
-            binding.priceTextView.text = "${timeSlot.price} VND"
+            val price = "${timeSlot.price} VND"
+            binding.priceTextView.text = price
 
-            // Thay đổi màu nền theo trạng thái được chọn
             binding.root.setBackgroundColor(
-                if (isSelected) binding.root.context.getColor(R.color.yellow) else binding.root.context.getColor(
-                    R.color.white
-                )
+                if (isSelected) binding.root.context.getColor(R.color.yellow)
+                else binding.root.context.getColor(R.color.white)
             )
+
         }
 
         override fun onClick(view: View?) {
             itemClickListener?.onItemClick(timeSlotData)
-            (view?.context as? BookingActivity)?.courtTimeSlotAdapter?.toggleSelection(adapterPosition) // Thêm trạng thái chọn
         }
     }
 }
+

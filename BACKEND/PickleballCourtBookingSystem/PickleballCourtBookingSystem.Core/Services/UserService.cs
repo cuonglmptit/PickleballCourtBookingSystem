@@ -451,4 +451,48 @@ public class UserService : BaseService<User>, IUserService
             );
         }
     }
+    
+    public ServiceResult GetInfoByUserId(Guid userId)
+    {
+        try
+        {
+            User? user = _userRepository.GetById(userId);
+
+            if (user == null)
+            {
+                return CommonMethods.CreateServiceResult(
+                    Success: false,
+                    StatusCode: 404,
+                    UserMsg: "User not found",
+                    DevMsg: "User not found"
+                );
+            }
+            
+            UserInfoDto userInfoDTO = new UserInfoDto()
+            {
+                Id = user.Id!.Value,
+                Name = user.Name,
+                PhoneNumber = user.PhoneNumber,
+                Email = user.Email,
+                AvatarUrl = user.AvatarUrl
+            };
+
+            return CommonMethods.CreateServiceResult(
+                Success: true,
+                StatusCode: 200,
+                Data: userInfoDTO
+            );
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return CommonMethods.CreateServiceResult(
+                Success: false,
+                StatusCode: 500,
+                UserMsg: "Failed to get user info",
+                DevMsg: e.Message
+            );
+        }
+    }
+
 }

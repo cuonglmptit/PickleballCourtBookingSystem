@@ -48,9 +48,12 @@ class SelectDayAdapter : RecyclerView.Adapter<SelectDayAdapter.ViewHolder>() {
     fun setSelectedItem(position: Int) {
         val previousPosition = selectedItemPosition
         selectedItemPosition = position
-        notifyItemChanged(previousPosition)
+        if (previousPosition != RecyclerView.NO_POSITION) {
+            notifyItemChanged(previousPosition)
+        }
         notifyItemChanged(selectedItemPosition)
     }
+
 
     class ViewHolder(
         private val binding: ItemSelectDayBinding,
