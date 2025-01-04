@@ -86,40 +86,55 @@ namespace PickleballCourtBookingSystem.Api.Controllers
             return StatusCode(result.StatusCode, result);
         }
 
-        [HttpPost("customer-confirm-booking")]
-        [Authorize(Roles = nameof(RoleEnum.Customer))]
-        public IActionResult CustomerConfirmBooking([FromBody] ConfirmBookingRequest confirmBookingRequest)
+        /// <summary>
+        /// Api cho chủ sân xác nhận đã nhận tiền từ khách hàng
+        /// </summary>
+        /// <param name="confirmBookingRequest"></param>
+        /// <returns></returns>
+        [HttpPost("court-owner-confirm-paid")]
+        [Authorize(Roles = nameof(RoleEnum.CourtOwner))]
+        public IActionResult CourtOwnerConfirmPaid([FromBody] ConfirmBookingRequest confirmBookingRequest)
         {
-            var authorizationHeader = HttpContext.Request.Headers["Authorization"].ToString();
-            var token = authorizationHeader["Bearer ".Length..].Trim();
+            var token = CommonMethods.GetTokenFromHeader(HttpContext);
             var userId = _authService.GetUserIdFromToken(token);
             if (userId == null)
             {
                 return BadRequest("Token không hợp lệ, không tìm thấy Id người dùng.");
             }
 
-            var result = _bookingService.CustomerConfirmBooking(Guid.Parse(userId), confirmBookingRequest.BookingId);
+            var result = _bookingService.CourtOwnerConfirmPaid(Guid.Parse(userId), confirmBookingRequest.BookingId);
             return StatusCode(result.StatusCode, result);
         }
 
+        //[HttpPost("customer-confirm-booking")]
+        //[Authorize(Roles = nameof(RoleEnum.Customer))]
+        //public IActionResult CustomerConfirmBooking([FromBody] ConfirmBookingRequest confirmBookingRequest)
+        //{
+        //    var authorizationHeader = HttpContext.Request.Headers["Authorization"].ToString();
+        //    var token = authorizationHeader["Bearer ".Length..].Trim();
+        //    var userId = _authService.GetUserIdFromToken(token);
+        //    if (userId == null)
+        //    {
+        //        return BadRequest("Token không hợp lệ, không tìm thấy Id người dùng.");
+        //    }
+
+        //    var result = _bookingService.CustomerConfirmBooking(Guid.Parse(userId), confirmBookingRequest.BookingId);
+        //    return StatusCode(result.StatusCode, result);
+        //}
+
 
         [HttpPost("cancel-booking")]
-        [Authorize(Roles = nameof(RoleEnum.Customer))]
+        [Authorize(Roles = $"{nameof(RoleEnum.Customer)},{nameof(RoleEnum.CourtOwner)}")]
         public IActionResult CancelBooking([FromBody] CancelBookingRequest request)
         {
-            var authorizationHeader = HttpContext.Request.Headers["Authorization"].ToString();
-            var token = authorizationHeader["Bearer ".Length..].Trim();
+            var token = CommonMethods.GetTokenFromHeader(HttpContext);
             var userId = _authService.GetUserIdFromToken(token);
             if (userId == null)
             {
-                return BadRequest("Token bi loi khong co User Id");
+                return BadRequest("Token không hợp lệ, không tìm thấy Id người dùng.");
             }
             var result = _bookingService.CancelBooking(Guid.Parse(userId), request.BookingId, request.Reason);
-            if (result.Success)
-            {
-                return Ok(result.StatusCode);
-            }
-            return BadRequest(new { success = false, statusCode = result.StatusCode, userMessage = result.UserMsg, developerMessage = result.DevMsg });
+            return StatusCode(result.StatusCode, result);
         }
 
         [Authorize(Roles = $"{nameof(RoleEnum.Customer)},{nameof(RoleEnum.CourtOwner)}")]

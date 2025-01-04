@@ -18,8 +18,10 @@ const endpoints = {
     //CourtOwner
     getBookingStatus: (sts) => `/api/Booking/Status/${sts}`,
     getCourtClusterByCourtOwner: '/api/CourtCluster/GetCourtClusterByCourtOwner',
-    getCourtTimeSlotsByBookingId: (bookingId) => `/api/Booking/${bookingId}/CourTimeSlots`
-
+    getCourtTimeSlotsByBookingId: (bookingId) => `/api/Booking/${bookingId}/CourTimeSlots`,
+    courtOwnerConfirmBooking: `/api/Booking/court-owner-confirm-booking`,
+    courtOwnerConfirmPaid: `/api/Booking/court-owner-confirm-paid`,
+    cancelBooking: `/api/Booking/cancel-booking`
 };
 
 export const searchCourtClusters = (queryParams) => {
@@ -95,4 +97,26 @@ export const getCourtTimeSlotsByBookingId = (bookingId) => {
 
 export const getCustomerInfo = (customerId) => {
     return getData(endpoints.getCustomerInfo(customerId))
+}
+
+export const courtOwnerConfirmBooking = (bookingId) => {
+    const body = {
+        "bookingId": bookingId
+    };
+    return postData(endpoints.courtOwnerConfirmBooking, body);
+}
+
+export const courtOwnerConfirmPaid = (bookingId) => {
+    const body = {
+        "bookingId": bookingId
+    };
+    return postData(endpoints.courtOwnerConfirmPaid, body);
+}
+
+export const cancelBooking = (bookingId) => {
+    const body = {
+        "bookingId": bookingId,
+        "reason": ""
+    };
+    return postData(endpoints.cancelBooking, body);
 }
