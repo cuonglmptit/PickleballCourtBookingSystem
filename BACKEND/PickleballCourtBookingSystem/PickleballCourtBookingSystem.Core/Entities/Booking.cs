@@ -15,5 +15,6 @@ namespace PickleballCourtBookingSystem.Core.Entities
         public Guid? CustomerId { get; set; }
         public Guid? CourtClusterId { get; set; }
         public Guid? CourtOwnerId { get; set; }
+        public string? customerPhoneNumber { get; set; }
     }
 }

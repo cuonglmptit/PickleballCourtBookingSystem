@@ -26,4 +26,12 @@ public interface IBookingService : IBaseService<Booking>
     public ServiceResult GetCourtTimeSlotBookingIdService(Guid bookingId);
 
     public ServiceResult GetAllBookingOfUser(Guid userId, RoleEnum role);
+    
+    /// <summary>
+    /// Xác nhân đã nhận tiền từ khách hàng
+    /// </summary>
+    /// <param name="courtOwnerId"></param>
+    /// <param name="bookingId"></param>
+    /// <returns></returns>
+    public ServiceResult CourtOwnerConfirmPaid(Guid courtOwnerId, Guid bookingId);
 }

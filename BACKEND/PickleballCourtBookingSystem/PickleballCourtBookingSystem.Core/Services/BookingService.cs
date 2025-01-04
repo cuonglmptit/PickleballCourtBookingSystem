@@ -1,7 +1,5 @@
-﻿using PickleballCourtBookingSystem.Api.DTOs;
-using PickleballCourtBookingSystem.Api.Models;
+﻿using PickleballCourtBookingSystem.Api.Models;
 using PickleballCourtBookingSystem.Core.DTOs;
-using PickleballCourtBookingSystem.Core.DTOs.UserDTOs;
 using PickleballCourtBookingSystem.Core.Entities;
 using PickleballCourtBookingSystem.Core.Interfaces.Infrastructure;
 using PickleballCourtBookingSystem.Core.Interfaces.Services;
@@ -22,13 +20,12 @@ public class BookingService : BaseService<Booking>, IBookingService
     private readonly ITimeService _timeService;
     private readonly ICancellationService _cancellationService;
     private readonly IUserService _userService;
-    private readonly IAddressService _addressService;
     public BookingService(IBookingRepository repository,
         IRoleService roleService,
         ICourtTimeSlotService courtTimeSlotService, ICourtTimeBookingService courtTimeBookingService,
         ICourtService courtService, ICustomerService customerService, IBookingRepository bookingRepository,
         ITimeService timeService, ICancellationService cancellationService,
-        ICourtOwnerService courtOwnerService, ICourtClusterService courtClusterService, IUserService userService, IAddressService addressService) : base(repository)
+        ICourtOwnerService courtOwnerService, ICourtClusterService courtClusterService, IUserService userService) : base(repository)
     {
         _roleService = roleService;
         _courtTimeSlotService = courtTimeSlotService;
@@ -41,7 +38,6 @@ public class BookingService : BaseService<Booking>, IBookingService
         _courtOwnerService = courtOwnerService;
         _courtClusterService = courtClusterService;
         _userService = userService;
-        _addressService = addressService;
     }
 
     public ServiceResult AddBooking(Guid userId, List<Guid> courtTimeSlotIds, Guid courtId)
@@ -247,53 +243,118 @@ public class BookingService : BaseService<Booking>, IBookingService
         return CreateServiceResult(Success: false, StatusCode: 500, UserMsg: "Failed to update booking", DevMsg: "Failed to update booking");
     }
 
+    //public ServiceResult CustomerConfirmBooking(Guid userId, Guid bookingId)
+    //{
+    //    var booking = _bookingRepository.GetById(bookingId);
+    //    if (booking == null)
+    //    {
+    //        return CreateServiceResult(Success: false, StatusCode: 404, UserMsg: "Booking not found", DevMsg: "Booking not found");
+    //    }
+
+    //    var resultGetCustomer = _customerService.GetCustomerByUserIdService(userId);
+    //    if (!resultGetCustomer.Success)
+    //    {
+    //        return resultGetCustomer;
+    //    }
+    //    var customer = (Customer)resultGetCustomer.Data!;
+    //    if (booking.CustomerId != customer.Id)
+    //    {
+    //        return CreateServiceResult(Success: false, StatusCode: 403, UserMsg: "Ban khong co quyen xac nhan", DevMsg: "Booking khong phai cua customer");
+    //    }
+
+    //    if (booking.Status != BookingStatusEnum.CourtOwnerConfirmed)
+    //    {
+    //        return CreateServiceResult(Success: false, StatusCode: 400, UserMsg: "Booking khong o trang thai duoc chu san xac nhan", DevMsg: "Booking khong o trang thai duoc chu san xac nhan");
+    //    }
+    //    booking.Status = BookingStatusEnum.Completed;
+    //    var result = _bookingRepository.Update(booking, bookingId);
+    //    if (result != 0)
+    //    {
+    //        return CreateServiceResult(Success: true, StatusCode: 200, UserMsg: "Xac nhan hoan thanh dat san thanh cong");
+    //    }
+    //    return CreateServiceResult(Success: false, StatusCode: 500, UserMsg: "Failed to update booking", DevMsg: "Failed to update booking");
+    //}
+
     public ServiceResult CancelBooking(Guid userId, Guid bookingId, string? reason)
     {
         try
         {
+            // Hàm hủy booking cho khách hoặc chủ sân
             var booking = _bookingRepository.GetById(bookingId);
             if (booking == null)
             {
                 return CreateServiceResult(Success: false, StatusCode: 404, UserMsg: "Booking not found", DevMsg: "Booking not found");
             }
-
-            var resultGetCustomer = _customerService.GetCustomerByUserIdService(userId);
-            if (!resultGetCustomer.Success)
+            //Lấy ra chủ sân hoặc khách hàng
+            var customerServiceResult = _customerService.GetCustomerByUserIdService(userId);
+            var courtOwnerServiceResult = _courtOwnerService.GetCourtOwnerByUserIdService(userId);
+            //Xác nhận xem user có phải là khách hàng hay chủ sân của booking hay không
+            if (!customerServiceResult.Success && !courtOwnerServiceResult.Success)
             {
-                return resultGetCustomer;
+                return CreateServiceResult(Success: false, StatusCode: 404, UserMsg: "User not found", DevMsg: "User not found");
             }
-            var customer = (Customer)resultGetCustomer.Data!;
-            if (booking.CustomerId != customer.Id)
+            if (customerServiceResult.Success)
             {
-                return CreateServiceResult(Success: false, StatusCode: 403, UserMsg: "Ban khong co quyen huy san", DevMsg: "Booking khong phai cua customer");
+                var customer = (Customer)customerServiceResult.Data!;
+                if (booking.CustomerId != customer.Id)
+                {
+                    return CreateServiceResult(Success: false, StatusCode: 403, UserMsg: "Bạn không phải là khách hàng của booking này", DevMsg: "Bạn không phải là khách hàng của booking này");
+                }
             }
-
-            if (booking.Status != (int)BookingStatusEnum.Pending)
+            else if (courtOwnerServiceResult.Success)
             {
-                return CreateServiceResult(Success: false, StatusCode: 400, UserMsg: "Booking khong o trang thai dang dat", DevMsg: "Booking khong o trang thai dang dat");
+                var courtOwner = (CourtOwner)courtOwnerServiceResult.Data!;
+                if (booking.CourtOwnerId != courtOwner.Id)
+                {
+                    return CreateServiceResult(Success: false, StatusCode: 403, UserMsg: "Bạn không phải là chủ sân của booking này", DevMsg: "Bạn không phải là chủ sân của booking này");
+                }
             }
-
-            var cancelBooking = new Cancellation
+            //Kiểm tra xem booking có ở trạng thái nào
+            if (booking.Status == BookingStatusEnum.Canceled)
+            {
+                return CreateServiceResult(Success: false, StatusCode: 400, UserMsg: "Booking đã hủy", DevMsg: "Booking đã hoàn thành hoặc đã hủy");
+            }
+            //Nếu mà booking đã được xác nhận từ chủ sân thì không thể hủy
+            if (booking.Status == BookingStatusEnum.CourtOwnerConfirmed)
+            {
+                return CreateServiceResult(Success: false, StatusCode: 400, UserMsg: "Không thể hủy booking đã được xác nhận từ chủ sân", DevMsg: "Không thể hủy booking đã được xác nhận từ chủ sân");
+            }
+            //Nếu chưa được xác nhận từ chủ sân thì có thể hủy
+            booking.Status = BookingStatusEnum.Canceled;
+            //Trả lại trạng thái cho các lịch sân
+            var courtTimeBookingConditions = new Dictionary<string, object>
+            {
+                {nameof(CourtTimeBooking.BookingId), booking.Id}
+            };
+            var courtTimeBookings = _courtTimeBookingService.GetByMultipleConditionsService(courtTimeBookingConditions).Data as List<CourtTimeBooking>;
+            foreach (var courtTimeBooking in courtTimeBookings)
+            {
+                var courtTimeSlot = new CourtTimeSlot
+                {
+                    IsAvailable = 1
+                };
+                var resultUpdateCourtTimeSlot = _courtTimeSlotService.UpdatePartialService(courtTimeSlot, courtTimeBooking.CourtTimeSlotId.Value);
+                if (!resultUpdateCourtTimeSlot.Success)
+                {
+                    return resultUpdateCourtTimeSlot;
+                }
+            }
+            //Thêm canncelation
+            var cancellation = new Cancellation
             {
                 Id = Guid.NewGuid(),
                 BookingId = booking.Id,
                 Reason = reason,
                 TimeCancel = _timeService.GetCurrentTime()
             };
-
-            var resultCreateCancelBooking = _cancellationService.InsertService(cancelBooking);
-            if (!resultCreateCancelBooking.Success)
+            var resultAddCancellation = _cancellationService.InsertService(cancellation);
+            //Cập nhật hủy booking
+            var result = _bookingRepository.Update(booking, bookingId);
+            if (result != 0)
             {
-                return resultCreateCancelBooking;
+                return CreateServiceResult(Success: true, StatusCode: 200, UserMsg: "Hủy booking thành công", DevMsg: "Hủy booking thành công");
             }
-            booking.Status = BookingStatusEnum.Canceled;
-            var resultUpdateBooking = _bookingRepository.Update(booking, booking.Id!.Value);
-            if (resultUpdateBooking != 0)
-            {
-                return CreateServiceResult(Success: true, StatusCode: 200, UserMsg: "Huy dat san thanh cong", DevMsg: "Huy dat san thanh cong");
-
-            }
-            return CreateServiceResult(Success: false, StatusCode: 500, UserMsg: "Failed to update booking", DevMsg: "Error when update status booking");
+            return CreateServiceResult(Success: false, StatusCode: 500, UserMsg: "Failed to cancel booking", DevMsg: "Failed to cancel booking");
         }
         catch (Exception e)
         {
@@ -383,8 +444,8 @@ public class BookingService : BaseService<Booking>, IBookingService
             return CreateServiceResult(Success: false, StatusCode: 500, UserMsg: "Failed to get court time booking", DevMsg: e.Message);
         }
     }
-
-    public ServiceResult GetAllBookingOfUser(Guid userId, RoleEnum role)
+    
+        public ServiceResult GetAllBookingOfUser(Guid userId, RoleEnum role)
     {
         try
         {
@@ -482,6 +543,45 @@ public class BookingService : BaseService<Booking>, IBookingService
         {
             Console.WriteLine(e);
             return CreateServiceResult(Success: false, StatusCode: 500, UserMsg: "Error", DevMsg: e.Message);
+        }
+    }
+        
+    public ServiceResult CourtOwnerConfirmPaid(Guid courtOwnerId, Guid bookingId)
+    {
+        try
+        {
+            var booking = _bookingRepository.GetById(bookingId);
+            if (booking == null)
+            {
+                return CreateServiceResult(Success: false, StatusCode: 404, UserMsg: "Booking not found", DevMsg: "Booking not found");
+            }
+
+            var resultGetCourtOwner = _courtOwnerService.GetByIdService(courtOwnerId);
+            if (!resultGetCourtOwner.Success)
+            {
+                return resultGetCourtOwner;
+            }
+            var courtOwner = (CourtOwner)resultGetCourtOwner.Data!;
+            if (booking.CourtOwnerId != courtOwner.Id)
+            {
+                return CreateServiceResult(Success: false, StatusCode: 403, UserMsg: "Bạn không phải là chủ sân của Booking này", DevMsg: "Bạn không phải là chủ sân của Booking này");
+            }
+            if (booking.Status != BookingStatusEnum.CourtOwnerConfirmed)
+            {
+                return CreateServiceResult(Success: false, StatusCode: 400, UserMsg: "Booking không ở trạng thái đã xác nhận từ chủ sân", DevMsg: "Booking không ở trạng thái đã xác nhận từ chủ sân");
+            }
+            booking.PaymentStatus = PaymentStatusEnum.Paid;
+            var result = _bookingRepository.Update(booking, bookingId);
+            if (result != 0)
+            {
+                return CreateServiceResult(Success: true, StatusCode: 200, UserMsg: "Xác nhận đã nhận tiền từ khách hàng thành công", DevMsg: "Xác nhận đã nhận tiền từ khách hàng thành công");
+            }
+            return CreateServiceResult(Success: false, StatusCode: 500, UserMsg: "Failed to confirm paid", DevMsg: "Failed to confirm paid");
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+            return CreateServiceResult(Success: false, StatusCode: 500, UserMsg: "Failed to confirm paid", DevMsg: e.Message);
         }
     }
 }
