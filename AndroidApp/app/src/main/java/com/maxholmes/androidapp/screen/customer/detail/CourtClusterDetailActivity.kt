@@ -92,12 +92,15 @@ class CourtClusterDetailActivity : AppCompatActivity() {
 
     private fun checkAndNavigate() {
         if (selectedDay != null && selectedCourt != null) {
-            val formattedDate = selectedDay!!.formatDate()
+            val selectedDayPosition = selectDayAdapter.getSelectDays().indexOf(selectedDay)
+            val selectedCourtPosition = selectCourtAdapter.getCourts().indexOf(selectedCourt)
 
-            val intent = Intent(this, BookingActivity::class.java)
-            intent.putExtra("selectedDay", formattedDate)
-            intent.putExtra("court", selectedCourt!!.id)
-
+            val intent = Intent(this@CourtClusterDetailActivity, BookingActivity::class.java)
+//            intent.putExtra("selectedDay", selectedDay)
+//            intent.putExtra("selectedCourt", selectedCourt)
+            intent.putExtra("selectedDayPosition", selectedDayPosition)
+            intent.putExtra("selectedCourtPosition", selectedCourtPosition)
+            intent.putExtra("courtCluster", courtCluster)
             intent.putParcelableArrayListExtra("courts", ArrayList(selectCourtAdapter.getCourts()))
 
             startActivity(intent)
@@ -151,7 +154,6 @@ class CourtClusterDetailActivity : AppCompatActivity() {
                         "Lỗi kết nối mạng. Vui lòng thử lại!",
                         Toast.LENGTH_SHORT
                     ).show()
-                    // Load ảnh mặc định nếu kết nối thất bại
                     binding.courtClusterImage.setImageResource(R.drawable.image_court_1)
                 }
             })

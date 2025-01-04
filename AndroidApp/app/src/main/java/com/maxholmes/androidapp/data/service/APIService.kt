@@ -1,5 +1,6 @@
 package com.maxholmes.androidapp.data.service
 
+import com.maxholmes.androidapp.data.dto.request.AddBookingRequest
 import com.maxholmes.androidapp.data.dto.request.LoginRequest
 import com.maxholmes.androidapp.data.dto.request.RegisterRequest
 import com.maxholmes.androidapp.data.dto.response.APIResponse
@@ -51,4 +52,10 @@ interface APIService {
 
     @GET("/api/CourtCluster/{id}/Image")
     fun getImagesByCourtClusterId(@Path("id") courtClusterId: String): Call<APIResponse>
+
+    @GET("/api/User/User/getInfo")
+    fun getUserInfo(@Header("Authorization") token: String): Call<APIResponse>
+
+    @POST("/api/Booking/add-booking")
+    fun addBooking(@Body addBookingRequest: AddBookingRequest, @Header("Authorization") token: String): Call<APIResponse>
 }

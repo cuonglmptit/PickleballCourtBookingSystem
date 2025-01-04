@@ -7,6 +7,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.maxholmes.androidapp.data.model.CourtTimeSlot
 import com.maxholmes.androidapp.databinding.ItemCourtTimeSlotBookingBinding
 import com.maxholmes.androidapp.utils.OnItemRecyclerViewClickListener
+import com.maxholmes.androidapp.utils.ext.formatTime
+import com.maxholmes.androidapp.utils.ext.formatTimeToString
+import com.maxholmes.androidapp.utils.ext.toCustomDateFormat
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
@@ -48,13 +51,14 @@ class CourtTimeSlotBookingAdapter : RecyclerView.Adapter<CourtTimeSlotBookingAda
         }
 
         fun bindViewData(timeSlot: CourtTimeSlot) {
-            val startTime = LocalTime.parse(timeSlot.time, DateTimeFormatter.ofPattern("HH:mm"))
+            val startTime = formatTime(timeSlot.time)
             val endTime = startTime.plusHours(1)
-            val timeRange = "${startTime.format(DateTimeFormatter.ofPattern("HH:mm"))} - ${endTime.format(DateTimeFormatter.ofPattern("HH:mm"))}"
-            binding.dateText.text = timeSlot.date
+            val timeRange = "${formatTimeToString(startTime)} - ${formatTimeToString(endTime)}"
+            val dateFormatted = timeSlot.date.toCustomDateFormat()
+            binding.dateText.text = dateFormatted
             binding.timeText.text = timeRange
-            binding.courtNumberText.text = "Sân 1"
-            binding.priceText.text = "${timeSlot.price}₫"
+            val price = "${timeSlot.price}₫"
+            binding.priceText.text = price
         }
 
         override fun onClick(v: View?) {

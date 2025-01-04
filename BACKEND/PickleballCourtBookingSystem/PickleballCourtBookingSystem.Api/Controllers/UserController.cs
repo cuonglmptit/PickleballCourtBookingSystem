@@ -153,5 +153,19 @@ namespace PickleballCourtBookingSystem.Api.Controllers
             return StatusCode(result.StatusCode, result);
         }
 
+        [HttpGet("User/getInfo")]
+        public IActionResult GetUserInfo()
+        {
+            var authorizationHeader = HttpContext.Request.Headers["Authorization"].ToString();
+            var token = authorizationHeader["Bearer ".Length..].Trim();
+            var userId = _authService.GetUserIdFromToken(token);
+            if (userId == null)
+            {
+                return BadRequest("Token bi loi khong co Id");
+            }
+            var result = _userService.GetInfoByUserId(Guid.Parse(userId));
+            return StatusCode(result.StatusCode, result);
+        }
+
     }
 }

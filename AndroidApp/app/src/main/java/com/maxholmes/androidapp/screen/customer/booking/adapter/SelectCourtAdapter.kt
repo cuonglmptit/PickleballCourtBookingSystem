@@ -22,9 +22,7 @@ class SelectCourtAdapter : RecyclerView.Adapter<SelectCourtAdapter.ViewHolder>()
         return ViewHolder(binding, onItemClickListener)
     }
 
-    override fun onBindViewHolder(
-        holder: ViewHolder,
-        position: Int,
+    override fun onBindViewHolder(holder: ViewHolder, position: Int,
     ) {
         holder.bindViewData(courts[position], position == selectedItemPosition)
     }
@@ -52,9 +50,12 @@ class SelectCourtAdapter : RecyclerView.Adapter<SelectCourtAdapter.ViewHolder>()
     fun setSelectedItem(position: Int) {
         val previousPosition = selectedItemPosition
         selectedItemPosition = position
-        notifyItemChanged(previousPosition)
+        if (previousPosition != RecyclerView.NO_POSITION) {
+            notifyItemChanged(previousPosition)
+        }
         notifyItemChanged(selectedItemPosition)
     }
+
 
     class ViewHolder(
         private val binding: ItemSelectCourtBinding,

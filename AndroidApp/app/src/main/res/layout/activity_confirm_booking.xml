@@ -10,21 +10,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.25" />
+        app:layout_constraintGuide_percent="0.30" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.55" />
+        app:layout_constraintGuide_percent="0.65" />
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.75" />
 
     <!-- Back Button -->
     <ImageView
@@ -121,32 +115,31 @@
         app:layout_constraintTop_toBottomOf="@id/bookingInfoText" />
 
     <TextView
-        android:id="@+id/courtName"
+        android:id="@+id/courtClusterName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Pickle ball ABC Đức"
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintStart_toEndOf="@id/courtImage"
+        android:layout_marginStart="@dimen/dp_10"
         app:layout_constraintTop_toTopOf="@id/courtImage" />
 
     <TextView
         android:id="@+id/courtAddress"
         android:layout_width="0dp"
-        android:layout_height="@dimen/dp_30"
+        android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_8"
         android:textSize="@dimen/sp_12"
         android:drawableStart="@drawable/ic_location"
         android:text="Học viện công nghệ bưu chính viễn thông"
-        android:ellipsize="none"
-        android:maxLines="5"
-        android:breakStrategy="simple"
-        app:layout_constraintStart_toStartOf="@id/courtName"
-        app:layout_constraintTop_toBottomOf="@id/courtName" />
+        android:autoSizeTextType="uniform"
+        app:layout_constraintStart_toStartOf="@id/courtClusterName"
+        app:layout_constraintTop_toBottomOf="@id/courtClusterName" />
 
 
     <TextView
-        android:id="@+id/courtPhone"
+        android:id="@+id/courtOwnerPhoneNumber"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:drawablePadding="8dp"
@@ -156,7 +149,18 @@
         app:layout_constraintStart_toStartOf="@id/courtAddress"
         app:layout_constraintTop_toBottomOf="@id/courtAddress" />
 
-    <!-- Header Row -->
+    <TextView
+        android:id="@+id/courtNumberText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Sân 1"
+        android:textSize="@dimen/sp_16"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@id/courtClusterName"
+        app:layout_constraintTop_toTopOf="@id/courtClusterName"
+        android:layout_marginStart="@dimen/dp_10"
+        />
+
     <TextView
         android:id="@+id/dateHeader"
         android:layout_width="0dp"
@@ -166,7 +170,7 @@
         app:layout_constraintEnd_toStartOf="@id/guideline1"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="@dimen/dp_8"
-        app:layout_constraintTop_toBottomOf="@id/courtPhone" />
+        app:layout_constraintTop_toBottomOf="@id/courtOwnerPhoneNumber" />
 
     <TextView
         android:id="@+id/timeHeader"
@@ -178,22 +182,13 @@
         app:layout_constraintTop_toTopOf="@id/dateHeader" />
 
     <TextView
-        android:id="@+id/courtHeader"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Sân"
-        app:layout_constraintEnd_toStartOf="@id/guideline3"
-        app:layout_constraintStart_toEndOf="@id/guideline2"
-        app:layout_constraintTop_toTopOf="@id/timeHeader" />
-
-    <TextView
         android:id="@+id/priceHeader"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Giá"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/guideline3"
-        app:layout_constraintTop_toTopOf="@id/courtHeader" />
+        app:layout_constraintStart_toEndOf="@id/guideline2"
+        app:layout_constraintTop_toTopOf="@id/dateHeader" />
 
     <!-- RecyclerView -->
     <androidx.recyclerview.widget.RecyclerView
@@ -229,7 +224,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/bookButton" />
 
-    <!-- Book Button -->
     <Button
         android:id="@+id/bookButton"
         android:layout_width="wrap_content"
