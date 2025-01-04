@@ -200,6 +200,21 @@ namespace PickleballCourtBookingSystem.Core.Services
             }
         }
 
+        public ServiceResult GetByColumnValueService(string columnName, string value)
+        {
+            try
+            {
+                var res = baseRepository.FindByColumnValue(value, columnName);
+                return CreateServiceResult(Success: true, StatusCode: res != null ? 200 : 404, Data: res);
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return CreateServiceResult(Success: false, StatusCode: 500, UserMsg: "Có lỗi xảy ra", DevMsg: "BaseService.GetByMultipleConditions " + e.Message);
+            }
+        }
+
         #endregion
     }
 }

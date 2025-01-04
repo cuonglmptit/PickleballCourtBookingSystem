@@ -24,4 +24,6 @@ public interface IBookingService : IBaseService<Booking>
     /// <param name="bookingId"></param>
     /// <returns></returns>
     public ServiceResult GetCourtTimeSlotBookingIdService(Guid bookingId);
+
+    public ServiceResult GetAllBookingOfUser(Guid userId, RoleEnum role);
 }

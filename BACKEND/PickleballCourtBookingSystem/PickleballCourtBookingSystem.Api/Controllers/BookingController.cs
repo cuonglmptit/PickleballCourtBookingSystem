@@ -138,5 +138,20 @@ namespace PickleballCourtBookingSystem.Api.Controllers
             var result = _bookingService.GetCourtTimeSlotBookingIdService(bookingId);
             return StatusCode(result.StatusCode, result);
         }
+
+        [HttpGet("GetBookingSchedule")]
+        public IActionResult GetAllBookingOfUser()
+        {
+            var token = CommonMethods.GetTokenFromHeader(HttpContext);
+            string userId = _authService.GetUserIdFromToken(token);
+            RoleEnum role = _authService.GetUserRoleFromToken(token).Value;
+            
+            if (userId == null)
+            {
+                return BadRequest("Token không hợp lệ, không tìm thấy Id người dùng.");
+            }
+            var result = _bookingService.GetAllBookingOfUser(Guid.Parse(userId), role);
+            return StatusCode(result.StatusCode, result);
+        }
     }
 }
