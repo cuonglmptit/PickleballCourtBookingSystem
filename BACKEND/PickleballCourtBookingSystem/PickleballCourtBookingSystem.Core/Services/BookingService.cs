@@ -527,8 +527,11 @@ public class BookingService : BaseService<Booking>, IBookingService
                 {
                     return courtOwnerResult;
                 }
+                
+                var customerResult = _userService.GetInfoByCustomerId(booking.CustomerId!.Value);
 
                 var courtOwnerPhoneNumber = ((CourtOwnerInfoDto)courtOwnerResult.Data!).PhoneNumber;
+                var customerPhoneNumber = ((CustomerInfoDto)customerResult.Data!).PhoneNumber;
 
                 var courtTimeSlots = new List<CourtTimeSlot>();
                 var courtTimeBookings = (List<CourtTimeBooking>)_courtTimeBookingService.GetByColumnValueService("bookingId", booking.Id!.Value.ToString()).Data!;
@@ -558,6 +561,7 @@ public class BookingService : BaseService<Booking>, IBookingService
                     Address = address,
                     CourtTimeSlots = courtTimeSlots,
                     CourtOwnerPhoneNumber = courtOwnerPhoneNumber!,
+                    CustomerPhoneNumber = customerPhoneNumber!,
                     LastUpdatedTime = lastUpdatedTime
                 };
                 customBookingResponses.Add(customBooking);
@@ -641,10 +645,6 @@ public class BookingService : BaseService<Booking>, IBookingService
         foreach (var courtCluster in courtClusters)
         {
             var bookings = (List<Booking>) _bookingRepository.GetCompletedBookingByDate(courtCluster.Id!.Value, startDate, endDate);
-            if (bookings == null || bookings.Count == 0)
-            {
-                return CreateServiceResult(Success: true, StatusCode: 200, UserMsg: "Không có booking hoàn thành nào trong khoảng thời gian này", DevMsg: "No completed bookings found");
-            }
         
             double totalRevenue = 0;
             int totalBookings = bookings.Count;
