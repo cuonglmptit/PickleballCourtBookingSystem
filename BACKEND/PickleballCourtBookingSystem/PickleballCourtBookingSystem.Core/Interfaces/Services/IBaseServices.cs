@@ -64,6 +64,7 @@ namespace PickleballCourtBookingSystem.Core.Interfaces.Services
         ServiceResult GetByMultipleConditionsService(Dictionary<string, object> conditions);
 
         ServiceResult GetByColumnValueService(string columnName, string value);
+        public ServiceResult GetFirstByColumnValueService(string columnName, string value);
 
         #endregion
     }

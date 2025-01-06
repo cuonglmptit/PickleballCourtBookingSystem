@@ -21,6 +21,7 @@ import com.maxholmes.androidapp.screen.customer.booking.adapter.SelectCourtAdapt
 import com.maxholmes.androidapp.screen.customer.booking.adapter.SelectDayAdapter
 import com.maxholmes.androidapp.screen.customer.booking.confirmbooking.ConfirmBookingActivity
 import com.maxholmes.androidapp.utils.OnItemRecyclerViewClickListener
+import com.maxholmes.androidapp.utils.ext.SpacingItemDecoration
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -61,6 +62,10 @@ class BookingActivity : AppCompatActivity() {
 
         binding.recyclerViewTimeSlot.layoutManager = GridLayoutManager(this, 3, GridLayoutManager.VERTICAL, false)
         binding.recyclerViewTimeSlot.adapter = courtTimeSlotAdapter
+        val spacingInDp = resources.getDimensionPixelSize(R.dimen.dp_10)
+        binding.recyclerViewDay.addItemDecoration(SpacingItemDecoration(spacingInDp))
+        binding.recyclerViewCourt.addItemDecoration(SpacingItemDecoration(spacingInDp))
+        binding.recyclerViewTimeSlot.addItemDecoration(SpacingItemDecoration(spacingInDp))
         binding.confirmButton.setOnClickListener {
             onConfirmButtonClicked()
         }

@@ -2,11 +2,9 @@ package com.maxholmes.androidapp.screen.courtowner.home
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.maxholmes.androidapp.R
 import com.maxholmes.androidapp.data.dto.response.APIResponse
 import com.maxholmes.androidapp.data.dto.response.CourtClusterResponse
@@ -14,36 +12,45 @@ import com.maxholmes.androidapp.data.dto.response.parseApiResponseData
 import com.maxholmes.androidapp.data.model.Address
 import com.maxholmes.androidapp.data.model.CourtCluster
 import com.maxholmes.androidapp.data.service.RetrofitClient
+import com.maxholmes.androidapp.databinding.ActivityHomeCourtOwnerBinding
 import com.maxholmes.androidapp.screen.courtowner.detail.CourtClusterEditActivity
 import com.maxholmes.androidapp.screen.courtowner.register.RegisterCourtClusterActivity
 import com.maxholmes.androidapp.screen.courtowner.statistics.StatisticActivity
+import com.maxholmes.androidapp.screen.customer.bookschedule.BookScheduleActivity
 import com.maxholmes.androidapp.screen.customer.home.adapter.CourtClusterCourtOwnerAdapter
+import com.maxholmes.androidapp.screen.customer.search.SearchActivity
+import com.maxholmes.androidapp.screen.user.UserActivity
 import com.maxholmes.androidapp.utils.OnItemRecyclerViewClickListener
 import com.maxholmes.androidapp.utils.ext.SharedPreferencesUtils
+import com.maxholmes.androidapp.utils.ext.authentication.getRoleFromToken
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class HomeCourtOwnerActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivityHomeCourtOwnerBinding
     private lateinit var courtClusterAdapter: CourtClusterCourtOwnerAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_home_court_owner)
+        binding = ActivityHomeCourtOwnerBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
+        val token = SharedPreferencesUtils.getToken(this)
         courtClusterAdapter = CourtClusterCourtOwnerAdapter()
-        val recyclerView = findViewById<RecyclerView>(R.id.recyclerViewCourtCluster)
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.adapter = courtClusterAdapter
+
+        binding.recyclerViewCourtCluster.layoutManager = LinearLayoutManager(this)
+        binding.recyclerViewCourtCluster.adapter = courtClusterAdapter
 
         fetchCourtClusters()
 
-        // Handle item click events
+        binding.bottomNavigationView.selectedItemId = R.id.home
+        setupBottomNavigation(token!!)
+
         courtClusterAdapter.registerItemRecyclerViewClickListener(object : OnItemRecyclerViewClickListener<CourtCluster> {
             override fun onItemClick(item: CourtCluster?) {
                 item?.let {
-                    // Navigate to edit screen
                     val intent = Intent(this@HomeCourtOwnerActivity, CourtClusterEditActivity::class.java)
                     intent.putExtra("courtClusterId", it.id)
                     startActivity(intent)
@@ -51,17 +58,14 @@ class HomeCourtOwnerActivity : AppCompatActivity() {
             }
         })
 
-        // Set up back button
-        findViewById<ImageButton>(R.id.backButton).setOnClickListener { finish() }
+        binding.backButton.setOnClickListener { finish() }
 
-        // Set up statistics button
-        findViewById<android.widget.Button>(R.id.btn_stats).setOnClickListener {
+        binding.btnStats.setOnClickListener {
             val intent = Intent(this@HomeCourtOwnerActivity, StatisticActivity::class.java)
             startActivity(intent)
         }
 
-        // Set up add new button
-        findViewById<android.widget.Button>(R.id.btn_add_new).setOnClickListener {
+        binding.btnAddNew.setOnClickListener {
             val intent = Intent(this@HomeCourtOwnerActivity, RegisterCourtClusterActivity::class.java)
             startActivity(intent)
         }
@@ -80,7 +84,7 @@ class HomeCourtOwnerActivity : AppCompatActivity() {
                 if (response.isSuccessful) {
                     response.body()?.let { apiResponse ->
                         val courtClusterResponses: List<CourtClusterResponse>? = parseApiResponseData(apiResponse.data)
-                        var courtClusters: MutableList<CourtCluster> = mutableListOf()
+                        val courtClusters: MutableList<CourtCluster> = mutableListOf()
                         courtClusterResponses?.forEach { courtClusterResponse ->
                             RetrofitClient.ApiClient.apiService.getAddressById(courtClusterResponse.addressId).enqueue(object :
                                 Callback<APIResponse> {
@@ -88,22 +92,22 @@ class HomeCourtOwnerActivity : AppCompatActivity() {
                                     if (response.isSuccessful) {
                                         response.body()?.let { apiResponse ->
                                             val address: Address? = parseApiResponseData(apiResponse.data)
-                                            if(address == null)
-                                            {
-                                                println("Dia chi loi kiem tra lai backend")
+                                            if (address == null) {
+                                                println("Địa chỉ lỗi, kiểm tra lại backend")
+                                            } else {
+                                                val courtCluster = CourtCluster(
+                                                    id = courtClusterResponse.id,
+                                                    name = courtClusterResponse.name,
+                                                    openingTime = courtClusterResponse.openingTime,
+                                                    closingTime = courtClusterResponse.closingTime,
+                                                    description = courtClusterResponse.description,
+                                                    address = address,
+                                                    courtOwnerId = courtClusterResponse.courtOwnerId,
+                                                    imageUrl = courtClusterResponse.imageUrl
+                                                )
+                                                courtClusters.add(courtCluster)
+                                                courtClusterAdapter.updateData(courtClusters.toMutableList())
                                             }
-                                            var courtCluster = CourtCluster(
-                                                id = courtClusterResponse.id,
-                                                name = courtClusterResponse.name,
-                                                openingTime = courtClusterResponse.openingTime,
-                                                closingTime = courtClusterResponse.closingTime,
-                                                description = courtClusterResponse.description,
-                                                address = address!!,
-                                                courtOwnerId = courtClusterResponse.courtOwnerId,
-                                                imageUrl = courtClusterResponse.imageUrl
-                                            )
-                                            courtClusters.add(courtCluster)
-                                            courtClusterAdapter.updateData(courtClusters.toMutableList())
                                         }
                                     }
                                 }
@@ -116,7 +120,7 @@ class HomeCourtOwnerActivity : AppCompatActivity() {
                         courtClusterAdapter.updateData(courtClusters.toMutableList())
                     }
                 } else {
-                    Toast.makeText(this@HomeCourtOwnerActivity, "Lấy dữ liệu sân bị lỗi vui lòng thử lại sau.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@HomeCourtOwnerActivity, "Lấy dữ liệu sân bị lỗi, vui lòng thử lại sau.", Toast.LENGTH_SHORT).show()
                 }
             }
 
@@ -124,5 +128,31 @@ class HomeCourtOwnerActivity : AppCompatActivity() {
                 Toast.makeText(this@HomeCourtOwnerActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
             }
         })
+    }
+
+    private fun setupBottomNavigation(token: String) {
+        binding.bottomNavigationView.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.home -> true
+                R.id.booking -> {
+                    val intent = Intent().apply {
+                        setClass(this@HomeCourtOwnerActivity, BookScheduleActivity::class.java)
+                    }
+                    startActivity(intent)
+                    true
+                }
+                R.id.search -> {
+                    val intent = Intent(this@HomeCourtOwnerActivity, SearchActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
+                R.id.user -> {
+                    val intent = Intent(this@HomeCourtOwnerActivity, UserActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
+                else -> false
+            }
+        }
     }
 }

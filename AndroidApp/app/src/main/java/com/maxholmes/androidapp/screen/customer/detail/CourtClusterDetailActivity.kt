@@ -22,6 +22,7 @@ import com.maxholmes.androidapp.screen.home.adapter.SelectDayAdapter
 import com.maxholmes.androidapp.screen.test.TestActivity
 import com.maxholmes.androidapp.utils.OnItemRecyclerViewClickListener
 import com.maxholmes.androidapp.utils.ext.SharedPreferencesUtils
+import com.maxholmes.androidapp.utils.ext.SpacingItemDecoration
 import com.maxholmes.androidapp.utils.ext.formatDate
 import com.maxholmes.androidapp.utils.ext.loadImageCircleWithUrl
 import com.maxholmes.androidapp.utils.ext.loadImageWithUrl
@@ -66,7 +67,9 @@ class CourtClusterDetailActivity : AppCompatActivity() {
 
         binding.recyclerViewCourt.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         binding.recyclerViewCourt.adapter = selectCourtAdapter
-
+        val spacingInDp = resources.getDimensionPixelSize(R.dimen.dp_10)
+        binding.recyclerViewDay.addItemDecoration(SpacingItemDecoration(spacingInDp))
+        binding.recyclerViewCourt.addItemDecoration(SpacingItemDecoration(spacingInDp))
         selectDayAdapter.registerItemRecyclerViewClickListener(object : OnItemRecyclerViewClickListener<Calendar> {
             override fun onItemClick(item: Calendar?) {
                 item?.let {

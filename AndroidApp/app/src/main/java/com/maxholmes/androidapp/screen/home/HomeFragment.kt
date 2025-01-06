@@ -84,8 +84,8 @@ class HomeFragment :
                     true
                 }
 
-                R.id.notification -> {
-                    Toast.makeText(context, "Notification", Toast.LENGTH_SHORT).show()
+                R.id.search -> {
+
                     true
                 }
 

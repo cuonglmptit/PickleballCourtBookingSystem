@@ -209,5 +209,7 @@ namespace PickleballCourtBookingSystem.Api.Controllers
             var result = _courtClusterService.GetImageUrl(id);
             return StatusCode(result.StatusCode, result);
         }
+        
+        // [HttpGet("")]
     }
 }

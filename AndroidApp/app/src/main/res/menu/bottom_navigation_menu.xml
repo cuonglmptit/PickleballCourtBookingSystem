@@ -13,9 +13,9 @@
         android:icon="@drawable/ic_booking" />
 
     <item
-        android:id="@+id/notification"
-        android:title="@string/notification"
-        android:icon="@drawable/ic_notification" />
+        android:id="@+id/search"
+        android:title="@string/search"
+        android:icon="@drawable/ic_search" />
 
     <item
         android:id="@+id/user"

@@ -15,3 +15,8 @@ fun decodeJWT(token: String): Map<String, Any> {
 
     return claims
 }
+
+fun getRoleFromToken(token: String): String {
+    val jwt = JWT(token)
+    return jwt.getClaim("role").asString() ?: "No role"
+}

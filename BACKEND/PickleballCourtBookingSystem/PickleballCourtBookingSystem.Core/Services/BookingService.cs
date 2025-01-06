@@ -457,8 +457,8 @@ public class BookingService : BaseService<Booking>, IBookingService
             return CreateServiceResult(Success: false, StatusCode: 500, UserMsg: "Failed to get court time booking", DevMsg: e.Message);
         }
     }
-
-    public ServiceResult GetAllBookingOfUser(Guid userId, RoleEnum role)
+    
+        public ServiceResult GetAllBookingOfUser(Guid userId, RoleEnum role)
     {
         try
         {
@@ -474,7 +474,7 @@ public class BookingService : BaseService<Booking>, IBookingService
                 if (customer!.Id.HasValue && customer!.Id != Guid.Empty)
                 {
                     var bookingResult = _bookingRepository.FindByColumnValue(customer.Id.Value.ToString(), "CustomerId");
-                    bookings = (List<Booking>)bookingResult;
+                    bookings = (List<Booking>) bookingResult;
                 }
             }
 
@@ -489,7 +489,7 @@ public class BookingService : BaseService<Booking>, IBookingService
                 if (courtOwner!.Id.HasValue && courtOwner!.Id != Guid.Empty)
                 {
                     var bookingResult = _bookingRepository.FindByColumnValue(courtOwner.Id.Value.ToString(), "CourtOwnerId");
-                    bookings = (List<Booking>)bookingResult;
+                    bookings = (List<Booking>) bookingResult;
                 }
             }
             var customBookingResponses = new List<CustomBookingResponse>();
@@ -498,7 +498,7 @@ public class BookingService : BaseService<Booking>, IBookingService
             {
                 return CreateServiceResult(Success: true, StatusCode: 200, UserMsg: "No bookings found", DevMsg: "No bookings found");
             }
-
+            
             foreach (var booking in bookings)
             {
                 var courtClusterService = _courtClusterService.GetByIdService(booking.CourtClusterId!.Value);
@@ -537,6 +537,18 @@ public class BookingService : BaseService<Booking>, IBookingService
                 {
                     var courtTimeSlot = (CourtTimeSlot)_courtTimeSlotService.GetByIdService(courtTimeBooking.CourtTimeSlotId!.Value).Data!;
                     courtTimeSlots.Add(courtTimeSlot);
+                }
+
+                DateTime lastUpdatedTime = booking.TimeBooking!.Value;
+                if (booking.Status == BookingStatusEnum.Canceled)
+                {
+                    var cancellationResult = _cancellationService.GetFirstByColumnValueService("bookingId", booking.Id!.Value.ToString());
+                    if (!cancellationResult.Success)
+                    {
+                        return cancellationResult;
+                    }
+                    var cancellation = (Cancellation) cancellationResult.Data!;
+                    lastUpdatedTime = cancellation!.TimeCancel!.Value;
                 }
 
                 var customBooking = new CustomBookingResponse

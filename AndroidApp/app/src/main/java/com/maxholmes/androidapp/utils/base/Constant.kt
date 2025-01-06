@@ -1,6 +1,7 @@
 package com.maxholmes.androidapp.utils.base
 
 object Constant {
-    const val BASE_URL = "https://99f1-2402-800-6110-dae2-40fe-1f2b-4561-5310.ngrok-free.app/"
+    const val BASE_URL = "https://a5d6-113-160-14-17.ngrok-free.app"
+//    const val BASE_URL = "192.168.1.13/"
     const val API_KEY = "ABC123"
 }
