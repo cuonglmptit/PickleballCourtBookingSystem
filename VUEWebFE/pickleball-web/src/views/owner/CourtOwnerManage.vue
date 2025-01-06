@@ -2,11 +2,11 @@
   <div class="container">
     <div class="navigation">
       <router-link class="nav-option" :to="{ name: 'manage-court-cluster' }"
-        >Quản lý sân
-      </router-link>
+        >Quản lý sân</router-link
+      >
       <router-link class="nav-option" :to="{ name: 'owner-manage-booking' }"
-        >Quản lý booking
-      </router-link>
+        >Quản lý booking</router-link
+      >
     </div>
     <div class="content">
       <CourtRsItem
@@ -18,70 +18,95 @@
       <button class="add-btn p-icon-add-btn" @click="showForm"></button>
     </div>
   </div>
+
   <div class="overlay" @click="hideForm" v-if="isFormVisible">
     <div class="form-container" @click.stop>
       <div class="left-part">
         <div class="left-top">
           <div class="font-size-32">Thêm cụm sân</div>
         </div>
-        <form class="signin-form" action="">
+        <div class="signin-form" action="">
           <div class="p-input-container">
             <label for="name">Tên sân</label>
-            <input type="text" id="name" placeholder="" />
+            <input
+              type="text"
+              id="name"
+              v-model="newCluster.name"
+              placeholder="Nhập tên sân"
+            />
           </div>
           <div class="p-input-container">
-            <label for="">Thời gian mở cửa</label>
-            <input type="openTime" id="openTime" />
+            <label for="openTime">Thời gian mở cửa</label>
+            <input type="time" id="openTime" v-model="newCluster.openTime" />
           </div>
           <div class="p-input-container">
-            <label for="">Thời gian đóng cửa</label>
-            <input type="openTime" id="openTime" />
+            <label for="closeTime">Thời gian đóng cửa</label>
+            <input type="time" id="closeTime" v-model="newCluster.closeTime" />
           </div>
           <div class="p-input-container">
-            <label for="">Địa chỉ</label>
-            <input type="text" id="city" placeholder="Khu vực" />
-            <div class="p-input-container">
-              <input type="text" id="district" placeholder="Quận/Huyện..." />
-            </div>
-            <div class="p-input-container">
-              <input type="text" id="ward" placeholder="Tên phường..." />
-            </div>
-            <div class="p-input-container">
-              <input type="text" id="street" placeholder="Tên đường..." />
-            </div>
-          </div>
-          <div>
-            <label for="">Số lượng sân: </label>
-            <input type="number" />
+            <label for="numberOfCourts">Số lượng sân</label>
+            <select v-model="newCluster.numberOfCourts" style="width: 44px">
+              <option v-for="i in 8" :key="i" :value="i">{{ i }}</option>
+            </select>
           </div>
           <div class="p-input-container">
-            <label for="">Mô tả</label>
-            <textarea name="" id="" cols="30" rows="3"></textarea>
+            <label for="description">Mô tả</label>
+            <textarea
+              v-model="newCluster.description"
+              id="description"
+              cols="30"
+              rows="3"
+            ></textarea>
           </div>
-        </form>
+        </div>
         <div class="left-bottom">
-          <button class="p-button this-scoped-btn">Tạo cụm sân</button>
+          <button class="p-button this-scoped-btn" @click="submitForm">
+            Tạo cụm sân
+          </button>
         </div>
       </div>
       <div class="right-part">
-        <div class="font-size-32">Thêm ảnh</div>
+        <div class="p-input-container signin-form">
+          <label for="city">Địa chỉ</label>
+          <input
+            type="text"
+            id="city"
+            v-model="newCluster.city"
+            placeholder="Khu vực"
+          />
+          <input
+            type="text"
+            id="district"
+            v-model="newCluster.district"
+            placeholder="Quận/Huyện..."
+          />
+          <input
+            type="text"
+            id="ward"
+            v-model="newCluster.ward"
+            placeholder="Tên phường..."
+          />
+          <input
+            type="text"
+            id="street"
+            v-model="newCluster.street"
+            placeholder="Tên đường..."
+          />
+        </div>
         <div class="upload-container">
-          <div
-            v-for="(image, index) in uploadedImages"
-            :key="index"
-            class="preview-image"
-          >
-            <img :src="image" alt="Uploaded image" />
-            <button @click="removeImage(index)">X</button>
+          <div class="font-size-32">Thêm ảnh</div>
+          <div v-if="uploadedImage" class="preview-image">
+            <img :src="uploadedImage" alt="Uploaded image" />
+            <button @click="removeImage">X</button>
           </div>
           <input
             type="file"
             accept="image/*"
             @change="handleFileUpload"
-            :disabled="uploadedImages.length >= 3"
+            :disabled="uploadedImage !== null"
           />
-          <p v-if="uploadedImages.length >= 3">
-            Bạn chỉ có thể tải lên tối đa 3 hình ảnh.
+          <p v-if="uploadedImage !== null">
+            Bạn chỉ có thể tải lên một hình ảnh.
           </p>
         </div>
       </div>
@@ -90,8 +115,12 @@
 </template>
 
 <script>
+import Swal from "sweetalert2";
 import CourtRsItem from "../search/CourtRsItem.vue";
-import { getCourtClusterByCourtOwner } from "../../scripts/apiService.js";
+import {
+  getCourtClusterByCourtOwner,
+  createCourtCluster,
+} from "../../scripts/apiService.js";
 export default {
   components: {
     CourtRsItem,
@@ -100,7 +129,19 @@ export default {
     return {
       isFormVisible: false, // Kiểm soát hiển thị của form
       courtClusters: [],
-      uploadedImages: [], // Lưu trữ URL của các hình ảnh được tải lên
+      uploadedImage: null, // Lưu trữ URL của hình ảnh được tải lên
+      newCluster: {
+        name: "",
+        openTime: "",
+        closeTime: "",
+        numberOfCourts: 1,
+        description: "",
+        city: "",
+        district: "",
+        ward: "",
+        street: "",
+        image: null,
+      },
     };
   },
   created() {
@@ -114,21 +155,18 @@ export default {
       this.isFormVisible = true; // Hiển thị form
     },
     handleFileUpload(event) {
-      const files = event.target.files;
-      if (files.length + this.uploadedImages.length > 3) {
-        alert("Bạn chỉ có thể tải lên tối đa 3 hình ảnh.");
-        return;
-      }
-      Array.from(files).forEach((file) => {
+      const file = event.target.files[0];
+      if (file) {
+        this.newCluster.image = file;
         const reader = new FileReader();
         reader.onload = (e) => {
-          this.uploadedImages.push(e.target.result); // Thêm URL vào mảng
+          this.uploadedImage = e.target.result; // Thay thế URL của ảnh mới
         };
         reader.readAsDataURL(file); // Đọc tệp dưới dạng URL
-      });
+      }
     },
-    removeImage(index) {
-      this.uploadedImages.splice(index, 1); // Xóa ảnh khỏi mảng
+    removeImage() {
+      this.uploadedImage = null; // Xóa ảnh hiện tại
     },
     async loadData() {
       try {
@@ -139,6 +177,50 @@ export default {
       } catch (error) {
         console.log(`loadData CourtOwnerManage.vue: ${error}`);
       }
+    },
+    async submitForm() {
+      try {
+        const formData = new FormData();
+        formData.append("name", this.newCluster.name);
+        formData.append("description", this.newCluster.description);
+        formData.append("openingTime", this.newCluster.openTime);
+        formData.append("closingTime", this.newCluster.closeTime);
+        formData.append("city", this.newCluster.city);
+        formData.append("district", this.newCluster.district);
+        formData.append("ward", this.newCluster.ward);
+        formData.append("street", this.newCluster.street);
+        formData.append("numberOfCourts", this.newCluster.numberOfCourts);
+        // If there's an image uploaded, append it as well
+        if (this.newCluster.image) {
+          const file = this.newCluster.image; // Assuming it's a File object
+          formData.append("image", file);
+        }
+        const res = await createCourtCluster(formData);
+        if (res.success) {
+          Swal.fire("Thành công!", "", "success");
+          this.loadData();
+          this.hideForm();
+        } else {
+          Swal.fire("Lỗi!", "", "error");
+        }
+      } catch (error) {
+        console.error("Error submitting form:", error);
+      }
+    },
+    resetForm() {
+      this.newCluster = {
+        name: "",
+        openTime: "",
+        closeTime: "",
+        numberOfCourts: 1,
+        description: "",
+        city: "",
+        district: "",
+        ward: "",
+        street: "",
+        image: null,
+      };
+      this.uploadedImage = null;
     },
   },
 };
@@ -307,13 +389,13 @@ input:focus {
 .right-part {
   width: 40%;
   height: 100%;
-  background-color: var(--gray-background);
+  background-color: white;
   background-repeat: no-repeat;
   background-size: cover;
   background-position-x: calc(100% + 64px);
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: space-evenly;
   align-items: center;
   padding: 24px;
 }

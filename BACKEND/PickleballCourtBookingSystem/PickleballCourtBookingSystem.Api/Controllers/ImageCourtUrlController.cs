@@ -53,7 +53,12 @@ namespace PickleballCourtBookingSystem.Api.Controllers
             var result = _imageCourtUrlService.DeleteService(id);
             return StatusCode(result.StatusCode, result);
         }
-        
-        
+
+        [HttpGet("Cluster/{id}")]
+        public IActionResult GetImageCourtUrlByClusterId(Guid id)
+        {
+            var result = _imageCourtUrlService.GetImageOfCluster(id);
+            return StatusCode(result.StatusCode, result);
+        }
     }
 }

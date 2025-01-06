@@ -11,4 +11,6 @@ public interface ICourtTimeSlotService : IBaseService<CourtTimeSlot>
 
     public ServiceResult AddCourtTimeSlotWithDefaultPrice(List<Guid> courtIds, IEnumerable<DateTime> dates, IEnumerable<CourtPrice> prices);
     public ServiceResult GetAvailableCourtTimeSlotsByCourtIdAndDate(Guid courtId, DateTime date);
+
+    ServiceResult FindCourtTimeSlotsByCourtId(Guid courtId, DateTime date, TimeSpan? time = null);
 }

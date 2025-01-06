@@ -195,8 +195,10 @@ export default {
   width: 100%;
 }
 .list-container {
+  z-index: 1000;
   width: 100%;
   position: absolute;
+  top: 100%;
   background-color: white;
   border: 1px solid rgba(0, 0, 0, 0.3);
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);

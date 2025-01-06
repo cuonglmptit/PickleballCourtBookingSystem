@@ -71,7 +71,7 @@ namespace PickleballCourtBookingSystem.Api.Controllers
         /// <returns></returns>
         [HttpPost]
         [Authorize(Roles = nameof(RoleEnum.CourtOwner))]
-        public IActionResult AddCourtCluster([FromBody] AddCourtClusterRequest addCourtClusterRequest)
+        public async Task<IActionResult> AddCourtCluster([FromBody] AddCourtClusterRequest addCourtClusterRequest)
         {
             var token = CommonMethods.GetTokenFromHeader(HttpContext);
             var userId = _authService.GetUserIdFromToken(token);
@@ -79,8 +79,31 @@ namespace PickleballCourtBookingSystem.Api.Controllers
             {
                 return BadRequest("Token bi loi khong co Id");
             }
-            var result = _courtClusterService.RegisterNewCourtCluster(Guid.Parse(userId), addCourtClusterRequest.Name, addCourtClusterRequest.Description, addCourtClusterRequest.OpeningTime,
+            var result = await _courtClusterService.RegisterNewCourtCluster(Guid.Parse(userId), addCourtClusterRequest.Name, addCourtClusterRequest.Description, addCourtClusterRequest.OpeningTime,
                 addCourtClusterRequest.ClosingTime, addCourtClusterRequest.City, addCourtClusterRequest.District, addCourtClusterRequest.Ward, addCourtClusterRequest.Street, addCourtClusterRequest.NumberOfCourts);
+            return StatusCode(result.StatusCode, result);
+        }
+
+        /// <summary>
+        /// Post 1 CourtCluster
+        /// </summary>
+        /// <param name="courtCluster"></param>
+        /// <param name="addClusterReq"></param>
+        /// <returns></returns>
+        [HttpPost("multipart")]
+        [Authorize(Roles = nameof(RoleEnum.CourtOwner))]
+        public async Task<IActionResult> AddCourtClusterWithImg([FromForm] AddCourtClusterRequest addClusterReq)
+        {
+            var token = CommonMethods.GetTokenFromHeader(HttpContext);
+            var userId = _authService.GetUserIdFromToken(token);
+            if (userId == null)
+            {
+                return BadRequest("Token bi loi khong co Id");
+            }
+            var result = await _courtClusterService.RegisterNewCourtCluster(Guid.Parse(userId),
+                addClusterReq.Name, addClusterReq.Description, addClusterReq.OpeningTime,
+                addClusterReq.ClosingTime, addClusterReq.City, addClusterReq.District,
+                addClusterReq.Ward, addClusterReq.Street, addClusterReq.NumberOfCourts, addClusterReq.Image);
             return StatusCode(result.StatusCode, result);
         }
 
@@ -91,7 +114,7 @@ namespace PickleballCourtBookingSystem.Api.Controllers
             return StatusCode(result.StatusCode, result);
         }
 
-        [HttpPut]
+        [HttpPut("{id}")]
         public IActionResult UpdateCourtCluster([FromBody] CourtCluster courtCluster, Guid id)
         {
             var result = _courtClusterService.UpdateService(courtCluster, id);
@@ -157,7 +180,7 @@ namespace PickleballCourtBookingSystem.Api.Controllers
                     Failed = failedRecords
                 });
         }
-        
+
         [HttpGet("Owner")]
         [Authorize(Roles = nameof(RoleEnum.CourtOwner))]
         public IActionResult GetAllCourtClusterOfOwner()
@@ -172,14 +195,14 @@ namespace PickleballCourtBookingSystem.Api.Controllers
             var result = _courtClusterService.GetCourtClusterByOwner(Guid.Parse(userId));
             return StatusCode(result.StatusCode, result);
         }
-        
+
         [HttpGet("Active")]
         public IActionResult GetActiveCourtCluster()
         {
             var result = _courtClusterService.GetAllActiveCourtClusters();
             return StatusCode(result.StatusCode, result);
         }
-        
+
         [HttpGet("{id}/Image")]
         public IActionResult GetImageUrl(Guid id)
         {

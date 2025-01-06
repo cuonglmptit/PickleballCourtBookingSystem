@@ -1,4 +1,4 @@
-using PickleballCourtBookingSystem.Api.Models;
+﻿using PickleballCourtBookingSystem.Api.Models;
 using PickleballCourtBookingSystem.Core.DTOs;
 using PickleballCourtBookingSystem.Core.Entities;
 using PickleballCourtBookingSystem.Core.Interfaces.Infrastructure;
@@ -34,7 +34,7 @@ public class CourtTimeSlotService : BaseService<CourtTimeSlot>, ICourtTimeSlotSe
             return CreateServiceResult(Success: false, StatusCode: 404, UserMsg: "Khong lay duoc du lieu cua court time slot", DevMsg: "Get Court Time Slot Error");
         }
     }
-    
+
     public ServiceResult GetAvailableCourtTimeSlotsByCourtIdAndDate(Guid courtId, DateTime date)
     {
         try
@@ -88,13 +88,13 @@ public class CourtTimeSlotService : BaseService<CourtTimeSlot>, ICourtTimeSlotSe
     {
         try
         {
-            
+
             var timeNow = TimeZoneInfo.ConvertTime(DateTime.Now, TimeZoneInfo.Local);
             var courtTimeSlots = new List<CourtTimeSlot>();
             foreach (var courtId in courtIds)
             {
                 var courtTimeSlotsCheck = _courtTimeSlotRepository.FindCourtTimeSlotsByCourtId(courtId, timeNow.Date, timeNow.TimeOfDay);
-            
+
                 foreach (var date in dates)
                 {
                     if (date.Date < timeNow.Date)
@@ -140,6 +140,42 @@ public class CourtTimeSlotService : BaseService<CourtTimeSlot>, ICourtTimeSlotSe
         {
             Console.WriteLine(e);
             return CreateServiceResult(Success: false, StatusCode: 404, UserMsg: "Them du lieu court time slot bi loi", DevMsg: "Them du lieu bi loi");
+        }
+    }
+
+    public ServiceResult FindCourtTimeSlotsByCourtId(Guid courtId, DateTime date, TimeSpan? time = null)
+    {
+        try
+        {
+            //Nếu mà ngày hôm nay thì time là hiện tại
+            if (time == null)
+            {
+                var timeNow = TimeZoneInfo.ConvertTime(DateTime.Now, TimeZoneInfo.Local);
+                if (date.Date == timeNow.Date)
+                {
+                    time = timeNow.TimeOfDay;
+                }
+            }
+            //Nếu mà ngày lớn hơn hôm nay thì thời gian bắt đây là 00:00:00
+            if (time == null)
+            {
+                time = TimeSpan.Zero;
+            }
+
+            //In ra ngày và thời gian
+            Console.WriteLine(date);
+            Console.WriteLine(time);
+
+            var result = _courtTimeSlotRepository.FindCourtTimeSlotsByCourtId(courtId, date, time.Value);
+            if (result.ToList().Count == 0)
+            {
+                return CreateServiceResult(Success: true, StatusCode: 200, UserMsg: "Khong co du lieu trong khoang thoi gian da chon", DevMsg: "KHong co du lieu trong khoang thoi gian da chon");
+            }
+            return CreateServiceResult(Success: true, StatusCode: 200, Data: result);
+        }
+        catch (Exception e)
+        {
+            return CreateServiceResult(Success: false, StatusCode: 404, UserMsg: "Lay du lieu court time slot bi loi", DevMsg: e.Message);
         }
     }
 }

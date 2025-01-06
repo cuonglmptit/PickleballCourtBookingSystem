@@ -1,13 +1,5 @@
 <template>
   <div class="container">
-    <div class="navigation">
-      <router-link class="nav-option" :to="{ name: 'manage-court-cluster' }"
-        >Quản lý sân
-      </router-link>
-      <router-link class="nav-option" :to="{ name: 'owner-manage-booking' }"
-        >Quản lý booking
-      </router-link>
-    </div>
     <div class="content">
       <div class="booking-management">
         <div class="filters">
@@ -416,7 +408,6 @@ export default {
   /* background-color: bisque; */
   width: 100%;
   height: calc(100vh - 96px - 12px - 12px);
-  margin-left: 200px;
   background-color: white;
   border: 1px solid rgba(0, 0, 0, 0.3);
   box-sizing: border-box;

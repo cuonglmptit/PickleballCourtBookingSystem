@@ -1,4 +1,4 @@
-import { getData, postData, putData, deleteData } from './api.js';
+import { getData, postData, putData, deleteData, postDataMultipart } from './api.js';
 
 // Quản lý các endpoint ở một nơi duy nhất
 const endpoints = {
@@ -6,9 +6,19 @@ const endpoints = {
     getAddress: '/api/Address',
     getListTime: '/api/GetListTime',
     CourtCluster: '/api/CourtCluster',
+    CourtClusterMultipart: '/api/CourtCluster/multipart',
     getProvinces: '/api/Locations/provinces',
+    getDistricts: '/api/Locations/districts',
+    getWards: '/api/Locations/wards',
+    getStreets: '/api/Locations/streets',
     getCourtsOfCourtCluster: (courtClusterId) => `/api/CourtCluster/${courtClusterId}/Courts`,
     getCustomerInfo: (customerId) => `/api/User/Customer/${customerId}/info`,
+    getImageCourtUrl: (id) => `/api/ImageCourtUrl/Cluster/${id}`,
+    getTimeSlotOfCourt: `/api/CourtTimeSlot/Court`,
+
+    //Put
+    putAddress: (addressId) => `/api/Address/${addressId}`,
+    putCluster: (clusterId) => `/api/CourtCluster/${clusterId}`,
 
     // Endpoint đăng nhập
     login: '/api/Auth/Login',
@@ -22,7 +32,12 @@ const endpoints = {
     courtOwnerConfirmBooking: `/api/Booking/court-owner-confirm-booking`,
     courtOwnerConfirmPaid: `/api/Booking/court-owner-confirm-paid`,
     cancelBooking: `/api/Booking/cancel-booking`,
-    getCourtPricesByCourtClusterId: (courtClusterId) => `/api/CourtPrice/GetCourtPricesByCourtClusterId/${courtClusterId}`
+    getCourtPricesByCourtClusterId: (courtClusterId) => `/api/CourtPrice/GetCourtPricesByCourtClusterId/${courtClusterId}`,
+    createDefaultPrice: '/api/CourtPrice/multiple',
+    autoCreateCourtTimeSlot: '/api/CourtCluster/AutoCreateCourtTimeSlot',
+
+    //Customer
+    addBooking: `/api/Booking/add-booking`
 };
 
 export const searchCourtClusters = (queryParams) => {
@@ -60,6 +75,15 @@ export const getCourtsOfCourtCluster = (courtClusterId) => {
 export const getProvinces = () => {
     return getData(endpoints.getProvinces);
 }
+
+export const getDistricts = () => {
+    return getData(endpoints.getDistricts);
+}
+
+export const getWards = () => {
+    return getData(endpoints.getWards);
+}
+
 
 /**
  * Đăng nhập với tài khoản và mật khẩu
@@ -124,4 +148,58 @@ export const cancelBooking = (bookingId) => {
 
 export const getCourtPricesByCourtClusterId = (courtClusterId) => {
     return getData(endpoints.getCourtPricesByCourtClusterId(courtClusterId))
-} 
+}
+
+export const createDefaultPrice = (prices) => {
+    return postData(endpoints.createDefaultPrice, prices)
+}
+
+export const autoCreateCourtTimeSlot = (courtClusterId, listDate) => {
+    const body = {
+        "courtClusterId": courtClusterId,
+        "dates": listDate
+    }
+    console.log(body);
+
+    return postData(endpoints.autoCreateCourtTimeSlot, body)
+}
+
+/**
+ * Tạo mới một Court Cluster
+ * @param {Object} courtClusterData Dữ liệu Court Cluster cần tạo
+ * @returns {Promise} Promise chứa kết quả từ API
+ */
+export const createCourtCluster = (formData) => {
+    return postDataMultipart(endpoints.CourtClusterMultipart, formData);
+};
+
+export const getImageCourtUrl = (clusterId) => {
+    return getData(endpoints.getImageCourtUrl(clusterId))
+}
+
+export const putAddress = (addressId, addressEntity) => {
+    return putData(endpoints.putAddress(addressId), addressEntity)
+}
+export const putCluster = (clusterId, clusterEntity) => {
+    return putData(endpoints.putCluster(clusterId), clusterEntity)
+}
+
+export const getTimeSlotOfCourt = (courtId, date) => {
+    const body = {
+        "courtId": courtId,
+        "date": date
+    }
+    console.log(body);
+
+    return postData(endpoints.getTimeSlotOfCourt, body)
+}
+
+export const addBooking = (courtId, timesSlotIds) => {
+    const body = {
+        "courtTimeSlotsIds": timesSlotIds,
+        "courtId": courtId,
+    }
+    console.log(body);
+
+    return postData(endpoints.addBooking, body)
+}
