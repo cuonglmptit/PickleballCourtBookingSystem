@@ -34,4 +34,6 @@ public interface IBookingService : IBaseService<Booking>
     /// <param name="bookingId"></param>
     /// <returns></returns>
     public ServiceResult CourtOwnerConfirmPaid(Guid courtOwnerId, Guid bookingId);
+
+    public ServiceResult GetStatistic(Guid userId, DateTime startDate, DateTime endDate);
 }

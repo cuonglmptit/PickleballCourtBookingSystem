@@ -1,5 +1,4 @@
-﻿using PickleballCourtBookingSystem.Api.DTOs;
-using PickleballCourtBookingSystem.Api.Models;
+﻿using PickleballCourtBookingSystem.Api.Models;
 using PickleballCourtBookingSystem.Core.DTOs;
 using PickleballCourtBookingSystem.Core.DTOs.UserDTOs;
 using PickleballCourtBookingSystem.Core.Entities;
@@ -559,6 +558,7 @@ public class BookingService : BaseService<Booking>, IBookingService
                     Address = address,
                     CourtTimeSlots = courtTimeSlots,
                     CourtOwnerPhoneNumber = courtOwnerPhoneNumber!,
+                    LastUpdatedTime = lastUpdatedTime
                 };
                 customBookingResponses.Add(customBooking);
             }
@@ -609,4 +609,68 @@ public class BookingService : BaseService<Booking>, IBookingService
             return CreateServiceResult(Success: false, StatusCode: 500, UserMsg: "Failed to confirm paid", DevMsg: e.Message);
         }
     }
+
+    public ServiceResult GetStatistic(Guid userId, DateTime startDate, DateTime endDate)
+{
+    try
+    {
+        if (_userService.GetByIdService(userId).Data is not User user)
+        {
+            return CreateServiceResult(Success: false, StatusCode: 404, UserMsg: "User not found", DevMsg: "User not found");
+        }
+
+        if (user.RoleId != (int)RoleEnum.CourtOwner)
+        {
+            return CreateServiceResult(Success: false, StatusCode: 403, UserMsg: "Bạn không phải là chủ sân", DevMsg: "User không có quyền xem thống kê");
+        }
+
+        var courtOwnerResult = _courtOwnerService.GetCourtOwnerByUserIdService(userId);
+        if (!courtOwnerResult.Success)
+        {
+            return courtOwnerResult;
+        }
+        var courtOwner = (CourtOwner)courtOwnerResult.Data!;
+        
+        var courtClusterResult = _courtClusterService.GetByColumnValueService("courtOwnerId", courtOwner.Id!.Value.ToString());
+        if (!courtClusterResult.Success)
+        {
+            return courtClusterResult;
+        }
+        var courtClusters = (IEnumerable<CourtCluster>)courtClusterResult.Data!;
+        var statistics = new List<StatisticDto>();
+        foreach (var courtCluster in courtClusters)
+        {
+            var bookings = (List<Booking>) _bookingRepository.GetCompletedBookingByDate(courtCluster.Id!.Value, startDate, endDate);
+            if (bookings == null || bookings.Count == 0)
+            {
+                return CreateServiceResult(Success: true, StatusCode: 200, UserMsg: "Không có booking hoàn thành nào trong khoảng thời gian này", DevMsg: "No completed bookings found");
+            }
+        
+            double totalRevenue = 0;
+            int totalBookings = bookings.Count;
+            foreach (var booking in bookings)
+            {
+                totalRevenue += booking.Amount!.Value;
+            }
+
+            var statistic = new StatisticDto
+            {
+                CourtCluster = courtCluster,
+                Bookings = bookings,
+                TotalRevenue = totalRevenue,
+                TotalBookings = totalBookings
+            };
+            
+            statistics.Add(statistic);
+        }
+        
+        return CreateServiceResult(Success: true, StatusCode: 200, Data: statistics, UserMsg: "Lấy thống kê thành công", DevMsg: "Lấy thống kê thành công");
+    }
+    catch (Exception e)
+    {
+        Console.WriteLine(e.Message);
+        return CreateServiceResult(Success: false, StatusCode: 500, UserMsg: "Lỗi khi lấy thống kê", DevMsg: e.Message);
+    }
+}
+
 }

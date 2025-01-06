@@ -1,3 +1,4 @@
+using System.Reflection.Metadata;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -166,6 +167,20 @@ namespace PickleballCourtBookingSystem.Api.Controllers
                 return BadRequest("Token không hợp lệ, không tìm thấy Id người dùng.");
             }
             var result = _bookingService.GetAllBookingOfUser(Guid.Parse(userId), role);
+            return StatusCode(result.StatusCode, result);
+        }
+
+        [HttpGet("Statistic")]
+        [Authorize(Roles = nameof(RoleEnum.CourtOwner))]
+        public IActionResult GetStatistic([FromQuery] DateTime startDate, [FromQuery] DateTime endDate)
+        {
+            var token = CommonMethods.GetTokenFromHeader(HttpContext);
+            var userId = _authService.GetUserIdFromToken(token);
+            if (userId == null)
+            {
+                return BadRequest("Token không hợp lệ, không tìm thấy Id người dùng.");
+            }
+            var result = _bookingService.GetStatistic(Guid.Parse(userId), startDate, endDate);
             return StatusCode(result.StatusCode, result);
         }
     }
