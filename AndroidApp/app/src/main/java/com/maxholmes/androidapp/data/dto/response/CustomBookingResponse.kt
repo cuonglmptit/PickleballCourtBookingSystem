@@ -14,5 +14,6 @@ data class CustomBookingResponse(
     val address: Address? = null,
     val courtTimeSlots: List<CourtTimeSlot>? = null,
     val courtOwnerPhoneNumber: String? = null,
+    val customerPhoneNumber: String? = null,
     val lastUpdatedTime: String
 ) : Parcelable

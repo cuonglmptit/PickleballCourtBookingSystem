@@ -29,4 +29,13 @@ public class BookingRepository : BaseRepository<Booking>, IBookingRepository
         var result = dbContext.Connection.Query<Booking>(sql: sqlCommand, param: parameters);
         return result;
     }
+    
+    public IEnumerable<Booking> GetAllCompletedBooking(Guid courtClusterId)
+    {
+        var sqlCommand = $"SELECT * FROM {className} WHERE courtClusterId = @courtClusterId AND timeBooking >= @startDate AND timeBooking <= @endDate AND paymentStatus = 1";
+        var parameters = new DynamicParameters();
+        parameters.Add("courtClusterId", courtClusterId);
+        var result = dbContext.Connection.Query<Booking>(sql: sqlCommand, param: parameters);
+        return result;
+    }
 }
