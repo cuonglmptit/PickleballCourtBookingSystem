@@ -2,17 +2,14 @@
   <div class="court-rs-container">
     <div class="court-header">
       <div class="court-title">
-        <button class="delete-btn p-icon-delete-btn" v-if="manageMode"></button>
+        <!-- <button class="delete-btn p-icon-delete-btn" v-if="manageMode"></button> -->
         {{ courtClusterData.name }}
       </div>
       <div class="court-title">Đánh giá 5/5</div>
     </div>
     <div class="court-content">
       <div class="court-thumbnail">
-        <img
-          src="../../assets/img/picklleball_court_3.webp"
-          alt=""
-        />
+        <img src="../../assets/img/picklleball_court_3.webp" alt="" />
       </div>
       <div class="court-brief">
         <div class="court-inf">
@@ -32,10 +29,17 @@
           </div>
         </div>
         <router-link
-          :to="{
-            name: 'court-cluster-detail',
-            params: { id: courtClusterData.id },
-          }"
+          :to="
+            manageMode === true
+              ? {
+                  name: 'manage-court-cluster-detail',
+                  params: { id: courtClusterData.id },
+                }
+              : {
+                  name: 'court-cluster-detail',
+                  params: { id: courtClusterData.id },
+                }
+          "
           class="court-action-button"
         >
           Chi tiết

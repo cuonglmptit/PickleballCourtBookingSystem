@@ -128,6 +128,7 @@
 </template>
 
 <script>
+import Swal from "sweetalert2";
 import PrimaryButtonBorder from "../../components/buttons/PrimaryButtonBorder.vue";
 import { registerUser } from "@/scripts/apiService.js";
 export default {
@@ -213,13 +214,21 @@ export default {
         if (response.success) {
           // Nếu đăng ký thành công, có thể chuyển hướng hoặc thông báo
           this.$router.push("/login");
-          alert("Đăng ký thành công!"); // Hiển thị alert sau khi chuyển hướng
+          Swal.fire({
+            title: "Thành công!",
+            text: "Đăng ký thành công!",
+            icon: "success",
+          });
         } else {
           this.errors = response.data;
           const errorResult = Object.entries(this.errors)
             .map(([key, value]) => `${key}: ${value}`)
-            .join("\n");
-          alert(errorResult);
+            .join("<br>"); // Sử dụng <br> thay vì \n
+          Swal.fire({
+            title: "Thất bại!",
+            html: errorResult, // Dùng html thay vì text
+            icon: "error",
+          });
         }
       } catch (error) {
         console.log(`handleRegister error: ${error}`);

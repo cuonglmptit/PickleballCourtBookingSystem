@@ -9,7 +9,12 @@
       </router-link>
     </div>
     <div class="content">
-      <CourtRsItem :manageMode="true" :courtClusterData="courtCluster" />
+      <CourtRsItem
+        v-for="(cluster, index) in courtClusters"
+        :key="index"
+        :manageMode="true"
+        :courtClusterData="cluster"
+      />
       <button class="add-btn p-icon-add-btn" @click="showForm"></button>
     </div>
   </div>
@@ -86,6 +91,7 @@
 
 <script>
 import CourtRsItem from "../search/CourtRsItem.vue";
+import { getCourtClusterByCourtOwner } from "../../scripts/apiService.js";
 export default {
   components: {
     CourtRsItem,
@@ -93,20 +99,12 @@ export default {
   data() {
     return {
       isFormVisible: false, // Kiểm soát hiển thị của form
-
-      courtCluster: {
-        id: "4bfaaf62-88dc-4e8c-abc4-2df7a9e0836c",
-        name: "Golden Pickle Courts",
-        description:
-          "Cụm sân hiện đại với ánh sáng vàng sang trọng, thiết kế phù hợp cho các giải đấu chuyên nghiệp.",
-        openingTime: "07:00:00",
-        closingTime: "23:00:00",
-        addressId: "278f0020-0ceb-461e-8ddd-57380d02170b",
-        courtOwnerId: "278f0020-0ceb-461e-8ddd-57380d02170b",
-        status: 1,
-      },
+      courtClusters: [],
       uploadedImages: [], // Lưu trữ URL của các hình ảnh được tải lên
     };
+  },
+  created() {
+    this.loadData();
   },
   methods: {
     hideForm() {
@@ -131,6 +129,16 @@ export default {
     },
     removeImage(index) {
       this.uploadedImages.splice(index, 1); // Xóa ảnh khỏi mảng
+    },
+    async loadData() {
+      try {
+        let clusterReponse = await getCourtClusterByCourtOwner();
+        if (clusterReponse.success) {
+          this.courtClusters = clusterReponse.data;
+        }
+      } catch (error) {
+        console.log(`loadData CourtOwnerManage.vue: ${error}`);
+      }
     },
   },
 };

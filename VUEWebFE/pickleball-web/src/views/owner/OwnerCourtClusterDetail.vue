@@ -10,37 +10,21 @@
           <div>
             <div class="lm-title">
               <div>Sửa giá tiền</div>
-              <div>Số lượng sân: 4 sân</div>
+              <div>Số lượng sân: {{ courts.length }}</div>
             </div>
           </div>
           <div class="left-content">
-            <div class="time-slot">
-              06:00 - Giá tiền: 150.000
-              <button class="delete-slot-btn p-icon-x"></button>
+            <div
+              v-for="courtPrice in listCourtPrices"
+              :key="courtPrice.id"
+              class="time-slot"
+            >
+              {{ courtPrice.time + " - Giá tiền: " + courtPrice.price }}
+              <button
+                class="delete-slot-btn p-icon-x"
+                @click="removeCourtPrice(index)"
+              ></button>
             </div>
-            <div class="time-slot">2</div>
-            <div class="time-slot">3</div>
-            <div class="time-slot">4</div>
-            <div class="time-slot">5</div>
-            <div class="time-slot">6</div>
-            <div class="time-slot">7</div>
-            <div class="time-slot">8</div>
-            <div class="time-slot">9</div>
-            <div class="time-slot">10</div>
-            <div class="time-slot">11</div>
-            <div class="time-slot">12</div>
-            <div class="time-slot">13</div>
-            <div class="time-slot">14</div>
-            <div class="time-slot">15</div>
-            <div class="time-slot">16</div>
-            <div class="time-slot">17</div>
-            <div class="time-slot">18</div>
-            <div class="time-slot">19</div>
-            <div class="time-slot">20</div>
-            <div class="time-slot">21</div>
-            <div class="time-slot">22</div>
-            <div class="time-slot">23</div>
-            <div class="time-slot">24</div>
           </div>
           <div class="left-mid-bot">
             <button class="regular-btn add-time-slot-btn">Thêm giờ</button>
@@ -51,7 +35,7 @@
         <div class="r-title">
           <div class="input-container">
             <label for="" class="roboto-bold font-size-24">Tên sân</label>
-            <input type="text" class="title-input" />
+            <input v-model="cluster.name" type="text" class="title-input" />
           </div>
         </div>
         <div class="court-photos">
@@ -61,24 +45,34 @@
           <div class="roboto-bold font-size-24">Địa chỉ</div>
           <div class="input-container-inline">
             <label for="">Khu vực:</label>
-            <input type="text" class="address-input" />
+            <input v-model="address.city" type="text" class="address-input" />
           </div>
           <div class="input-container-inline">
             <label for="">Quận/huyện:</label>
-            <input type="text" class="address-input" />
+            <input
+              v-model="address.district"
+              type="text"
+              class="address-input"
+            />
           </div>
           <div class="input-container-inline">
             <label for="">Phường:</label>
-            <input type="text" class="address-input" />
+            <input v-model="address.ward" type="text" class="address-input" />
           </div>
           <div class="input-container-inline">
             <label for="">Đường:</label>
-            <input type="text" class="address-input" />
+            <input v-model="address.street" type="text" class="address-input" />
           </div>
         </div>
         <div class="description input-container">
           <label for="" class="roboto-bold font-size-24">Mô tả:</label>
-          <textarea name="" id="" cols="30" rows="10"></textarea>
+          <textarea
+            v-model="cluster.description"
+            name=""
+            id=""
+            cols="30"
+            rows="10"
+          ></textarea>
         </div>
         <div class="action-container">
           <button class="regular-btn cancel-btn">Hủy thay đổi</button>
@@ -90,7 +84,70 @@
 </template>
 
 <script>
-export default {};
+import {
+  getCourtPricesByCourtClusterId,
+  getCourtClusterById,
+  getCourtsOfCourtCluster,
+  getAddressByid,
+} from "../../scripts/apiService.js";
+export default {
+  data() {
+    return {
+      cluster: {
+        id: "",
+        name: "",
+        description: "",
+        openingTime: "",
+        closingTime: "",
+        addressId: "",
+        courtOwnerId: "",
+        status: 1,
+      },
+      listCourtPrices: [],
+      courts: {},
+      address: {
+        id: "",
+        city: "",
+        district: "",
+        ward: "",
+        street: "",
+      },
+    };
+  },
+  async created() {
+    this.loadData();
+  },
+  methods: {
+    removeCourtPrice(index) {
+      this.listCourtPrices.splice(index, 1);
+    },
+    async loadData() {
+      try {
+        // Lấy id từ route
+        const courtClusterId = this.$route.params.id;
+        const [clusterRes, courtPricesRes, courtsRes] = await Promise.all([
+          getCourtClusterById(courtClusterId),
+          getCourtPricesByCourtClusterId(courtClusterId),
+          getCourtsOfCourtCluster(courtClusterId),
+        ]);
+        if (clusterRes.success) {
+          this.cluster = clusterRes.data;
+        }
+        let addressRes = await getAddressByid(this.cluster.addressId);
+        this.address = addressRes.data;
+        if (courtPricesRes.success) {
+          this.listCourtPrices = courtPricesRes.data;
+        }
+        if (courtsRes.success) {
+          this.courts = courtsRes.data;
+        }
+        console.log(this.cluster);
+      } catch (error) {
+        console.log(`loadData OwnerCourtClusterDetail: ${error}`);
+      }
+    },
+  },
+};
 </script>
 
 <style scoped>
@@ -147,6 +204,7 @@ export default {};
   column-gap: 20px;
   row-gap: 12px;
   box-sizing: border-box;
+  flex: 1;
 }
 
 .time-slot {
