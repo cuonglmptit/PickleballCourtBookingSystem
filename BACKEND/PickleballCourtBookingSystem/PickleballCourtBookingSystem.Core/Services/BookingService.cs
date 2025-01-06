@@ -136,7 +136,6 @@ public class BookingService : BaseService<Booking>, IBookingService
                 Status = (int)BookingStatusEnum.Pending,
                 PaymentStatus = 0,
                 Amount = amount,
-                customerPhoneNumber = user.PhoneNumber
             };
             var listCourtTimeBooking = new List<CourtTimeBooking>();
             var resultAddBooking = _bookingRepository.Insert(booking);
