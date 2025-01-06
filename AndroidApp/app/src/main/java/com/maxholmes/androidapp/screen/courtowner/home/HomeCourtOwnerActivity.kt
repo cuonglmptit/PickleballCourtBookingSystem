@@ -13,6 +13,7 @@ import com.maxholmes.androidapp.data.model.Address
 import com.maxholmes.androidapp.data.model.CourtCluster
 import com.maxholmes.androidapp.data.service.RetrofitClient
 import com.maxholmes.androidapp.databinding.ActivityHomeCourtOwnerBinding
+import com.maxholmes.androidapp.screen.courtowner.bookschedule.BookScheduleOwnerActivity
 import com.maxholmes.androidapp.screen.courtowner.detail.CourtClusterEditActivity
 import com.maxholmes.androidapp.screen.courtowner.register.RegisterCourtClusterActivity
 import com.maxholmes.androidapp.screen.courtowner.statistics.StatisticActivity
@@ -136,7 +137,7 @@ class HomeCourtOwnerActivity : AppCompatActivity() {
                 R.id.home -> true
                 R.id.booking -> {
                     val intent = Intent().apply {
-                        setClass(this@HomeCourtOwnerActivity, BookScheduleActivity::class.java)
+                        setClass(this@HomeCourtOwnerActivity, BookScheduleOwnerActivity::class.java)
                     }
                     startActivity(intent)
                     true

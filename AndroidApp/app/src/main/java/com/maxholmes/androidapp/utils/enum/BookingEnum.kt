@@ -16,6 +16,7 @@ enum class BookingStatusEnum(val value: String) {
     Pending("Pending"),
     CourtOwnerConfirmed("CourtOwnerConfirmed"),
     Canceled("Canceled"),
+    Completed("Completed"),
     All("All");
 
     companion object {

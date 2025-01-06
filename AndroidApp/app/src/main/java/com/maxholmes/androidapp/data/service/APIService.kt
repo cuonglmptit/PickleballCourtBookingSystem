@@ -3,6 +3,7 @@ package com.maxholmes.androidapp.data.service
 import com.maxholmes.androidapp.data.dto.request.AddBookingRequest
 import com.maxholmes.androidapp.data.dto.request.AddCourtClusterRequest
 import com.maxholmes.androidapp.data.dto.request.CancelBookingRequest
+import com.maxholmes.androidapp.data.dto.request.ConfirmBookingRequest
 import com.maxholmes.androidapp.data.dto.request.LoginRequest
 import com.maxholmes.androidapp.data.dto.request.RegisterRequest
 import com.maxholmes.androidapp.data.dto.response.APIResponse
@@ -72,4 +73,13 @@ interface APIService {
 
     @POST("/api/CourtCluster")
     fun addCourtCluster(@Body addCourtClusterRequest: AddCourtClusterRequest, @Header("Authorization") token: String): Call<APIResponse>
+
+    @POST("/api/Booking/court-owner-confirm-booking")
+    fun courtOwnerConfirmBooking(@Body confirmBookingRequest: ConfirmBookingRequest, @Header("Authorization") token: String): Call<APIResponse>
+
+    @POST("/api/Booking/court-owner-confirm-paid")
+    fun courtOwnerConfirmPaid(@Body confirmBookingRequest: ConfirmBookingRequest, @Header("Authorization") token: String): Call<APIResponse>
+
+    @GET("/api/booking/Statistic")
+    fun getStatistic(@Header("Authorization") token: String): Call<APIResponse>
 }
