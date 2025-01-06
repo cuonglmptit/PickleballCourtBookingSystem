@@ -36,4 +36,7 @@ public interface IBookingService : IBaseService<Booking>
     public ServiceResult CourtOwnerConfirmPaid(Guid courtOwnerId, Guid bookingId);
 
     public ServiceResult GetStatistic(Guid userId, DateTime startDate, DateTime endDate);
+
+    //Lấy ra thống kê từ trước tới giờ
+    public ServiceResult GetStatisticAll(Guid userId);
 }

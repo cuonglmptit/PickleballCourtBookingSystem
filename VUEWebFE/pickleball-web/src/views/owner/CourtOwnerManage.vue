@@ -1,11 +1,11 @@
 <template>
   <div class="container">
     <div class="navigation">
-      <router-link class="nav-option" :to="{ name: 'manage-court-cluster' }"
-        >Quản lý sân</router-link
-      >
       <router-link class="nav-option" :to="{ name: 'owner-manage-booking' }"
         >Quản lý booking</router-link
+      >
+      <router-link class="nav-option" :to="{ name: 'manage-court-cluster' }"
+        >Quản lý sân</router-link
       >
     </div>
     <div class="content">

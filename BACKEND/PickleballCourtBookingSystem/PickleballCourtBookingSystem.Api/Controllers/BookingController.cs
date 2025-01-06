@@ -161,7 +161,7 @@ namespace PickleballCourtBookingSystem.Api.Controllers
             var token = CommonMethods.GetTokenFromHeader(HttpContext);
             string userId = _authService.GetUserIdFromToken(token);
             RoleEnum role = _authService.GetUserRoleFromToken(token).Value;
-            
+
             if (userId == null)
             {
                 return BadRequest("Token không hợp lệ, không tìm thấy Id người dùng.");
@@ -181,6 +181,20 @@ namespace PickleballCourtBookingSystem.Api.Controllers
                 return BadRequest("Token không hợp lệ, không tìm thấy Id người dùng.");
             }
             var result = _bookingService.GetStatistic(Guid.Parse(userId), startDate, endDate);
+            return StatusCode(result.StatusCode, result);
+        }
+
+        [HttpGet("Statistic/All")]
+        [Authorize(Roles = nameof(RoleEnum.CourtOwner))]
+        public IActionResult GetStatisticAll()
+        {
+            var token = CommonMethods.GetTokenFromHeader(HttpContext);
+            var userId = _authService.GetUserIdFromToken(token);
+            if (userId == null)
+            {
+                return BadRequest("Token không hợp lệ, không tìm thấy Id người dùng.");
+            }
+            var result = _bookingService.GetStatisticAll(Guid.Parse(userId));
             return StatusCode(result.StatusCode, result);
         }
     }
