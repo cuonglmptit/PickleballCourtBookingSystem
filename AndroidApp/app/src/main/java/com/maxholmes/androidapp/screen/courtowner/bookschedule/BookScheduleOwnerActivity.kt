@@ -12,7 +12,9 @@ import com.maxholmes.androidapp.data.dto.response.parseApiResponseData
 import com.maxholmes.androidapp.data.service.RetrofitClient
 import com.maxholmes.androidapp.databinding.ActivityBookScheduleBinding
 import com.maxholmes.androidapp.screen.courtowner.bookschedule.adapter.CustomBookingCourtOwnerAdapter
+import com.maxholmes.androidapp.screen.courtowner.bookschedule.detail.BookingCourtOwnerDetailActivity
 import com.maxholmes.androidapp.screen.courtowner.home.HomeCourtOwnerActivity
+import com.maxholmes.androidapp.screen.customer.bookschedule.detail.BookingCustomerDetailActivity
 import com.maxholmes.androidapp.utils.OnItemRecyclerViewClickListener
 import com.maxholmes.androidapp.utils.ext.SharedPreferencesUtils
 import com.maxholmes.androidapp.utils.ext.SpacingItemDecoration
@@ -52,7 +54,9 @@ class BookScheduleOwnerActivity : AppCompatActivity() {
             OnItemRecyclerViewClickListener<CustomBookingResponse> {
             override fun onItemClick(item: CustomBookingResponse?) {
                 item?.let {
-                    Toast.makeText(this@BookScheduleOwnerActivity, "Clicked on ${it.courtClusterName}", Toast.LENGTH_SHORT).show()
+                    val intent = Intent(this@BookScheduleOwnerActivity, BookingCourtOwnerDetailActivity::class.java)
+                    intent.putExtra("bookingDetail", it)
+                    startActivity(intent)
                 }
             }
         })

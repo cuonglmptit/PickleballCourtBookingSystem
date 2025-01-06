@@ -56,6 +56,7 @@ class BookingCustomerDetailActivity : AppCompatActivity() {
             BookingStatusEnum.Pending -> "Đang chờ xử lý"
             BookingStatusEnum.CourtOwnerConfirmed -> "Đã được xác nhận"
             BookingStatusEnum.Canceled -> "Đã hủy"
+            BookingStatusEnum.Completed -> "Đã thanh toán"
             BookingStatusEnum.All -> "Tất cả trạng thái"
         }
         binding.tvPriceValue.text = price
