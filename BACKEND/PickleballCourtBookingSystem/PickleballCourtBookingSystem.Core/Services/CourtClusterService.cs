@@ -1,9 +1,13 @@
-﻿using PickleballCourtBookingSystem.Api.Models;
+﻿using CloudinaryDotNet;
+using CloudinaryDotNet.Actions;
+using Microsoft.AspNetCore.Http;
+using PickleballCourtBookingSystem.Api.Models;
 using PickleballCourtBookingSystem.Core.DTOs;
 using PickleballCourtBookingSystem.Core.Entities;
 using PickleballCourtBookingSystem.Core.Interfaces.Infrastructure;
 using PickleballCourtBookingSystem.Core.Interfaces.Services;
 using PickleballCourtBookingSystem.Core.PEnum;
+using System.Net;
 
 namespace PickleballCourtBookingSystem.Core.Services
 
@@ -17,7 +21,12 @@ namespace PickleballCourtBookingSystem.Core.Services
         private readonly IAddressService _addressService;
         private readonly ICourtOwnerService _courtOwnerService;
         private readonly IImageCourtUrlService _imageCourtUrlService;
-        public CourtClusterService(ICourtClusterRepository repository, ICourtClusterRepository courtClusterRepository, ICourtService courtService, ICourtPriceService courtPriceService, ICourtTimeSlotService courtTimeSlotService, IAddressService addressService, ICourtOwnerService courtOwnerService, IImageCourtUrlService imageCourtUrlService) : base(repository)
+        private readonly Cloudinary _cloudinary;
+        public CourtClusterService(ICourtClusterRepository repository, ICourtClusterRepository courtClusterRepository,
+            ICourtService courtService, ICourtPriceService courtPriceService,
+            ICourtTimeSlotService courtTimeSlotService, IAddressService addressService,
+            ICourtOwnerService courtOwnerService, IImageCourtUrlService imageCourtUrlService,
+            Cloudinary cloudinary) : base(repository)
         {
             _courtClusterRepository = courtClusterRepository;
             _courtService = courtService;
@@ -26,10 +35,11 @@ namespace PickleballCourtBookingSystem.Core.Services
             _addressService = addressService;
             _courtOwnerService = courtOwnerService;
             _imageCourtUrlService = imageCourtUrlService;
+            _cloudinary = cloudinary;
         }
-        
-        public ServiceResult RegisterNewCourtCluster(Guid userId, string name, string? description, TimeSpan openingTime,
-            TimeSpan closingTime, string city, string district, string ward, string street, int numberOfCourts)
+
+        public async Task<ServiceResult> RegisterNewCourtCluster(Guid userId, string name, string? description, TimeSpan openingTime,
+            TimeSpan closingTime, string city, string district, string ward, string street, int numberOfCourts, IFormFile? image)
         {
             try
             {
@@ -42,8 +52,8 @@ namespace PickleballCourtBookingSystem.Core.Services
                 var resultCourtOwner = _courtOwnerService.GetCourtOwnerByUserIdService(userId);
                 if (!resultCourtOwner.Success)
                 {
-                    return CreateServiceResult(false, StatusCode: 403, UserMsg: "Ban khong phai la chu san",
-                        DevMsg: "Ban khong phai la chu san");
+                    return CreateServiceResult(false, StatusCode: 403, UserMsg: "Bạn không phải là chủ sân",
+                        DevMsg: "Bạn không phải là chủ sân");
                 }
 
                 var address = new Address
@@ -70,13 +80,13 @@ namespace PickleballCourtBookingSystem.Core.Services
                     ClosingTime = closingTime,
                     AddressId = address.Id,
                     CourtOwnerId = courtOwner.Id,
-                    Status = (int)CourtClusterStatusEnum.PendingApproval
+                    Status = (int)CourtClusterStatusEnum.Active
                 };
 
                 var result = _courtClusterRepository.Insert(courtCluster);
                 if (result == 0)
                 {
-                    return CreateServiceResult(Success: false, StatusCode: 400, UserMsg: "Loi khi them court cluster");
+                    return CreateServiceResult(Success: false, StatusCode: 400, UserMsg: "Lỗi khi thêm courtcluster");
                 }
 
                 for (int i = 1; i <= numberOfCourts; i++)
@@ -86,6 +96,7 @@ namespace PickleballCourtBookingSystem.Core.Services
                         Id = Guid.NewGuid(),
                         CourtNumber = i,
                         CourtClusterId = courtCluster.Id,
+                        Description = "Sân số " + i + " của cụm sân " + name,
                     };
                     var resultAddCourt = _courtService.InsertService(court);
                     if (!resultAddCourt.Success)
@@ -93,8 +104,32 @@ namespace PickleballCourtBookingSystem.Core.Services
                         return resultAddCourt;
                     }
                 }
-                return CreateServiceResult(Success: true, StatusCode: 201, UserMsg: "Them cum san moi thanh cong",
-                    DevMsg: "Them san thanh cong");
+                //Lưu hình ảnh lên Cloudinary và nhận về url
+                if (image != null)
+                {
+                    var imageUrl =  UploadImageToCloudinaryAsync(image).Result;
+                    if (imageUrl == string.Empty)
+                    {
+                        return CreateServiceResult(Success: false, StatusCode: 500, UserMsg: "Lỗi khi upload hình ảnh", DevMsg: "Lỗi khi upload hình ảnh");
+                    }
+                    var imageCourtUrl = new ImageCourtUrl
+                    {
+                        Id = Guid.NewGuid(),
+                        CourtClusterId = courtCluster.Id,
+                        Url = imageUrl
+                    };
+                    var resultAddImage = _imageCourtUrlService.InsertService(imageCourtUrl);
+                    if (!resultAddImage.Success)
+                    {
+                        return resultAddImage;
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Imageeee rỗng");
+                }
+                return CreateServiceResult(Success: true, StatusCode: 201, UserMsg: "Thêm cụm sân mới thành công",
+                    DevMsg: "Thêm cụm sân mới thành công");
             }
             catch (Exception e)
             {
@@ -309,7 +344,7 @@ namespace PickleballCourtBookingSystem.Core.Services
                 return CreateServiceResult(Success: false, StatusCode: 500, UserMsg: "Error", DevMsg: e.Message);
             }
         }
-        
+
         public ServiceResult GetCourtClusterByOwner(Guid userId)
         {
             try
@@ -326,7 +361,7 @@ namespace PickleballCourtBookingSystem.Core.Services
                     return CreateServiceResult(false, StatusCode: 403, UserMsg: "Ban khong phai la chu san",
                         DevMsg: "Ban khong phai la chu san");
                 }
-                var courtOwner = (CourtOwner) resultCourtOwner.Data!;
+                var courtOwner = (CourtOwner)resultCourtOwner.Data!;
                 var result = _courtClusterRepository.FindByColumnValue(courtOwner.Id, "courtOwnerId");
                 return CreateServiceResult(Success: true, StatusCode: 200, Data: result, UserMsg: "Lay thanh cong", DevMsg: "Lay thanh cong");
             }
@@ -336,14 +371,21 @@ namespace PickleballCourtBookingSystem.Core.Services
                 return CreateServiceResult(Success: false, StatusCode: 500, UserMsg: "Error", DevMsg: e.Message);
             }
         }
-        
+
         public ServiceResult GetCourtClusterByCourtOwner(Guid userId)
         {
             try
             {
+                //Lấy ra courtownerid từ userid
+                var resultCourtOwner = _courtOwnerService.GetCourtOwnerByUserIdService(userId);
+                if (!resultCourtOwner.Success)
+                {
+                    return resultCourtOwner;
+                }
+                var courtOwner = (CourtOwner)resultCourtOwner.Data!;
                 Dictionary<string, object> conditions = new Dictionary<string, object>
                 {
-                    {nameof(CourtCluster.CourtOwnerId), userId}
+                    {nameof(CourtCluster.CourtOwnerId), courtOwner.Id}
                 };
                 var result = _courtClusterRepository.GetByMultipleConditions(conditions);
                 return CreateServiceResult(Success: true, StatusCode: 200, Data: result);
@@ -385,6 +427,22 @@ namespace PickleballCourtBookingSystem.Core.Services
                 Console.WriteLine(e);
                 return CreateServiceResult(Success: false, StatusCode: 500, UserMsg: "Lỗi khi lấy hình ảnh", DevMsg: e.Message);
             }
+        }
+        private async Task<string> UploadImageToCloudinaryAsync(IFormFile image)
+        {
+            var uploadParams = new ImageUploadParams()
+            {
+                File = new FileDescription(image.FileName, image.OpenReadStream())
+            };
+
+            var uploadResult = await _cloudinary.UploadAsync(uploadParams);
+
+            if (uploadResult.StatusCode == HttpStatusCode.OK)
+            {
+                return uploadResult.Url.ToString();  // Trả về URL của ảnh
+            }
+
+            return string.Empty; // Nếu upload thất bại, trả về chuỗi rỗng
         }
 
     }

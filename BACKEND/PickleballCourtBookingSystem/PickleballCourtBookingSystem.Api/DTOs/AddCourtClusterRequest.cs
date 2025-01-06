@@ -11,5 +11,6 @@ public record AddCourtClusterRequest(
     string District,
     string Ward,
     string Street,
-    int NumberOfCourts
+    int NumberOfCourts,
+    IFormFile? Image
     );

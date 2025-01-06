@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using PickleballCourtBookingSystem.Api.DTOs;
 using PickleballCourtBookingSystem.Api.Models;
 using PickleballCourtBookingSystem.Core.Entities;
 using PickleballCourtBookingSystem.Core.Interfaces.Infrastructure;
@@ -24,7 +25,7 @@ namespace PickleballCourtBookingSystem.Api.Controllers
             var result = _courtTimeSlotService.GetAllService();
             return StatusCode(result.StatusCode, result);
         }
-        
+
         [HttpGet("{id}")]
         public IActionResult GetCourtTimeSlotById(Guid id)
         {
@@ -39,7 +40,7 @@ namespace PickleballCourtBookingSystem.Api.Controllers
             var result = _courtTimeSlotService.InsertService(courtTimeSlot);
             return StatusCode(result.StatusCode, result);
         }
-        
+
         [HttpPost("multiple")]
         public IActionResult PostManyCourtTimeSlot([FromBody] List<CourtTimeSlot> courtTimeSlots)
         {
@@ -57,14 +58,21 @@ namespace PickleballCourtBookingSystem.Api.Controllers
             var result = _courtTimeSlotService.UpdateService(courtTimeSlot, id);
             return StatusCode(result.StatusCode, result);
         }
-        
+
         [HttpDelete("{id}")]
         public IActionResult DeleteCourtTimeSlot(Guid id)
         {
             var result = _courtTimeSlotService.DeleteService(id);
             return StatusCode(result.StatusCode, result);
         }
-        
+
+        [HttpPost("Court")]
+        public IActionResult GetCourtTimeSlot([FromBody] GetTimeSlotDTO getTimeSlotDTO)
+        {
+            var result = _courtTimeSlotService.FindCourtTimeSlotsByCourtId(getTimeSlotDTO.CourtId, getTimeSlotDTO.Date);
+            return StatusCode(result.StatusCode, result);
+        }
+
         [HttpGet("getCourtTimeSlot")]
         public IActionResult GetCourtTimeSlot([FromQuery] Guid courtId)
         {

@@ -1,4 +1,5 @@
-﻿using PickleballCourtBookingSystem.Api.Models;
+﻿using Microsoft.AspNetCore.Http;
+using PickleballCourtBookingSystem.Api.Models;
 using PickleballCourtBookingSystem.Core.DTOs;
 using PickleballCourtBookingSystem.Core.Entities;
 
@@ -22,8 +23,8 @@ public interface ICourtClusterService: IBaseService<CourtCluster>
     /// <returns>Các courts</returns>
     public ServiceResult GetCourtsByClusterId(Guid courtClusterId);
 
-    public ServiceResult RegisterNewCourtCluster(Guid userId, string name, string? description, TimeSpan openingTime,
-        TimeSpan closingTime, string city, string district, string ward, string street, int numberOfCourts);
+    public Task<ServiceResult> RegisterNewCourtCluster(Guid userId, string name, string? description, TimeSpan openingTime,
+        TimeSpan closingTime, string city, string district, string ward, string street, int numberOfCourts, IFormFile? image = null);
     
     public ServiceResult GetCourtClusterByOwner(Guid userId);
     

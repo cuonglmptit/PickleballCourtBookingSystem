@@ -8,7 +8,7 @@ namespace PickleballCourtBookingSystem.Core.Services;
 
 public class ImageCourtUrlService : BaseService<ImageCourtUrl>, IImageCourtUrlService
 {
-    
+
     private readonly IImageCourtUrlRepository _imageCourtUrlRepository;
     public ImageCourtUrlService(IImageCourtUrlRepository repository, IImageCourtUrlRepository imageCourtUrlRepository) : base(repository)
     {
@@ -20,7 +20,7 @@ public class ImageCourtUrlService : BaseService<ImageCourtUrl>, IImageCourtUrlSe
         try
         {
             var result = _imageCourtUrlRepository.FindByColumnValue(courtClusterId, "courtClusterId");
-            
+
             return CreateServiceResult(
                 Success: true,
                 StatusCode: 200,
@@ -33,6 +33,23 @@ public class ImageCourtUrlService : BaseService<ImageCourtUrl>, IImageCourtUrlSe
             Console.WriteLine(e);
             return CreateServiceResult(Success: false, StatusCode: 500, UserMsg: "Lỗi khi lấy danh sách cụm sân", DevMsg: e.Message);
         }
-        
+
+    }
+
+    public ServiceResult GetImageOfCluster(Guid id)
+    {
+        try
+        {
+            //Lấy ra hình ảnh có courtClusterId
+            var result = _imageCourtUrlRepository.GetByMultipleConditions(new Dictionary<string, object>
+            {
+                { nameof(ImageCourtUrl.CourtClusterId), id }
+            });
+            return CreateServiceResult(Success: true, StatusCode: 200, UserMsg: "Lấy danh sách hình ảnh thành công", Data: result);
+        }
+        catch (Exception e)
+        {
+            return CreateServiceResult(Success: false, StatusCode: 500, UserMsg: "Lỗi khi lấy danh sách hình ảnh", DevMsg: e.Message);
+        }
     }
 }

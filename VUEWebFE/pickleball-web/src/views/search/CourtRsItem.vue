@@ -5,11 +5,11 @@
         <!-- <button class="delete-btn p-icon-delete-btn" v-if="manageMode"></button> -->
         {{ courtClusterData.name }}
       </div>
-      <div class="court-title">Đánh giá 5/5</div>
+      <!-- <div class="court-title">Đánh giá 5/5</div> -->
     </div>
     <div class="court-content">
       <div class="court-thumbnail">
-        <img src="../../assets/img/picklleball_court_3.webp" alt="" />
+        <img :src="imgUrl.url" alt="" />
       </div>
       <div class="court-brief">
         <div class="court-inf">
@@ -51,7 +51,7 @@
 </template>
 
 <script>
-import { getAddressByid } from "../../scripts/apiService.js";
+import { getAddressByid, getImageCourtUrl } from "../../scripts/apiService.js";
 
 export default {
   props: {
@@ -67,12 +67,20 @@ export default {
   data() {
     return {
       courtClusterAddress: null,
+      imgUrl: {
+        url: "",
+      },
     };
   },
   async created() {
     try {
       const response = await getAddressByid(this.courtClusterData.addressId);
       this.courtClusterAddress = response.data;
+      const imgres = await getImageCourtUrl(this.courtClusterData.id);
+
+      if (imgres.success) {
+        this.imgUrl = imgres.data[0] ? imgres.data[0] : {};
+      }
       // console.log(this.courtClusterAddress);
     } catch (error) {
       console.log(`CourtRsItem created: ` + error);

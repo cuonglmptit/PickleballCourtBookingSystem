@@ -37,7 +37,7 @@ public class CourtTimeSlotRepository : BaseRepository<CourtTimeSlot>, ICourtTime
 
     public IEnumerable<CourtTimeSlot> FindCourtTimeSlotsByCourtId(Guid courtId, DateTime date, TimeSpan time)
     {
-        var sqlCommand = $"SELECT * FROM {className} WHERE courtId = @courtId AND (date > @date OR (date = @date AND time > @time))";
+        var sqlCommand = $"SELECT * FROM {className} WHERE courtId = @courtId AND date = @date AND time > @time ORDER BY time";
         var parameters = new DynamicParameters();
         parameters.Add("@courtId", courtId);
         parameters.Add("@date", date);

@@ -57,3 +57,12 @@ export const putData = (endpoint, data) => {
 export const deleteData = (endpoint) => {
     return api.delete(endpoint);
 };
+
+// Hàm gọi API POST với multipart/form-data
+export const postDataMultipart = (endpoint, formData) => {
+    return api.post(endpoint, formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    });
+};

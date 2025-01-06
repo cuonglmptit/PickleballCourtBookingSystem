@@ -3,7 +3,7 @@
     <div class="left-part">
       <div class="left-top">
         <div class="choose-date">Chọn ngày và thời gian:</div>
-        <DatePicker v-model:date="courtClusterSearchData.searchDate" />
+        <DatePicker v-model:date="date" />
       </div>
       <div class="left-mid">
         <table class="booking-table">
@@ -20,15 +20,40 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(timeSlot, index) in timeSlots" :key="index">
-              <td class="text-align-center">{{ timeSlot }}</td>
+            <tr
+              v-for="(time, index) in getSortedUniqueTimes(timeSlotsData)"
+              :key="index"
+            >
+              <td class="text-align-center">{{ time }}</td>
               <td
-                class="text-align-center slot-available"
+                class="text-align-center"
                 v-for="court in courts"
                 :key="court.id"
-                @click="clickCourtTimeSlot($event)"
+                :class="{
+                  'slot-unavailable': !findTimeSlot(
+                    timeSlotsData,
+                    court.id,
+                    time
+                  ).isAvailable,
+                  'slot-available': findTimeSlot(timeSlotsData, court.id, time)
+                    .isAvailable,
+                }"
+                :disabled="
+                  !findTimeSlot(timeSlotsData, court.id, time).isAvailable
+                "
+                @click="
+                  clickCourtTimeSlot(
+                    $event,
+                    court.id,
+                    findTimeSlot(timeSlotsData, court.id, time)
+                  )
+                "
               >
-                150k
+                {{
+                  formatCurrency(
+                    findTimeSlot(timeSlotsData, court.id, time).price
+                  )
+                }}
               </td>
             </tr>
           </tbody>
@@ -36,16 +61,24 @@
       </div>
       <div class="booking-form">
         <div class="font-size-18 roboto-bold">Đã chọn:</div>
-        <div class="form-selected-timeslot">
-          <div class="font-size-18">Sân 1: 06:00 26/12/2024</div>
-          <div class="font-size-18">Sân 1: 07:00 26/12/2024</div>
+        <div class="form-selected-timeslot" v-if="selectedSlots.length">
+          <!-- Hiển thị danh sách các ô đã chọn -->
+          <div
+            v-for="slot in selectedSlots"
+            :key="slot.courtId + slot.time"
+            class="font-size-18"
+          >
+            Sân {{ findCourt(courts, slot.courtId).courtNumber }}:
+            {{ slot.time }}
+            {{ date }}
+          </div>
         </div>
         <div class="form-summary">
           <div class="summary-money">
             <div class="font-size-18 roboto-bold">Tổng:</div>
-            <div class="font-size-18">300.000đ</div>
+            <div class="font-size-18">{{ formatCurrency(totalAmount) }}</div>
           </div>
-          <TriangleButton>
+          <TriangleButton @click="handleBooking">
             <template v-slot:name> Đặt sân </template>
           </TriangleButton>
         </div>
@@ -74,9 +107,13 @@ import {
   getCourtsOfCourtCluster,
   getCourtClusterById,
   getAddressByid,
+  getTimeSlotOfCourt,
+  getImageCourtUrl,
+  addBooking,
 } from "../../scripts/apiService.js";
 import DatePicker from "../../components/inputs/DatePicker.vue";
 import TriangleButton from "../../components/buttons/TriangleButton.vue";
+import Swal from "sweetalert2";
 
 export default {
   components: {
@@ -88,44 +125,68 @@ export default {
       courtCluster: {},
       courtClusterAddress: null,
       courts: [],
-      timeSlots: [
-        "00:00",
-        "01:00",
-        "02:00",
-        "03:00",
-        "04:00",
-        "05:00",
-        "06:00",
-        "07:00",
-        "08:00",
-        "09:00",
-        "10:00",
-        "11:00",
-        "12:00",
-        "13:00",
-        "14:00",
-        "15:00",
-        "16:00",
-        "17:00",
-        "18:00",
-        "19:00",
-        "20:00",
-        "21:00",
-        "22:00",
-        "23:00",
-      ],
+      timeSlotsData: [],
       slotsState: [], // Trạng thái các slot, mảng hai chiều
       selectedSlots: [], // Lưu các ô đã chọn
-      courtClusterSearchData: {
-        searchDate: new Date().toISOString().split("T")[0],
-      },
-      courtClusterPhotoUrls:[
-        
-      ]
+      date: new Date().toISOString().split("T")[0],
+      courtClusterPhotoUrls: [],
+      selectedCourtId: null, // Lưu trữ ID của sân đang được chọn
     };
+  },
+  computed: {
+    totalAmount() {
+      return this.selectedSlots.reduce((sum, slot) => {
+        return sum + (slot.price || 0); // Cộng giá trị price nếu có, nếu không thì cộng 0
+      }, 0);
+    },
   },
   async created() {
     try {
+      await this.loadData();
+
+      // Cập nhật Google Map
+      this.updateGoogleMap();
+    } catch (error) {
+      console.log(`CourtClusterDetail created(): ` + error);
+    }
+  },
+  watch: {
+    // Khi $route.query thay đổi thì sẽ tìm kiếm lại
+    date(newDate, oldDate) {
+      this.loadData(this.courts, this.date);
+    },
+  },
+  methods: {
+    async loadCourtTimeSlot(courts, date) {
+      const promises = courts.map((court) =>
+        getTimeSlotOfCourt(court.id, date)
+      );
+      const results = await Promise.all(promises);
+      // Trích xuất `.data` từ mỗi phần tử trong `results` và gộp tất cả thành một mảng
+      const mergedArray = results.map((result) => result.data).flat();
+
+      console.log(mergedArray);
+      return mergedArray;
+    },
+    findTimeSlot(timeSlots, courtId, time) {
+      return timeSlots.find(
+        (slot) => slot.courtId === courtId && slot.time === time
+      );
+    },
+    findCourt(courts, courtId) {
+      return courts.find((court) => court.id === courtId);
+    },
+    getSortedUniqueTimes(timeSlots) {
+      const uniqueTimes = [
+        ...new Set(
+          timeSlots
+            .filter((slot) => slot && slot.time !== null) // Kiểm tra slot không phải null và time không phải null
+            .map((slot) => slot.time)
+        ),
+      ];
+      return uniqueTimes.sort();
+    },
+    async loadData() {
       //fetch data
       const courtClusterRes = await getCourtClusterById(this.$route.params.id);
       this.courtCluster = courtClusterRes.data;
@@ -141,17 +202,36 @@ export default {
       const addressRes = await getAddressByid(this.courtCluster.addressId);
       this.courtClusterAddress = addressRes.data;
 
-      // Cập nhật Google Map
-      this.updateGoogleMap();
-    } catch (error) {
-      console.log(`CourtClusterDetail created(): ` + error);
-    }
-  },
-
-  methods: {
-    clickCourtTimeSlot(event) {
+      this.timeSlotsData = await this.loadCourtTimeSlot(this.courts, this.date);
+    },
+    clickCourtTimeSlot(event, courtId, timeSlot) {
       try {
         const target = event.currentTarget;
+
+        // Nếu sân khác được chọn, xóa các lựa chọn cũ
+        if (this.selectedCourtId !== courtId) {
+          this.clearAllSelectedSlots(); // Hàm này sẽ xóa các lựa chọn cũ
+          this.selectedCourtId = courtId; // Cập nhật sân hiện tại
+        }
+        // Kiểm tra xem timeSlot đã có trong selectedSlots chưa
+        const isSlotSelected = this.selectedSlots.some(
+          (slot) =>
+            slot.courtId === timeSlot.courtId && slot.time === timeSlot.time
+        );
+
+        if (!isSlotSelected) {
+          // Nếu chưa chọn, thêm timeSlot vào selectedSlots
+          this.selectedSlots.push(timeSlot);
+        } else {
+          // Nếu đã chọn, bỏ chọn (thực hiện xóa khỏi selectedSlots)
+          const index = this.selectedSlots.findIndex(
+            (slot) =>
+              slot.courtId === timeSlot.courtId && slot.time === timeSlot.time
+          );
+          if (index !== -1) {
+            this.selectedSlots.splice(index, 1);
+          }
+        }
 
         // Kiểm tra xem ô này đã được chọn chưa
         if (target.classList.contains("slot-selected")) {
@@ -164,6 +244,44 @@ export default {
       } catch (error) {
         console.log(`clickCourtTimeSlot CourtClusterDetail ${error}`);
       }
+    },
+    async handleBooking() {
+      if (this.selectedSlots.length === 0) {
+        Swal.fire("Vui lòng chọn sân trước khi đặt.", "", "error");
+        return;
+      }
+      try {
+        let slotsIds = this.selectedSlots.map((slot) => slot.id);
+        let courtId = this.selectedSlots[0].courtId;
+        const bookingRes = await addBooking(courtId, slotsIds);
+        if (bookingRes.success) {
+          Swal.fire("Thành công", "", "success");
+          this.selectedSlots = [];
+        } else {
+          Swal.fire("Thất bại", "", "error");
+        }
+        console.log(bookingRes);
+        this.loadData();
+      } catch (error) {
+        console.log(`handleBooking: ${error}`);
+      }
+
+      // Tiến hành xử lý đặt sân
+      // Có thể gửi yêu cầu API ở đây để lưu thông tin đặt sân
+    },
+    clearAllSelectedSlots() {
+      // Tìm tất cả các ô đã được chọn và bỏ chọn chúng
+      const selectedSlots = this.$el.querySelectorAll(".slot-selected");
+      selectedSlots.forEach((slot) => {
+        slot.classList.remove("slot-selected");
+      });
+      this.selectedSlots = [];
+    },
+    formatCurrency(amount) {
+      return new Intl.NumberFormat("vi-VN", {
+        style: "currency",
+        currency: "VND",
+      }).format(amount);
     },
     //Gán google map
     updateGoogleMap() {
@@ -252,8 +370,14 @@ export default {
   display: flex;
   flex-direction: column;
   row-gap: 6px;
+  overflow-y: scroll;
 }
-
+.form-selected-timeslot div {
+  background-color: orange;
+  padding: 4px;
+  margin: 0px 12px;
+  border-radius: 2px;
+}
 .form-summary {
   display: flex;
   justify-content: space-between;
@@ -354,14 +478,15 @@ export default {
 
 /* Slot được chọn */
 .slot-selected {
-  background-color: lightsalmon; /* Màu xanh đậm hơn */
+  background-color: orange; /* Màu xanh đậm hơn */
   cursor: pointer;
 }
 
 /* Slot không khả dụng */
 .slot-unavailable {
-  background-color: #ffcdd2; /* Màu đỏ nhạt */
+  background-color: #d3d3d3;
+  color: #a9a9a9;
+  pointer-events: none;
   cursor: not-allowed;
-  pointer-events: none; /* Vô hiệu hóa click */
 }
 </style>

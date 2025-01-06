@@ -116,6 +116,14 @@ public class BookingService : BaseService<Booking>, IBookingService
 
             code = code == null ? "BK0001" : "BK" + (int.Parse(code.Substring(2)) + 1).ToString("D4");
 
+            //Lấy user từ id
+            var userRes = _userService.GetByIdService(userId);
+            if (!userRes.Success)
+            {
+                return userRes;
+            }
+            var user = (User)userRes.Data!;
+
             var courtCluster = (CourtCluster)courtClusterServiceResult.Data!;
             var booking = new Booking
             {
@@ -128,7 +136,8 @@ public class BookingService : BaseService<Booking>, IBookingService
                 TimeBooking = _timeService.GetCurrentTime(),
                 Status = (int)BookingStatusEnum.Pending,
                 PaymentStatus = 0,
-                Amount = amount
+                Amount = amount,
+                customerPhoneNumber = user.PhoneNumber
             };
             var listCourtTimeBooking = new List<CourtTimeBooking>();
             var resultAddBooking = _bookingRepository.Insert(booking);
@@ -211,6 +220,38 @@ public class BookingService : BaseService<Booking>, IBookingService
         if (result != 0)
         {
             return CreateServiceResult(Success: true, StatusCode: 200, UserMsg: "Xac nhan san thanh cong");
+        }
+        return CreateServiceResult(Success: false, StatusCode: 500, UserMsg: "Failed to update booking", DevMsg: "Failed to update booking");
+    }
+
+    public ServiceResult CustomerConfirmBooking(Guid userId, Guid bookingId)
+    {
+        var booking = _bookingRepository.GetById(bookingId);
+        if (booking == null)
+        {
+            return CreateServiceResult(Success: false, StatusCode: 404, UserMsg: "Booking not found", DevMsg: "Booking not found");
+        }
+
+        var resultGetCustomer = _customerService.GetCustomerByUserIdService(userId);
+        if (!resultGetCustomer.Success)
+        {
+            return resultGetCustomer;
+        }
+        var customer = (Customer)resultGetCustomer.Data!;
+        if (booking.CustomerId != customer.Id)
+        {
+            return CreateServiceResult(Success: false, StatusCode: 403, UserMsg: "Ban khong co quyen xac nhan", DevMsg: "Booking khong phai cua customer");
+        }
+
+        if (booking.Status != BookingStatusEnum.CourtOwnerConfirmed)
+        {
+            return CreateServiceResult(Success: false, StatusCode: 400, UserMsg: "Booking khong o trang thai duoc chu san xac nhan", DevMsg: "Booking khong o trang thai duoc chu san xac nhan");
+        }
+        booking.Status = BookingStatusEnum.Completed;
+        var result = _bookingRepository.Update(booking, bookingId);
+        if (result != 0)
+        {
+            return CreateServiceResult(Success: true, StatusCode: 200, UserMsg: "Xac nhan hoan thanh dat san thanh cong");
         }
         return CreateServiceResult(Success: false, StatusCode: 500, UserMsg: "Failed to update booking", DevMsg: "Failed to update booking");
     }
@@ -480,8 +521,8 @@ public class BookingService : BaseService<Booking>, IBookingService
                     return addressResult;
                 }
 
-                var address = (Address) addressResult.Data!;
-                
+                var address = (Address)addressResult.Data!;
+
                 var courtOwnerResult = _userService.GetPublicInfoService(courtCluster.CourtOwnerId!.Value); //Set UserId giong voi CourtOwnerId
                 if (!courtOwnerResult.Success)
                 {
@@ -489,12 +530,12 @@ public class BookingService : BaseService<Booking>, IBookingService
                 }
 
                 var courtOwnerPhoneNumber = ((CourtOwnerInfoDto)courtOwnerResult.Data!).PhoneNumber;
-                
+
                 var courtTimeSlots = new List<CourtTimeSlot>();
                 var courtTimeBookings = (List<CourtTimeBooking>)_courtTimeBookingService.GetByColumnValueService("bookingId", booking.Id!.Value.ToString()).Data!;
                 foreach (var courtTimeBooking in courtTimeBookings)
                 {
-                    var courtTimeSlot = (CourtTimeSlot) _courtTimeSlotService.GetByIdService(courtTimeBooking.CourtTimeSlotId!.Value).Data!;
+                    var courtTimeSlot = (CourtTimeSlot)_courtTimeSlotService.GetByIdService(courtTimeBooking.CourtTimeSlotId!.Value).Data!;
                     courtTimeSlots.Add(courtTimeSlot);
                 }
 
@@ -509,6 +550,7 @@ public class BookingService : BaseService<Booking>, IBookingService
                     var cancellation = (Cancellation) cancellationResult.Data!;
                     lastUpdatedTime = cancellation!.TimeCancel!.Value;
                 }
+
                 var customBooking = new CustomBookingResponse
                 {
                     Booking = booking,
@@ -517,7 +559,6 @@ public class BookingService : BaseService<Booking>, IBookingService
                     Address = address,
                     CourtTimeSlots = courtTimeSlots,
                     CourtOwnerPhoneNumber = courtOwnerPhoneNumber!,
-                    LastUpdatedTime = lastUpdatedTime
                 };
                 customBookingResponses.Add(customBooking);
             }
@@ -529,7 +570,7 @@ public class BookingService : BaseService<Booking>, IBookingService
             return CreateServiceResult(Success: false, StatusCode: 500, UserMsg: "Error", DevMsg: e.Message);
         }
     }
-        
+
     public ServiceResult CourtOwnerConfirmPaid(Guid courtOwnerId, Guid bookingId)
     {
         try
