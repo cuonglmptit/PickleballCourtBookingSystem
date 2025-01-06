@@ -87,7 +87,7 @@
     <div class="right-part">
       <div class="court-title">{{ courtCluster.name }}</div>
       <div class="court-photos">
-        <img src="../../assets/img/picklleball_court_4.webp" alt="abc" />
+        <img :src="courtClusterPhotoUrl" alt="abc" />
       </div>
       <div class="court-des">
         {{ courtCluster.description }}
@@ -114,6 +114,7 @@ import {
 import DatePicker from "../../components/inputs/DatePicker.vue";
 import TriangleButton from "../../components/buttons/TriangleButton.vue";
 import Swal from "sweetalert2";
+import store from "@/store";
 
 export default {
   components: {
@@ -129,7 +130,7 @@ export default {
       slotsState: [], // Trạng thái các slot, mảng hai chiều
       selectedSlots: [], // Lưu các ô đã chọn
       date: new Date().toISOString().split("T")[0],
-      courtClusterPhotoUrls: [],
+      courtClusterPhotoUrl: null,
       selectedCourtId: null, // Lưu trữ ID của sân đang được chọn
     };
   },
@@ -189,7 +190,9 @@ export default {
     async loadData() {
       //fetch data
       const courtClusterRes = await getCourtClusterById(this.$route.params.id);
-      this.courtCluster = courtClusterRes.data;
+      if (courtClusterRes.success) {
+        this.courtCluster = courtClusterRes.data;
+      }
       console.log(this.courtCluster);
       const courtsResponse = await getCourtsOfCourtCluster(
         this.$route.params.id
@@ -201,11 +204,18 @@ export default {
       // console.log(this.courts);
       const addressRes = await getAddressByid(this.courtCluster.addressId);
       this.courtClusterAddress = addressRes.data;
-
       this.timeSlotsData = await this.loadCourtTimeSlot(this.courts, this.date);
+      //Load ảnh
+      const imgres = await getImageCourtUrl(this.courtCluster.id);
+      if (imgres.success) {
+        this.courtClusterPhotoUrl = imgres.data[0] ? imgres.data[0] : {};
+      }
     },
     clickCourtTimeSlot(event, courtId, timeSlot) {
       try {
+        if (!this.handleAuthenticated()) {
+          return;
+        }
         const target = event.currentTarget;
 
         // Nếu sân khác được chọn, xóa các lựa chọn cũ
@@ -246,28 +256,49 @@ export default {
       }
     },
     async handleBooking() {
+      if (!this.handleAuthenticated()) {
+        return;
+      }
       if (this.selectedSlots.length === 0) {
         Swal.fire("Vui lòng chọn sân trước khi đặt.", "", "error");
         return;
       }
-      try {
-        let slotsIds = this.selectedSlots.map((slot) => slot.id);
-        let courtId = this.selectedSlots[0].courtId;
-        const bookingRes = await addBooking(courtId, slotsIds);
-        if (bookingRes.success) {
-          Swal.fire("Thành công", "", "success");
-          this.selectedSlots = [];
-        } else {
-          Swal.fire("Thất bại", "", "error");
+      const result = await Swal.fire({
+        title: "Bạn có chắc muốn đặt lịch?",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonText: "Xác nhận",
+        cancelButtonText: "Hủy",
+      });
+      if (result.isConfirmed) {
+        try {
+          let slotsIds = this.selectedSlots.map((slot) => slot.id);
+          let courtId = this.selectedSlots[0].courtId;
+          const bookingRes = await addBooking(courtId, slotsIds);
+          if (bookingRes.success) {
+            Swal.fire("Thành công", "", "success");
+            this.selectedSlots = [];
+          } else {
+            Swal.fire("Thất bại", "", "error");
+          }
+          console.log(bookingRes);
+          this.loadData();
+        } catch (error) {
+          console.log(`handleBooking: ${error}`);
         }
-        console.log(bookingRes);
-        this.loadData();
-      } catch (error) {
-        console.log(`handleBooking: ${error}`);
       }
-
-      // Tiến hành xử lý đặt sân
-      // Có thể gửi yêu cầu API ở đây để lưu thông tin đặt sân
+    },
+    handleAuthenticated() {
+      if (!store.getters["isAuthenticated"]) {
+        Swal.fire(
+          "Bạn cần đăng nhập để có thể thực hiện hành động này!",
+          "",
+          "warning"
+        );
+        this.$router.push("/login");
+        return false;
+      }
+      return true;
     },
     clearAllSelectedSlots() {
       // Tìm tất cả các ô đã được chọn và bỏ chọn chúng

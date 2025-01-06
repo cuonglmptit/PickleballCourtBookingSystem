@@ -1,11 +1,11 @@
 <template>
   <div class="container">
     <div class="navigation">
-      <router-link class="nav-option" :to="{ name: 'manage-court-cluster' }"
-        >Quản lý sân
-      </router-link>
       <router-link class="nav-option" :to="{ name: 'owner-manage-booking' }"
         >Quản lý booking
+      </router-link>
+      <router-link class="nav-option" :to="{ name: 'manage-court-cluster' }"
+        >Quản lý sân
       </router-link>
     </div>
     <div class="content">
@@ -51,7 +51,6 @@
             <tr v-for="(booking, index) in filteredBookings" :key="booking.id">
               <td>{{ (currentPage - 1) * itemsPerPage + index + 1 }}</td>
               <td class="roboto-bold">{{ booking.code }}</td>
-              <td class="roboto-bold">{{ booking.customerPhoneNumber }}</td>
               <td>{{ formatDate(booking.timeBooking) }}</td>
               <td>{{ getCourtClusterName(booking.courtClusterId) }}</td>
               <td>{{ getCourtNumber(booking.courtId) }}</td>
@@ -241,13 +240,9 @@ export default {
     filteredBookings() {
       const filtered = this.bookings.filter((booking) => {
         if (booking.code) {
-          const matchesSearch =
-            booking.code
-              .toLowerCase()
-              .includes(this.searchQuery.toLowerCase()) ||
-            booking.customerPhoneNumber
-              .toLowerCase()
-              .includes(this.searchQuery.toLowerCase());
+          const matchesSearch = booking.code
+            .toLowerCase()
+            .includes(this.searchQuery.toLowerCase());
           const matchesStatus =
             !this.statusFilter ||
             booking.status === this.statusFilter ||

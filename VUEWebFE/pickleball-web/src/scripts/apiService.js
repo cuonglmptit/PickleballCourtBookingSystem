@@ -35,7 +35,8 @@ const endpoints = {
     getCourtPricesByCourtClusterId: (courtClusterId) => `/api/CourtPrice/GetCourtPricesByCourtClusterId/${courtClusterId}`,
     createDefaultPrice: '/api/CourtPrice/multiple',
     autoCreateCourtTimeSlot: '/api/CourtCluster/AutoCreateCourtTimeSlot',
-
+    getStatisticInRange: '/api/Booking/Statistic',
+    getStatisticAll: `/api/Booking/Statistic/All`,
     //Customer
     addBooking: `/api/Booking/add-booking`
 };
@@ -202,4 +203,11 @@ export const addBooking = (courtId, timesSlotIds) => {
     console.log(body);
 
     return postData(endpoints.addBooking, body)
+}
+
+export const getStatisticAll = () => {
+    return getData(endpoints.getStatisticAll)
+}
+export const getStatisticInRange = (startDate, endDate) => {
+    return getData(endpoints.getStatisticInRange, { startDate, endDate })
 }
