@@ -20,19 +20,10 @@
             android:layout_height="@dimen/dp_35"
             android:src="@drawable/ic_settings"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/chatIcon"
+            app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginEnd="@dimen/dp_10"
             android:layout_marginTop="@dimen/dp_10"/>
 
-        <ImageView
-            android:id="@+id/chatIcon"
-            android:layout_width="@dimen/dp_35"
-            android:layout_height="@dimen/dp_35"
-            android:src="@drawable/ic_chat"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="@dimen/dp_10"
-            android:layout_marginEnd="@dimen/dp_10"/>
 
 
         <ImageView
@@ -46,36 +37,19 @@
             android:layout_marginTop="@dimen/dp_20"/>
 
         <Button
-            android:id="@+id/btnLogin"
+            android:id="@+id/btnLogout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Đăng nhập"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/btnRegister"
             android:layout_marginBottom="@dimen/dp_10"
-            android:layout_marginEnd="@dimen/dp_10" />
 
-        <Button
-            android:id="@+id/btnRegister"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Đăng ký"
+            android:text="Đăng xuất"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginEnd="@dimen/dp_10"
-            android:layout_marginBottom="@dimen/dp_10" />
+            tools:layout_editor_absoluteX="200dp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/optionsRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:padding="@dimen/dp_16"
-        app:layout_constraintTop_toBottomOf="@id/topBar"
-        app:layout_constraintBottom_toTopOf="@id/bottomNavigationView"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"

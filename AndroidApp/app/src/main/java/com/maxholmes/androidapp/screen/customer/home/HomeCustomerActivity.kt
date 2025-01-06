@@ -14,25 +14,34 @@ import com.maxholmes.androidapp.data.model.Address
 import com.maxholmes.androidapp.data.model.CourtCluster
 import com.maxholmes.androidapp.screen.customer.home.adapter.CourtClusterAdapter
 import com.maxholmes.androidapp.data.service.RetrofitClient
+import com.maxholmes.androidapp.databinding.ActivityHomeCustomerBinding
+import com.maxholmes.androidapp.screen.courtowner.home.HomeCourtOwnerActivity
+import com.maxholmes.androidapp.screen.customer.bookschedule.BookScheduleActivity
 import com.maxholmes.androidapp.screen.customer.detail.CourtClusterDetailActivity
+import com.maxholmes.androidapp.screen.customer.search.SearchActivity
+import com.maxholmes.androidapp.screen.user.UserActivity
 import com.maxholmes.androidapp.utils.OnItemRecyclerViewClickListener
+import com.maxholmes.androidapp.utils.ext.SharedPreferencesUtils
+import com.maxholmes.androidapp.utils.ext.authentication.getRoleFromToken
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class HomeCustomerActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivityHomeCustomerBinding
     private lateinit var courtClusterAdapter: CourtClusterAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_home_customer)
-
+        binding = ActivityHomeCustomerBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        val token = SharedPreferencesUtils.getToken(this)
         courtClusterAdapter = CourtClusterAdapter()
-        val recyclerView = findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.recyclerViewCourtCluster)
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.adapter = courtClusterAdapter
-
+        binding.recyclerViewCourtCluster.layoutManager = LinearLayoutManager(this)
+        binding.recyclerViewCourtCluster.adapter = courtClusterAdapter
+        binding.bottomNavigationView.selectedItemId = R.id.home
+        setupBottomNavigation(token!!)
         fetchCourtClusters()
 
         courtClusterAdapter.registerItemRecyclerViewClickListener(object : OnItemRecyclerViewClickListener<CourtCluster> {
@@ -60,11 +69,10 @@ class HomeCustomerActivity : AppCompatActivity() {
                                     if (response.isSuccessful) {
                                         response.body()?.let { apiResponse ->
                                             val address: Address? = parseApiResponseData(apiResponse.data)
-                                            if(address == null)
-                                            {
-                                                println("Dia chi loi kiem tra lai backend")
+                                            if(address == null) {
+                                                println("Địa chỉ lỗi, kiểm tra lại backend")
                                             }
-                                            var courtCluster = CourtCluster(
+                                            val courtCluster = CourtCluster(
                                                 id = courtClusterResponse.id,
                                                 name = courtClusterResponse.name,
                                                 openingTime = courtClusterResponse.openingTime,
@@ -88,7 +96,7 @@ class HomeCustomerActivity : AppCompatActivity() {
                         courtClusterAdapter.updateData(courtClusters.toMutableList())
                     }
                 } else {
-                    Toast.makeText(this@HomeCustomerActivity, "Lấy dữ liệu sân bị lỗi vui lòng thử lại sau.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@HomeCustomerActivity, "Lấy dữ liệu sân bị lỗi, vui lòng thử lại sau.", Toast.LENGTH_SHORT).show()
                 }
             }
 
@@ -98,4 +106,37 @@ class HomeCustomerActivity : AppCompatActivity() {
         })
     }
 
+    private fun setupBottomNavigation(token: String) {
+        binding.bottomNavigationView.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.home -> {
+                    true
+                }
+
+                R.id.booking -> {
+                    val intent = Intent()
+                    if(getRoleFromToken(token) == "Customer") {
+                        intent.setClass(this, BookScheduleActivity::class.java)
+                    } else if(getRoleFromToken(token) == "CourtOwner") {
+                        intent.setClass(this, BookScheduleActivity::class.java)
+                    }
+                    startActivity(intent)
+                    true
+                }
+
+                R.id.search -> {
+                    val intent = Intent(this, SearchActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
+                R.id.user -> {
+                    val intent = Intent(this, UserActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
+
+                else -> false
+            }
+        }
+    }
 }

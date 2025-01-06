@@ -15,6 +15,18 @@
         android:theme="@style/Theme.AndroidApp"
         tools:targetApi="31">
         <activity
+            android:name=".screen.courtowner.bookschedule.BookScheduleOwnerActivity"
+            android:exported="false" />
+        <activity
+            android:name=".screen.customer.search.SearchActivity"
+            android:exported="false" />
+        <activity
+            android:name=".screen.customer.bookschedule.detail.BookingCustomerDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".screen.user.UserActivity"
+            android:exported="false" />
+        <activity
             android:name=".screen.customer.bookschedule.BookScheduleActivity"
             android:exported="false" />
         <activity

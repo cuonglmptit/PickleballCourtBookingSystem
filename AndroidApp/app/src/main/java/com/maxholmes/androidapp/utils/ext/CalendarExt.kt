@@ -2,6 +2,7 @@ package com.maxholmes.androidapp.utils.ext
 
 import java.text.SimpleDateFormat
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Calendar
 import java.util.Locale
@@ -38,4 +39,13 @@ fun String.toCustomDateFormat(): String {
     val date = LocalDate.parse(this, inputFormatter)
 
     return date.format(outputFormatter)
+}
+fun String.toCustomDateTimeFormat(): String {
+    val inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
+
+    val outputFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")
+
+    val dateTime = LocalDateTime.parse(this, inputFormatter)
+
+    return dateTime.format(outputFormatter)
 }

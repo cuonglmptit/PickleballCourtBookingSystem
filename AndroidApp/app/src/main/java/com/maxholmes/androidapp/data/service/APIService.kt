@@ -1,6 +1,8 @@
 package com.maxholmes.androidapp.data.service
 
 import com.maxholmes.androidapp.data.dto.request.AddBookingRequest
+import com.maxholmes.androidapp.data.dto.request.AddCourtClusterRequest
+import com.maxholmes.androidapp.data.dto.request.CancelBookingRequest
 import com.maxholmes.androidapp.data.dto.request.LoginRequest
 import com.maxholmes.androidapp.data.dto.request.RegisterRequest
 import com.maxholmes.androidapp.data.dto.response.APIResponse
@@ -58,4 +60,16 @@ interface APIService {
 
     @POST("/api/Booking/add-booking")
     fun addBooking(@Body addBookingRequest: AddBookingRequest, @Header("Authorization") token: String): Call<APIResponse>
+
+    @GET("/api/Booking/GetBookingSchedule")
+    fun getBookingByUser(@Header("Authorization") token: String): Call<APIResponse>
+
+    @POST("/api/Booking/cancel-booking")
+    fun cancelBooking(@Body cancelBookingRequest: CancelBookingRequest, @Header("Authorization") token: String): Call<APIResponse>
+
+    @GET("/api/CourtCluster/SearchCourtClusterWithFilter")
+    fun searchCourtClusters(@Query("courtClusterName") name: String, @Query("cityName") city: String, @Query("date") date: String, @Query("startTime") startTime: String, @Query("endTime") endTime: String): Call<APIResponse>
+
+    @POST("/api/CourtCluster")
+    fun addCourtCluster(@Body addCourtClusterRequest: AddCourtClusterRequest, @Header("Authorization") token: String): Call<APIResponse>
 }

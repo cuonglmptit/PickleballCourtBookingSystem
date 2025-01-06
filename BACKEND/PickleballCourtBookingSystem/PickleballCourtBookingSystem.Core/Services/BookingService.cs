@@ -1,5 +1,7 @@
-﻿using PickleballCourtBookingSystem.Api.Models;
+﻿using PickleballCourtBookingSystem.Api.DTOs;
+using PickleballCourtBookingSystem.Api.Models;
 using PickleballCourtBookingSystem.Core.DTOs;
+using PickleballCourtBookingSystem.Core.DTOs.UserDTOs;
 using PickleballCourtBookingSystem.Core.Entities;
 using PickleballCourtBookingSystem.Core.Interfaces.Infrastructure;
 using PickleballCourtBookingSystem.Core.Interfaces.Services;
@@ -20,12 +22,13 @@ public class BookingService : BaseService<Booking>, IBookingService
     private readonly ITimeService _timeService;
     private readonly ICancellationService _cancellationService;
     private readonly IUserService _userService;
+    private readonly IAddressService _addressService;
     public BookingService(IBookingRepository repository,
         IRoleService roleService,
         ICourtTimeSlotService courtTimeSlotService, ICourtTimeBookingService courtTimeBookingService,
         ICourtService courtService, ICustomerService customerService, IBookingRepository bookingRepository,
         ITimeService timeService, ICancellationService cancellationService,
-        ICourtOwnerService courtOwnerService, ICourtClusterService courtClusterService, IUserService userService) : base(repository)
+        ICourtOwnerService courtOwnerService, ICourtClusterService courtClusterService, IUserService userService, IAddressService addressService) : base(repository)
     {
         _roleService = roleService;
         _courtTimeSlotService = courtTimeSlotService;
@@ -38,6 +41,7 @@ public class BookingService : BaseService<Booking>, IBookingService
         _courtOwnerService = courtOwnerService;
         _courtClusterService = courtClusterService;
         _userService = userService;
+        _addressService = addressService;
     }
 
     public ServiceResult AddBooking(Guid userId, List<Guid> courtTimeSlotIds, Guid courtId)
@@ -207,38 +211,6 @@ public class BookingService : BaseService<Booking>, IBookingService
         if (result != 0)
         {
             return CreateServiceResult(Success: true, StatusCode: 200, UserMsg: "Xac nhan san thanh cong");
-        }
-        return CreateServiceResult(Success: false, StatusCode: 500, UserMsg: "Failed to update booking", DevMsg: "Failed to update booking");
-    }
-
-    public ServiceResult CustomerConfirmBooking(Guid userId, Guid bookingId)
-    {
-        var booking = _bookingRepository.GetById(bookingId);
-        if (booking == null)
-        {
-            return CreateServiceResult(Success: false, StatusCode: 404, UserMsg: "Booking not found", DevMsg: "Booking not found");
-        }
-
-        var resultGetCustomer = _customerService.GetCustomerByUserIdService(userId);
-        if (!resultGetCustomer.Success)
-        {
-            return resultGetCustomer;
-        }
-        var customer = (Customer)resultGetCustomer.Data!;
-        if (booking.CustomerId != customer.Id)
-        {
-            return CreateServiceResult(Success: false, StatusCode: 403, UserMsg: "Ban khong co quyen xac nhan", DevMsg: "Booking khong phai cua customer");
-        }
-
-        if (booking.Status != BookingStatusEnum.CourtOwnerConfirmed)
-        {
-            return CreateServiceResult(Success: false, StatusCode: 400, UserMsg: "Booking khong o trang thai duoc chu san xac nhan", DevMsg: "Booking khong o trang thai duoc chu san xac nhan");
-        }
-        booking.Status = BookingStatusEnum.Completed;
-        var result = _bookingRepository.Update(booking, bookingId);
-        if (result != 0)
-        {
-            return CreateServiceResult(Success: true, StatusCode: 200, UserMsg: "Xac nhan hoan thanh dat san thanh cong");
         }
         return CreateServiceResult(Success: false, StatusCode: 500, UserMsg: "Failed to update booking", DevMsg: "Failed to update booking");
     }
@@ -525,7 +497,18 @@ public class BookingService : BaseService<Booking>, IBookingService
                     var courtTimeSlot = (CourtTimeSlot) _courtTimeSlotService.GetByIdService(courtTimeBooking.CourtTimeSlotId!.Value).Data!;
                     courtTimeSlots.Add(courtTimeSlot);
                 }
-                
+
+                DateTime lastUpdatedTime = booking.TimeBooking!.Value;
+                if (booking.Status == BookingStatusEnum.Canceled)
+                {
+                    var cancellationResult = _cancellationService.GetFirstByColumnValueService("bookingId", booking.Id!.Value.ToString());
+                    if (!cancellationResult.Success)
+                    {
+                        return cancellationResult;
+                    }
+                    var cancellation = (Cancellation) cancellationResult.Data!;
+                    lastUpdatedTime = cancellation!.TimeCancel!.Value;
+                }
                 var customBooking = new CustomBookingResponse
                 {
                     Booking = booking,
@@ -534,6 +517,7 @@ public class BookingService : BaseService<Booking>, IBookingService
                     Address = address,
                     CourtTimeSlots = courtTimeSlots,
                     CourtOwnerPhoneNumber = courtOwnerPhoneNumber!,
+                    LastUpdatedTime = lastUpdatedTime
                 };
                 customBookingResponses.Add(customBooking);
             }
