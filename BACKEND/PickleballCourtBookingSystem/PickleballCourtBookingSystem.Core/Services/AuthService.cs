@@ -56,7 +56,7 @@ public class AuthService : IAuthService
                 // bao gồm !=, đều trả về giá trị false
                 Id = Guid.Empty,
                 Username = username.Trim(),
-                Password = password,
+                Password = BCrypt.Net.BCrypt.HashPassword(password),
                 Name = name,
                 PhoneNumber = phoneNumber,
                 Email = email,
@@ -115,8 +115,15 @@ public class AuthService : IAuthService
     {
         try
         {
-            var user = _userRepository.CheckLogin(username, password);
+            var user = _userRepository.GetUserByUsername(username);
             if (user == null)
+            {
+                return CommonMethods.CreateServiceResult(Success: false, StatusCode: 404,
+                    UserMsg: "Tài khoản người dùng không tồn tại", DevMsg: "Tài khoản người dùng không tồn tại");
+            }
+
+            var hashPassword = HashPassword(password);
+            if(!VerifyPassword(password, hashPassword))
             {
                 return CommonMethods.CreateServiceResult(Success: false, StatusCode: 401,
                     UserMsg: "Tài khoản hoặc mật khẩu đăng nhập không chính xác",
@@ -265,4 +272,13 @@ public class AuthService : IAuthService
         }
     }
 
+    public string HashPassword(string password)
+    {
+        return BCrypt.Net.BCrypt.EnhancedHashPassword(password, 13);
+    }
+
+    public Boolean VerifyPassword(string password, string hashedPassword)
+    {
+        return BCrypt.Net.BCrypt.EnhancedVerify(password, hashedPassword);
+    }
 }
