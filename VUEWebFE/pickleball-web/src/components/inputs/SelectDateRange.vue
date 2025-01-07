@@ -29,8 +29,8 @@
 export default {
   data() {
     return {
-      startDate: "",
-      endDate: "",
+      startDate: new Date().toISOString().split("T")[0],
+      endDate: new Date().toISOString().split("T")[0],
       minDate: new Date().toISOString().split("T")[0],
       datesValid: true,
     };

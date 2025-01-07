@@ -4,7 +4,7 @@
       <div class="left-container">
         <div class="left-top">
           <div class="roboto-bold font-size-24">Chỉnh sửa giá</div>
-          <button class="regular-btn bgc-topic3-500">Ngưng hoạt động</button>
+          <!-- <button class="regular-btn bgc-topic3-500">Ngưng hoạt động</button> -->
         </div>
         <div class="left-mid">
           <div>
@@ -96,7 +96,9 @@
           ></textarea>
         </div>
         <div class="action-container">
-          <button class="regular-btn cancel-btn">Hủy thay đổi</button>
+          <button class="regular-btn cancel-btn" @click="cancelChanges">
+            Hủy thay đổi
+          </button>
           <button class="regular-btn save-btn" @click="handleSave">Lưu</button>
         </div>
       </div>
@@ -186,8 +188,8 @@ export default {
       isAddPriceVisible: false,
       listTime: [],
       dateRange: {
-        startDate: "",
-        endDate: "",
+        startDate: new Date().toISOString().split("T")[0],
+        endDate: new Date().toISOString().split("T")[0],
       },
       cluster: {
         id: "",
@@ -358,6 +360,9 @@ export default {
       // Remove all non-digit characters
       const numericValue = value.replace(/[^\d]/g, "");
       return parseFloat(numericValue) || 0;
+    },
+    cancelChanges() {
+      this.$router.push({ name: "manage-court-cluster" });
     },
     updatePrice(event) {
       let inputValue = event.target.value;

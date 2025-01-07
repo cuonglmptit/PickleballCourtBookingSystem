@@ -206,10 +206,12 @@ export default {
       this.courtClusterAddress = addressRes.data;
       this.timeSlotsData = await this.loadCourtTimeSlot(this.courts, this.date);
       //Load ảnh
+      console.log(this.courtCluster);
       const imgres = await getImageCourtUrl(this.courtCluster.id);
       if (imgres.success) {
-        this.courtClusterPhotoUrl = imgres.data[0] ? imgres.data[0] : {};
+        this.courtClusterPhotoUrl = imgres.data[0] ? imgres.data[0].url : "";
       }
+      console.log(imgres);
     },
     clickCourtTimeSlot(event, courtId, timeSlot) {
       try {
