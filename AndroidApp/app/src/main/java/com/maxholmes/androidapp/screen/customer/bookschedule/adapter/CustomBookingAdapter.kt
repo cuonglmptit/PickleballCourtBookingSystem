@@ -77,6 +77,7 @@ class CustomBookingAdapter : RecyclerView.Adapter<CustomBookingAdapter.ViewHolde
                 BookingStatusEnum.Pending -> "Đang chờ xử lý"
                 BookingStatusEnum.CourtOwnerConfirmed -> "Đã được xác nhận"
                 BookingStatusEnum.Canceled -> "Đã hủy"
+                BookingStatusEnum.Completed -> "Đã thanh toán"
                 BookingStatusEnum.All -> "Tất cả trạng thái"
             }
             binding.tvPriceValue.text = "${booking.booking?.amount?.toInt()} đ"
