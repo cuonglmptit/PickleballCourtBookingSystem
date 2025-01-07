@@ -26,7 +26,6 @@
             <tr>
               <th>STT</th>
               <th>Mã booking</th>
-              <th>Sđt người đặt</th>
               <th>Thời gian đặt</th>
               <th>Cụm sân</th>
               <th>Sân số</th>
@@ -40,7 +39,6 @@
             <tr v-for="(booking, index) in filteredBookings" :key="booking.id">
               <td>{{ (currentPage - 1) * itemsPerPage + index + 1 }}</td>
               <td class="roboto-bold">{{ booking.code }}</td>
-              <td class="roboto-bold">{{ booking.customerPhoneNumber }}</td>
               <td>{{ formatDate(booking.timeBooking) }}</td>
               <td>{{ getCourtClusterName(booking.courtClusterId) }}</td>
               <td>{{ getCourtNumber(booking.courtId) }}</td>
@@ -280,6 +278,9 @@ export default {
         case "Canceled":
           statusVie = "Đã hủy";
           break;
+        case "Completed":
+          statusVie = "Đã hoàn thành";
+          break;
         default:
           break;
       }
@@ -302,6 +303,9 @@ export default {
           break;
         case "Canceled":
           statusClass = "canceled";
+          break;
+        case "Completed":
+          statusClass = "paid";
           break;
         default:
           break;

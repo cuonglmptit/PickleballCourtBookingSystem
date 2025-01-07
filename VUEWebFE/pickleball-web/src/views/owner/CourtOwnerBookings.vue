@@ -28,6 +28,7 @@
               </option>
               <option value="Paid">Đã thanh toán</option>
               <option value="Unpaid">Chưa thanh toán</option>
+              <option value="Completed">Đã hoàn thành</option>
               <option value="Canceled">Đã hủy</option>
             </select>
           </div>
@@ -37,7 +38,6 @@
             <tr>
               <th>STT</th>
               <th>Mã booking</th>
-              <th>Sđt người đặt</th>
               <th>Thời gian đặt</th>
               <th>Cụm sân</th>
               <th>Sân số</th>
@@ -105,7 +105,9 @@
           >
             Trước
           </button>
-          <span>Trang {{ currentPage }} / {{ totalPages }}</span>
+          <span style="padding: 0 6px"
+            >Trang {{ currentPage }} / {{ totalPages }}</span
+          >
           <button
             :disabled="currentPage === totalPages"
             @click="changePage(currentPage + 1)"
@@ -324,6 +326,9 @@ export default {
         case "Canceled":
           statusVie = "Đã hủy";
           break;
+        case "Completed":
+          statusVie = "Đã hoàn thành";
+          break;
         default:
           break;
       }
@@ -346,6 +351,9 @@ export default {
           break;
         case "Canceled":
           statusClass = "canceled";
+          break;
+        case "Completed":
+          statusClass = "paid";
           break;
         default:
           break;

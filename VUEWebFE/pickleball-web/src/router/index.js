@@ -126,7 +126,7 @@ router.beforeEach((to, from, next) => {
   // Nếu route yêu cầu quyền người dùng và role của người dùng không có trong allowedRoles
   if (to.meta.allowedRoles && !to.meta.allowedRoles.includes(user?.role)) {
     if (user?.role === 'CourtOwner') {
-      return next({ name: 'manage-court-cluster' })
+      return next({ name: 'owner-manage-booking' })
     }
     if (user?.role === 'Admin') {
       return next({ name: 'admin' })
