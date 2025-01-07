@@ -69,6 +69,10 @@ class BookingActivity : AppCompatActivity() {
         binding.confirmButton.setOnClickListener {
             onConfirmButtonClicked()
         }
+        binding.backButton.setOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
+
 
         loadCourts()
         loadDays()

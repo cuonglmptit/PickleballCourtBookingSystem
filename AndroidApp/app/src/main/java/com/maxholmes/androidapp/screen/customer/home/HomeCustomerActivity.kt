@@ -50,7 +50,6 @@ class HomeCustomerActivity : AppCompatActivity() {
                     val intent = Intent(this@HomeCustomerActivity, CourtClusterDetailActivity::class.java)
                     intent.putExtra("courtCluster", it)
                     startActivity(intent)
-                    Toast.makeText(this@HomeCustomerActivity, "Clicked on: ${it.name}", Toast.LENGTH_SHORT).show()
                 }
             }
         })
@@ -80,7 +79,6 @@ class HomeCustomerActivity : AppCompatActivity() {
                                                 description = courtClusterResponse.description,
                                                 address = address!!,
                                                 courtOwnerId = courtClusterResponse.courtOwnerId,
-                                                imageUrl = courtClusterResponse.imageUrl
                                             )
                                             courtClusters.add(courtCluster)
                                             courtClusterAdapter.updateData(courtClusters.toMutableList())

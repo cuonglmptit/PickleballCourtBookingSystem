@@ -5,20 +5,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.maxholmes.androidapp.R
-import com.maxholmes.androidapp.data.dto.response.APIResponse
-import com.maxholmes.androidapp.data.dto.response.parseApiResponseData
-import com.maxholmes.androidapp.data.model.Address
-import com.maxholmes.androidapp.data.model.Statistic
-import com.maxholmes.androidapp.data.service.RetrofitClient
-import com.maxholmes.androidapp.utils.OnItemRecyclerViewClickListener
+import com.maxholmes.androidapp.data.dto.response.StatisticDto
 import com.maxholmes.androidapp.databinding.ItemStatisticBinding
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import com.maxholmes.androidapp.utils.OnItemRecyclerViewClickListener
 
 class StatisticAdapter : RecyclerView.Adapter<StatisticAdapter.ViewHolder>() {
-    private val statistics = mutableListOf<Statistic>()
-    private var onItemClickListener: OnItemRecyclerViewClickListener<Statistic>? = null
+    private val statistics = mutableListOf<StatisticDto>()
+    private var onItemClickListener: OnItemRecyclerViewClickListener<StatisticDto>? = null
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -39,11 +32,11 @@ class StatisticAdapter : RecyclerView.Adapter<StatisticAdapter.ViewHolder>() {
         return statistics.size
     }
 
-    fun registerItemRecyclerViewClickListener(listener: OnItemRecyclerViewClickListener<Statistic>) {
+    fun registerItemRecyclerViewClickListener(listener: OnItemRecyclerViewClickListener<StatisticDto>) {
         onItemClickListener = listener
     }
 
-    fun updateData(statistics: MutableList<Statistic>?) {
+    fun updateData(statistics: MutableList<StatisticDto>?) {
         statistics?.let {
             this.statistics.clear()
             this.statistics.addAll(it)
@@ -53,25 +46,23 @@ class StatisticAdapter : RecyclerView.Adapter<StatisticAdapter.ViewHolder>() {
 
     class ViewHolder(
         private val binding: ItemStatisticBinding,
-        private val itemClickListener: OnItemRecyclerViewClickListener<Statistic>?,
+        private val itemClickListener: OnItemRecyclerViewClickListener<StatisticDto>?,
     ) : RecyclerView.ViewHolder(binding.root), View.OnClickListener {
-        private var statisticData: Statistic? = null
+        private var statisticData: StatisticDto? = null
 
         init {
             binding.root.setOnClickListener(this)
         }
 
-        fun bindViewData(statistic: Statistic) {
+        fun bindViewData(statistic: StatisticDto) {
             statisticData = statistic
 
             // Set court name
-            binding.tvCourtName.text = statistic.courtCluster.name
+            binding.tvCourtName.text = statistic.courtCluster?.name ?: "N/A"
 
-            // Set revenue
-            binding.tvRevenue.text = "Doanh thu: ${statistic.price}₫"
+            binding.tvRevenue.text = "Doanh thu: ${statistic.totalRevenue}₫"
 
-            // Set booking count
-            binding.tvBookings.text = "Số lượt đặt sân: ${statistic.bookingCount}"
+            binding.tvBookings.text = "Số lượt đặt sân: ${statistic.totalBookings}"
         }
 
         override fun onClick(view: View?) {

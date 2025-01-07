@@ -70,6 +70,10 @@ class CourtClusterDetailActivity : AppCompatActivity() {
         val spacingInDp = resources.getDimensionPixelSize(R.dimen.dp_10)
         binding.recyclerViewDay.addItemDecoration(SpacingItemDecoration(spacingInDp))
         binding.recyclerViewCourt.addItemDecoration(SpacingItemDecoration(spacingInDp))
+        binding.backButton.setOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
+
         selectDayAdapter.registerItemRecyclerViewClickListener(object : OnItemRecyclerViewClickListener<Calendar> {
             override fun onItemClick(item: Calendar?) {
                 item?.let {

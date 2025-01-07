@@ -71,6 +71,10 @@ class ConfirmBookingActivity : AppCompatActivity() {
         binding.bookButton.setOnClickListener {
             onBookButtonClick()
         }
+        binding.backButton.setOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
+
     }
 
     private fun loadCourtOwnerInfo() {

@@ -6,13 +6,25 @@
     android:layout_height="match_parent"
     tools:context=".screen.customer.search.SearchActivity">
 
+    <TextView
+        android:id="@+id/courtClusterSearchTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/search_court_cluster"
+        android:textStyle="bold"
+        android:textSize="@dimen/sp_18"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
     <EditText
         android:id="@+id/editTextCourtName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
+        android:layout_marginTop="@dimen/dp_10"
         android:hint="Tên sân"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/courtClusterSearchTextView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -20,7 +32,7 @@
         android:id="@+id/editTextCityName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
+        android:layout_marginTop="@dimen/dp_10"
         android:hint="Tên thành phố"
         app:layout_constraintTop_toBottomOf="@id/editTextCourtName"
         app:layout_constraintStart_toStartOf="parent"
@@ -30,7 +42,7 @@
         android:id="@+id/editTextDate"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
+        android:layout_marginTop="@dimen/dp_10"
         android:hint="Ngày muốn chơi (yyyy-MM-dd)"
         app:layout_constraintTop_toBottomOf="@id/editTextCityName"
         app:layout_constraintStart_toStartOf="parent"
@@ -40,7 +52,7 @@
         android:id="@+id/editTextStartTime"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
+        android:layout_marginTop="@dimen/dp_10"
         android:hint="Giờ bắt đầu (HH:mm)"
         app:layout_constraintTop_toBottomOf="@id/editTextDate"
         app:layout_constraintStart_toStartOf="parent"
@@ -50,7 +62,7 @@
         android:id="@+id/editTextEndTime"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
+        android:layout_marginTop="@dimen/dp_10"
         android:hint="Giờ kết thúc (HH:mm)"
         app:layout_constraintTop_toBottomOf="@id/editTextStartTime"
         app:layout_constraintStart_toStartOf="parent"
@@ -74,7 +86,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/bottomNavigationView"
-        android:layout_margin="8dp" />
+        android:layout_marginTop="@dimen/dp_10"/>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"
