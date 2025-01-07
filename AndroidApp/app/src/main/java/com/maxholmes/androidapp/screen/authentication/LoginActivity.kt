@@ -35,7 +35,7 @@ class LoginActivity : AppCompatActivity() {
             val password = binding.password.text.toString().trim()
 
             if (email.isEmpty() || password.isEmpty()) {
-                Toast.makeText(this, "Email and password are required", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Bạn cần nhập đầy đủ tài khoản và mật khẩu!", Toast.LENGTH_SHORT).show()
             } else {
                 login(email, password)
             }
@@ -60,7 +60,7 @@ class LoginActivity : AppCompatActivity() {
 
                 if (response.isSuccessful && response.body()?.success == true) {
                     val token = response.body()?.data?.token
-                    Toast.makeText(this@LoginActivity, "Login successful", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@LoginActivity, "Đăng nhập thành công", Toast.LENGTH_SHORT).show()
 
                     if (token != null) {
                         SharedPreferencesUtils.saveToken(this@LoginActivity, token)
@@ -74,7 +74,6 @@ class LoginActivity : AppCompatActivity() {
                             "Admin" -> HomeAdminActivity::class.java
                             else -> {
                                 val loginIntent = Intent(this@LoginActivity, LoginActivity::class.java)
-                                println("Loi role, check lai ben backend")
                                 startActivity(loginIntent)
                                 finish()
                                 return
@@ -85,7 +84,7 @@ class LoginActivity : AppCompatActivity() {
                         finish()
                     }
                 } else {
-                    val errorMsg = response.body()?.userMsg ?: "Login error"
+                    val errorMsg = response.body()?.userMsg ?: "Sai tài khoản hoặc mật khẩu"
                     Toast.makeText(this@LoginActivity, errorMsg, Toast.LENGTH_SHORT).show()
                 }
             }

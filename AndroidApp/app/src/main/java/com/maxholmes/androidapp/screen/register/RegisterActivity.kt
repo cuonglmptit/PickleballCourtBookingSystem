@@ -79,7 +79,7 @@ class RegisterActivity : AppCompatActivity() {
                 username = username,
                 password = password,
                 confirmPassword = confirmPassword,
-                fullName = fullName,
+                name = fullName,
                 email = email,
                 phoneNumber = phoneNumber,
                 role = role

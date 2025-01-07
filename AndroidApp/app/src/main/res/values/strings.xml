@@ -17,6 +17,7 @@
     <string name="highly_rated">Đánh giá cao</string>
     <string name="select_day">Chọn ngày</string>
     <string name="booking_court">Đặt sân</string>
+    <string name="booking_detail">Thông tin lịch đặt sân</string>
     <string name="select_court">Chọn sân</string>
     <string name="select_time_slot">Chọn giờ</string>
     <string name="book_court">Đặt sân</string>
@@ -25,6 +26,9 @@
     <string name="confirm_payment">Xác nhận thanh toán</string>
     <string name="court_label">Sân</string>
     <string name="search">Tìm kiếm</string>
+    <string name="list_booking">Danh sách lịch đặt sân</string>
+    <string name="search_court_cluster">Tìm kiếm cụm sân</string>
+    <string name="court_cluster_detail">Thông tin cụm sân</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Xin chào, fragment trống</string>
     <string name="title_activity_login">Màn hình đăng nhập</string>

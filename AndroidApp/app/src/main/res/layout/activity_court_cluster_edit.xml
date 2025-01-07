@@ -9,25 +9,17 @@
     tools:context=".screen.courtowner.detail.CourtClusterEditActivity"
     >
 
-    <ImageView
+    <ImageButton
         android:id="@+id/backButton"
-        android:layout_width="@dimen/dp_24"
-        android:layout_height="@dimen/dp_24"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_16"
-        android:src="@android:drawable/ic_media_previous"
+        android:layout_width="@dimen/dp_35"
+        android:layout_height="@dimen/dp_35"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:scaleType="fitXY"
+        android:src="@drawable/ic_arrow_back"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
-        android:id="@+id/editButton"
-        android:layout_width="@dimen/dp_24"
-        android:layout_height="@dimen/dp_24"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_16"
-        android:src="@android:drawable/ic_menu_edit"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_marginTop="@dimen/dp_8"
+        />
 
     <TextView
         android:id="@+id/titleText"
@@ -36,11 +28,23 @@
         android:text="Chi tiết cụm sân"
         android:textSize="@dimen/sp_18"
         android:textStyle="bold"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_10"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toEndOf="@id/backButton"
         app:layout_constraintEnd_toStartOf="@id/editButton"
         app:layout_constraintHorizontal_chainStyle="spread" />
+
+
+    <ImageView
+        android:id="@+id/editButton"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
+        android:src="@drawable/ic_edit"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 
     <ImageView
         android:id="@+id/courtImage"
@@ -90,7 +94,7 @@
         android:id="@+id/timeIcon"
         android:layout_width="@dimen/dp_20"
         android:layout_height="@dimen/dp_20"
-        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginTop="@dimen/dp_10"
         android:layout_marginStart="@dimen/dp_16"
         android:src="@android:drawable/ic_menu_recent_history"
         app:layout_constraintTop_toBottomOf="@id/addressIcon"

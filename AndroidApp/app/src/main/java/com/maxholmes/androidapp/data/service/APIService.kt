@@ -81,5 +81,11 @@ interface APIService {
     fun courtOwnerConfirmPaid(@Body confirmBookingRequest: ConfirmBookingRequest, @Header("Authorization") token: String): Call<APIResponse>
 
     @GET("/api/booking/Statistic")
-    fun getStatistic(@Header("Authorization") token: String): Call<APIResponse>
+    fun getStatistic(@Header("Authorization") token: String, @Query("startDate") startDate: String, @Query("endDate") endDate: String): Call<APIResponse>
+
+    @GET("/api/CourtCluster/Owner")
+    fun getCourtClusterForOwner(@Header("Authorization") token: String): Call<APIResponse>
+
+    @GET("/api/ImageCourtUrl/Cluster/{id}")
+    fun getImagesByClusterId(@Path("id") clusterId: String): Call<APIResponse>
 }

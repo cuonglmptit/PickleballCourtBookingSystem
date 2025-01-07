@@ -17,7 +17,10 @@ import com.maxholmes.androidapp.screen.courtowner.bookschedule.BookScheduleOwner
 import com.maxholmes.androidapp.utils.enum.BookingStatusEnum
 import com.maxholmes.androidapp.utils.ext.SharedPreferencesUtils
 import com.maxholmes.androidapp.databinding.ActivityBookingCourtOwnerDetailBinding
+import com.maxholmes.androidapp.screen.customer.bookschedule.detail.CourtTimeSlotBookingDetailAdapter
 import com.maxholmes.androidapp.screen.customer.bookschedule.detail.CourtTimeSlotCourtOwnerBookingAdapter
+import com.maxholmes.androidapp.utils.ext.toCustomDateFormat
+import com.maxholmes.androidapp.utils.ext.toCustomDateTimeFormat
 import com.pickleballcourtbookingsystem.api.dtos.CustomBookingResponse
 import retrofit2.Call
 import retrofit2.Callback
@@ -37,19 +40,33 @@ class BookingCourtOwnerDetailActivity : AppCompatActivity() {
         val token = SharedPreferencesUtils.getToken(this)
 
         customBookingResponse?.let { booking ->
-            binding.tvCourtClusterName.text = booking.courtClusterName
+            val courtClusterName = "Tên cụm sân: ${customBookingResponse!!.courtClusterName}"
+            binding.tvCourtClusterName.text = courtClusterName
             binding.tvAddress.text = booking.address?.toString()
-            binding.tvTimeBooking.text = "Thời gian cập nhật: ${booking.lastUpdatedTime}"
-            binding.tvDateUse.text = "Ngày dùng sân: ${booking.courtTimeSlots?.get(0)?.date}"
-            binding.tvPhone.text = booking.customerPhoneNumber
-            binding.tvStatusValue.text = when (booking.booking?.status) {
-                BookingStatusEnum.Pending -> "Đang chờ xử lý"
-                BookingStatusEnum.CourtOwnerConfirmed -> "Đã xác nhận"
-                BookingStatusEnum.Completed -> "Đã thanh toán"
-                BookingStatusEnum.Canceled -> "Đã hủy"
-                else -> "Tất cả trạng thái"
+            var lastUpdateTime = "Thời gian đặt sân: ${customBookingResponse?.lastUpdatedTime!!.toCustomDateTimeFormat()}"
+            if(customBookingResponse?.booking!!.status == BookingStatusEnum.Canceled)
+            {
+                lastUpdateTime = "Thời gian hủy sân: ${customBookingResponse?.lastUpdatedTime!!.toCustomDateTimeFormat()}"
             }
-            binding.tvPriceValue.text = "Giá tiền: ${booking.booking?.amount}"
+            var dateUse = "Ngày dùng sân: ${customBookingResponse?.courtTimeSlots?.get(0)?.date!!.toCustomDateFormat()}"
+            if(customBookingResponse?.booking!!.status == BookingStatusEnum.Canceled)
+            {
+                dateUse = "Ngày dùng sân: ${customBookingResponse!!.booking!!.timeBooking.toCustomDateFormat()}"
+            }
+            val customerPhoneNumber: String = "Số điện thoại khách hàng: ${customBookingResponse!!.customerPhoneNumber}"
+            binding.tvPhone.text = customerPhoneNumber
+            val status = when (customBookingResponse!!.booking!!.status) {
+                BookingStatusEnum.Pending -> "Đang chờ xử lý"
+                BookingStatusEnum.CourtOwnerConfirmed -> "Đã được chủ sân xác nhận"
+                BookingStatusEnum.Canceled -> "Đã hủy"
+                BookingStatusEnum.Completed -> "Đã thanh toán"
+                BookingStatusEnum.All -> "Tất cả trạng thái"
+            }
+            val statusText = "Trạng thái: $status"
+            binding.tvStatusValue.text = statusText
+            binding.tvTimeBooking.text = lastUpdateTime
+            binding.tvDateUse.text = dateUse
+            binding.tvPriceValue.text = "Tổng giá tiền: ${booking.booking?.amount}"
 
             when (booking.booking?.status) {
                 BookingStatusEnum.Pending -> {
@@ -80,7 +97,8 @@ class BookingCourtOwnerDetailActivity : AppCompatActivity() {
             }
 
             binding.recyclerViewTimeSlots.layoutManager = LinearLayoutManager(this)
-            val timeSlotAdapter = CourtTimeSlotCourtOwnerBookingAdapter(customBookingResponse?.courtTimeSlots ?: listOf())
+            val sortedTimeSlots = customBookingResponse?.courtTimeSlots?.sortedBy { it.time } ?: listOf()
+            val timeSlotAdapter = CourtTimeSlotBookingDetailAdapter(sortedTimeSlots)
             binding.recyclerViewTimeSlots.adapter = timeSlotAdapter
 
 
@@ -101,6 +119,10 @@ class BookingCourtOwnerDetailActivity : AppCompatActivity() {
                     confirmPayment(token, booking.booking)
                 }
             }
+            binding.backButton.setOnClickListener {
+                onBackPressedDispatcher.onBackPressed()
+            }
+
         }
     }
 
@@ -113,6 +135,8 @@ class BookingCourtOwnerDetailActivity : AppCompatActivity() {
                     override fun onResponse(call: Call<APIResponse>, response: Response<APIResponse>) {
                         if (response.isSuccessful) {
                             Toast.makeText(this@BookingCourtOwnerDetailActivity, "Đã hủy booking thành công!", Toast.LENGTH_SHORT).show()
+                            val intent = Intent(this@BookingCourtOwnerDetailActivity, BookScheduleOwnerActivity::class.java)
+                            startActivity(intent)
                             finish()
                         } else {
                             Toast.makeText(this@BookingCourtOwnerDetailActivity, "Lỗi khi hủy booking!", Toast.LENGTH_SHORT).show()
@@ -135,6 +159,8 @@ class BookingCourtOwnerDetailActivity : AppCompatActivity() {
                     override fun onResponse(call: Call<APIResponse>, response: Response<APIResponse>) {
                         if (response.isSuccessful) {
                             Toast.makeText(this@BookingCourtOwnerDetailActivity, "Đã xác nhận booking!", Toast.LENGTH_SHORT).show()
+                            val intent = Intent(this@BookingCourtOwnerDetailActivity, BookScheduleOwnerActivity::class.java)
+                            startActivity(intent)
                             finish()
                         } else {
                             Toast.makeText(this@BookingCourtOwnerDetailActivity, "Lỗi khi xác nhận booking!", Toast.LENGTH_SHORT).show()
@@ -157,6 +183,8 @@ class BookingCourtOwnerDetailActivity : AppCompatActivity() {
                     override fun onResponse(call: Call<APIResponse>, response: Response<APIResponse>) {
                         if (response.isSuccessful) {
                             Toast.makeText(this@BookingCourtOwnerDetailActivity, "Thanh toán đã được xác nhận!", Toast.LENGTH_SHORT).show()
+                            val intent = Intent(this@BookingCourtOwnerDetailActivity, BookScheduleOwnerActivity::class.java)
+                            startActivity(intent)
                             finish()
                         } else {
                             Toast.makeText(this@BookingCourtOwnerDetailActivity, "Lỗi khi xác nhận thanh toán!", Toast.LENGTH_SHORT).show()

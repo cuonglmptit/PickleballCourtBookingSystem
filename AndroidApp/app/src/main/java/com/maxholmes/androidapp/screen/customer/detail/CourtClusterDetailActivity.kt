@@ -70,6 +70,10 @@ class CourtClusterDetailActivity : AppCompatActivity() {
         val spacingInDp = resources.getDimensionPixelSize(R.dimen.dp_10)
         binding.recyclerViewDay.addItemDecoration(SpacingItemDecoration(spacingInDp))
         binding.recyclerViewCourt.addItemDecoration(SpacingItemDecoration(spacingInDp))
+        binding.backButton.setOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
+
         selectDayAdapter.registerItemRecyclerViewClickListener(object : OnItemRecyclerViewClickListener<Calendar> {
             override fun onItemClick(item: Calendar?) {
                 item?.let {
@@ -213,11 +217,28 @@ class CourtClusterDetailActivity : AppCompatActivity() {
         })
     }
 
+//    private fun loadDays() {
+//        val calendar = Calendar.getInstance()
+//        val selectDays = mutableListOf<Calendar>()
+//
+//        for (i in 0..6) {
+//            val day = calendar.clone() as Calendar
+//            day.add(Calendar.DAY_OF_YEAR, i)
+//            selectDays.add(day)
+//        }
+//
+//        selectDayAdapter.updateData(selectDays)
+//    }
+
     private fun loadDays() {
         val calendar = Calendar.getInstance()
         val selectDays = mutableListOf<Calendar>()
 
-        for (i in 0..6) {
+        // Lùi lại 15 ngày từ hôm nay
+        calendar.add(Calendar.DAY_OF_YEAR, -20)
+
+        // Lặp từ 15 ngày trước đến ngày mai (tổng cộng 17 ngày)
+        for (i in 0..21) {
             val day = calendar.clone() as Calendar
             day.add(Calendar.DAY_OF_YEAR, i)
             selectDays.add(day)
