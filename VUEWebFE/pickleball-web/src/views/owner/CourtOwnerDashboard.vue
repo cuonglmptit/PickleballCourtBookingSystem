@@ -130,14 +130,38 @@ export default {
         this.revenueByClusterChartInstance.destroy();
       }
       if (!this.filteredData) return;
-      const labels = this.filteredData.flatMap((cluster) =>
-        cluster.bookings.map((booking) => booking.timeBooking.split("T")[0])
+      // Nhóm dữ liệu theo ngày và cụm sân
+      const revenueByDateAndCluster = {};
+      this.filteredData.forEach((cluster) => {
+        cluster.bookings.forEach((booking) => {
+          const date = booking.timeBooking.split("T")[0];
+          if (!revenueByDateAndCluster[date]) {
+            revenueByDateAndCluster[date] = {};
+          }
+          if (!revenueByDateAndCluster[date][cluster.courtCluster.name]) {
+            revenueByDateAndCluster[date][cluster.courtCluster.name] = 0;
+          }
+          revenueByDateAndCluster[date][cluster.courtCluster.name] +=
+            booking.amount || 0;
+        });
+      });
+
+      // Tạo labels và datasets từ dữ liệu đã nhóm
+      const labels = Object.keys(revenueByDateAndCluster).sort(
+        (a, b) => new Date(a) - new Date(b)
       );
-      const datasets = this.filteredData.map((cluster) => ({
-        label: cluster.courtCluster.name,
-        data: cluster.bookings.map((booking) => booking.amount || 0), // Thêm giá trị mặc định nếu không có 'amount'
-        backgroundColor: this.getRandomColor(),
-      }));
+      const datasets = this.filteredData.map((cluster) => {
+        const data = labels.map(
+          (label) =>
+            revenueByDateAndCluster[label]?.[cluster.courtCluster.name] || 0
+        );
+        return {
+          label: cluster.courtCluster.name,
+          data: data,
+          backgroundColor: this.getRandomColor(),
+        };
+      });
+
       const ctx = document
         .getElementById("revenueByClusterChart")
         .getContext("2d");
