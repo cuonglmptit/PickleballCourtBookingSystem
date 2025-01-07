@@ -97,22 +97,22 @@ public class CourtTimeSlotService : BaseService<CourtTimeSlot>, ICourtTimeSlotSe
 
                 foreach (var date in dates)
                 {
-                    if (date.Date < timeNow.Date)
-                    {
-                        return CreateServiceResult(Success: false, StatusCode: 400, UserMsg: "Ngay truyen vao khong hop le (thoi diem trong qua khu)", DevMsg: "Ngay truyen vao khong hop le");
-                    }
+                    // if (date.Date < timeNow.Date)
+                    // {
+                    //     return CreateServiceResult(Success: false, StatusCode: 400, UserMsg: "Ngay truyen vao khong hop le (thoi diem trong qua khu)", DevMsg: "Ngay truyen vao khong hop le");
+                    // }
                     foreach (var courtPrice in prices)
                     {
                         if (!courtPrice.Time.HasValue) continue;
                         var check = true;
-                        foreach (var courtTimeSlotCheck in courtTimeSlotsCheck)
-                        {
-                            if ((courtTimeSlotCheck.Date == date.Date && courtTimeSlotCheck.Time == courtPrice.Time &&
-                                courtTimeSlotCheck.CourtId == courtId) || (date.Date == courtTimeSlotCheck.Date && courtPrice.Time < timeNow.TimeOfDay))
-                            {
-                                check = false;
-                            }
-                        }
+                        // foreach (var courtTimeSlotCheck in courtTimeSlotsCheck)
+                        // {
+                        //     if ((courtTimeSlotCheck.Date == date.Date && courtTimeSlotCheck.Time == courtPrice.Time &&
+                        //         courtTimeSlotCheck.CourtId == courtId) || (date.Date == courtTimeSlotCheck.Date && courtPrice.Time < timeNow.TimeOfDay))
+                        //     {
+                        //         check = false;
+                        //     }
+                        // }
                         if (check)
                         {
                             courtTimeSlots.Add(new CourtTimeSlot

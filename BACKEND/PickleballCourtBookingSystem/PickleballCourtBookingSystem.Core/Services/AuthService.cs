@@ -56,7 +56,7 @@ public class AuthService : IAuthService
                 // bao gồm !=, đều trả về giá trị false
                 Id = Guid.Empty,
                 Username = username.Trim(),
-                Password = BCrypt.Net.BCrypt.HashPassword(password),
+                Password = HashPassword(password),
                 Name = name,
                 PhoneNumber = phoneNumber,
                 Email = email,
@@ -68,34 +68,6 @@ public class AuthService : IAuthService
             if (!userRegisterResult.Success)
             {
                 return userRegisterResult;
-            }
-
-            if (role == RoleEnum.Customer)
-            {
-                var customer = new Customer
-                {
-                    Id = user.Id,
-                    UserId = user.Id
-                };
-                var customerAddResult = _customerService.InsertService(customer);
-                if (!customerAddResult.Success)
-                {
-                    return customerAddResult;
-                }
-            }
-            
-            if (role == RoleEnum.CourtOwner)
-            {
-                var courtOwner = new CourtOwner
-                {
-                    Id = user.Id,
-                    UserId = user.Id
-                };
-                var courtOwnerAddResult = _courtOwnerService.InsertService(courtOwner);
-                if (!courtOwnerAddResult.Success)
-                {
-                    return courtOwnerAddResult;
-                }
             }
             return userRegisterResult;
         }
@@ -121,13 +93,12 @@ public class AuthService : IAuthService
                 return CommonMethods.CreateServiceResult(Success: false, StatusCode: 404,
                     UserMsg: "Tài khoản người dùng không tồn tại", DevMsg: "Tài khoản người dùng không tồn tại");
             }
-
-            var hashPassword = HashPassword(password);
-            if(!VerifyPassword(password, hashPassword))
+            
+            if(!VerifyPassword(password, user.Password!))
             {
                 return CommonMethods.CreateServiceResult(Success: false, StatusCode: 401,
-                    UserMsg: "Tài khoản hoặc mật khẩu đăng nhập không chính xác",
-                    DevMsg: "Tài khoản hoặc mật khẩu đăng nhập không chính xác");
+                    UserMsg: "Mật khẩu đăng nhập không chính xác",
+                    DevMsg: "Mật khẩu đăng nhập không chính xác");
             }
             var roleEnum = (RoleEnum)Enum.ToObject(typeof(RoleEnum), user.RoleId);
             var claims = new List<Claim>
@@ -277,7 +248,7 @@ public class AuthService : IAuthService
         return BCrypt.Net.BCrypt.EnhancedHashPassword(password, 13);
     }
 
-    public Boolean VerifyPassword(string password, string hashedPassword)
+    public bool VerifyPassword(string password, string hashedPassword)
     {
         return BCrypt.Net.BCrypt.EnhancedVerify(password, hashedPassword);
     }
