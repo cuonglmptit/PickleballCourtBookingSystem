@@ -53,7 +53,7 @@ class HomeCourtOwnerActivity : AppCompatActivity() {
             override fun onItemClick(item: CourtCluster?) {
                 item?.let {
                     val intent = Intent(this@HomeCourtOwnerActivity, CourtClusterEditActivity::class.java)
-                    intent.putExtra("courtClusterId", it.id)
+                    intent.putExtra("courtCluster", it)
                     startActivity(intent)
                 }
             }
@@ -104,7 +104,6 @@ class HomeCourtOwnerActivity : AppCompatActivity() {
                                                     description = courtClusterResponse.description,
                                                     address = address,
                                                     courtOwnerId = courtClusterResponse.courtOwnerId,
-                                                    imageUrl = courtClusterResponse.imageUrl
                                                 )
                                                 courtClusters.add(courtCluster)
                                                 courtClusterAdapter.updateData(courtClusters.toMutableList())

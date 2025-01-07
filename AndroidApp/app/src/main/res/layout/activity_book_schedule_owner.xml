@@ -7,11 +7,24 @@
     android:layout_height="match_parent"
     tools:context=".screen.customer.bookschedule.BookScheduleActivity">
 
+    <TextView
+        android:id="@+id/bookingListTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/list_booking"
+        android:textStyle="bold"
+        android:textSize="@dimen/sp_18"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewBookings"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/bookingListTextView"
+        android:layout_marginTop="@dimen/dp_10"
         app:layout_constraintBottom_toTopOf="@id/bottomNavigationView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />

@@ -69,6 +69,10 @@ class BookingActivity : AppCompatActivity() {
         binding.confirmButton.setOnClickListener {
             onConfirmButtonClicked()
         }
+        binding.backButton.setOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
+
 
         loadCourts()
         loadDays()
@@ -175,22 +179,39 @@ class BookingActivity : AppCompatActivity() {
 
 
 
+//    private fun loadDays() {
+//        val calendar = Calendar.getInstance()
+//        val selectDays = mutableListOf<Calendar>()
+//
+//        for (i in 0..6) {
+//            val day = calendar.clone() as Calendar
+//            day.add(Calendar.DAY_OF_YEAR, i)
+//            selectDays.add(day)
+//        }
+//
+//        selectDayAdapter.updateData(selectDays)
+//
+//        val selectedDayPosition = intent.getIntExtra("selectedDayPosition", RecyclerView.NO_POSITION)
+//        if (selectedDayPosition != RecyclerView.NO_POSITION) {
+//            selectDayAdapter.setSelectedItem(selectedDayPosition)
+//        }
+//    }
+
     private fun loadDays() {
         val calendar = Calendar.getInstance()
         val selectDays = mutableListOf<Calendar>()
 
-        for (i in 0..6) {
+        // Lùi lại 15 ngày từ hôm nay
+        calendar.add(Calendar.DAY_OF_YEAR, -20)
+
+        // Lặp từ 15 ngày trước đến ngày mai (tổng cộng 17 ngày)
+        for (i in 0..21) {
             val day = calendar.clone() as Calendar
             day.add(Calendar.DAY_OF_YEAR, i)
             selectDays.add(day)
         }
 
         selectDayAdapter.updateData(selectDays)
-
-        val selectedDayPosition = intent.getIntExtra("selectedDayPosition", RecyclerView.NO_POSITION)
-        if (selectedDayPosition != RecyclerView.NO_POSITION) {
-            selectDayAdapter.setSelectedItem(selectedDayPosition)
-        }
     }
 
     private fun loadCourts() {

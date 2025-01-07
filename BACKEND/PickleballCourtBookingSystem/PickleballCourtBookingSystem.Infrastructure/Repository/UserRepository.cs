@@ -14,12 +14,11 @@
 
             }
 
-            public User? CheckLogin(string username, string password)
+            public User? GetUserByUsername(string username)
             {
-                var sqlCommand = $"SELECT * FROM {className} WHERE username = @username AND password = @password";
+                var sqlCommand = $"SELECT * FROM {className} WHERE username = @username";
                 var parameters = new DynamicParameters();
                 parameters.Add("@username", username);
-                parameters.Add("@password", password);
                 var result = dbContext.Connection.QueryFirstOrDefault<User>(sqlCommand, parameters);
                 return result;
             }

@@ -96,7 +96,6 @@ class SearchActivity : AppCompatActivity() {
                                                     description = courtClusterResponse.description,
                                                     address = address,
                                                     courtOwnerId = courtClusterResponse.courtOwnerId,
-                                                    imageUrl = courtClusterResponse.imageUrl
                                                 )
                                                 courtClusters.add(courtCluster)
 
