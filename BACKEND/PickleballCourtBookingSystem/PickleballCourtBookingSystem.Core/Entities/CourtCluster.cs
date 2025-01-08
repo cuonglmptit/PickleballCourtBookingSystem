@@ -1,3 +1,5 @@
+using PickleballCourtBookingSystem.Core.PEnum;
+
 namespace PickleballCourtBookingSystem.Core.Entities
 
 {
@@ -9,7 +11,7 @@ namespace PickleballCourtBookingSystem.Core.Entities
         public TimeSpan? OpeningTime { get; set; }
         public TimeSpan? ClosingTime { get; set; }
         public Guid? AddressId { get; set; }
-        public Guid? CourtOwnerId { get; set; } 
-        public int? Status { get; set; }
+        public Guid? CourtOwnerId { get; set; }
+        public CourtClusterStatusEnum Status { get; set; }
     }
 }

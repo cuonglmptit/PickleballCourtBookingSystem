@@ -12,6 +12,7 @@ import RegisterView from '../views/auth/RegisterView.vue';
 import LoginView from '../views/auth/LoginView.vue';
 import CustomerBookings from '@/views/customer/CustomerBookings.vue';
 import OwnerCourtClusterDetail from '@/views/owner/OwnerCourtClusterDetail.vue';
+import AdminManage from '@/views/admin/AdminView.vue';
 
 import store from '@/store';  // Import store
 
@@ -69,7 +70,7 @@ const routes = [
       {
         path: '/admin',
         name: 'admin',
-        component: CourtOwnerDashboard,
+        component: AdminManage,
         meta: { requiresAuth: true, allowedRoles: ['Admin'], title: 'Admin' },
       },
     ],

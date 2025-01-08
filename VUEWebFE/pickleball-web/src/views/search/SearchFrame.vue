@@ -57,7 +57,12 @@ import DatePicker from "../../components/inputs/DatePicker.vue";
 // import DropCheckboxes from "../../components/inputs/DropCheckboxes.vue";
 import InputSelect from "../../components/inputs/InputSelect.vue";
 import TriangleButton from "../../components/buttons/TriangleButton.vue";
-import { getListTime, getProvinces } from "../../scripts/apiService.js";
+import {
+  getListTime,
+  getProvinces,
+  getDistricts,
+  getWards,
+} from "../../scripts/apiService.js";
 export default {
   components: {
     TranparentSearch,
@@ -65,6 +70,14 @@ export default {
     // DropCheckboxes,
     InputSelect,
     TriangleButton,
+  },
+  data() {
+    return {
+      searchData: { ...this.initialData },
+      timeSuggestionList: [],
+      filteredEndTimeList: [],
+      provinesSuggestionList: [],
+    };
   },
   async created() {
     try {
@@ -77,11 +90,12 @@ export default {
       // console.log(this.timeSuggestionList);
 
       //Lấy gợi ý list khu vực
-      const listProvinesRes = await getProvinces();
+      const [listProvinesRes, listDistrictsRes, listWardsRes] =
+        await Promise.all([getProvinces()]);
+
       this.provinesSuggestionList = listProvinesRes.data.map(
         (item) => item.name
       );
-      // console.log(this.provinesSuggestionList);
     } catch (error) {
       console.log(error);
     }
@@ -147,14 +161,6 @@ export default {
         forceUpdate: Date.now(),
       }),
     },
-  },
-  data() {
-    return {
-      searchData: { ...this.initialData },
-      timeSuggestionList: [],
-      filteredEndTimeList: [],
-      provinesSuggestionList: [],
-    };
   },
 };
 </script>

@@ -1,72 +1,70 @@
 <template>
   <div class="container">
     <div class="content">
-      <div class="booking-management">
+      <div class="cluster-management">
         <div class="filters">
           <input
             v-model="searchQuery"
             type="text"
-            placeholder="Tìm kiếm booking..."
+            placeholder="Tìm kiếm cụm sân..."
             class="search-input"
           />
           <div>
-            Lọc theo:
+            Trạng thái:
             <select v-model="statusFilter" class="status-select">
               <option value="">Tất cả</option>
-              <option value="Pending">Đang chờ</option>
-              <option value="CourtOwnerConfirmed">Đã xác nhận</option>
-              <option value="Paid">Đã thanh toán</option>
-              <option value="Unpaid">Chưa thanh toán</option>
-              <option value="Canceled">Đã hủy</option>
+              <option value="Active">Hoạt động</option>
+              <option value="Inactive">Ngừng hoạt động</option>
             </select>
           </div>
         </div>
-        <table class="booking-table">
+
+        <table class="cluster-table">
           <thead>
             <tr>
               <th>STT</th>
-              <th>Mã booking</th>
-              <th>Thời gian đặt</th>
-              <th>Cụm sân</th>
-              <th>Sân số</th>
+              <th>Tên cụm sân</th>
+              <th>Số lượng sân</th>
+              <th>Tài khoản chủ sân</th>
+              <th>Tên chủ sân</th>
+              <th>SĐT chủ sân</th>
+              <th>Email chủ sân</th>
               <th>Trạng thái</th>
-              <th>Thanh toán</th>
-              <th>Tổng tiền</th>
               <th>Thao tác</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(booking, index) in filteredBookings" :key="booking.id">
+            <tr v-for="(cluster, index) in filteredClusters" :key="index">
               <td>{{ (currentPage - 1) * itemsPerPage + index + 1 }}</td>
-              <td class="roboto-bold">{{ booking.code }}</td>
-              <td>{{ formatDate(booking.timeBooking) }}</td>
-              <td>{{ getCourtClusterName(booking.courtClusterId) }}</td>
-              <td>{{ getCourtNumber(booking.courtId) }}</td>
-              <td class="roboto-bold" :class="statusClass(booking.status)">
-                {{ formatStatus(booking.status) }}
-              </td>
+              <td>{{ cluster.courtCluster.name }}</td>
+              <td>{{ cluster.courts.length }}</td>
+              <td>{{ cluster.owner.username }}</td>
+              <td>{{ cluster.owner.name }}</td>
+              <td>{{ cluster.owner.phoneNumber }}</td>
+              <td>{{ cluster.owner.email }}</td>
               <td
                 class="roboto-bold"
-                :class="statusClass(booking.paymentStatus)"
+                :class="statusClass(cluster.courtCluster.status)"
               >
-                {{ formatStatus(booking.paymentStatus) }}
-              </td>
-              <td
-                class="roboto-bold"
-                :class="statusClass(booking.paymentStatus)"
-              >
-                {{ formatCurrency(booking.amount) }}
+                {{ formatStatus(cluster.courtCluster.status) }}
               </td>
               <td class="center-colgap-4px">
-                <button class="detail-btn" @click="viewDetails(booking)">
+                <button class="detail-btn" @click="viewDetails(cluster)">
                   Chi tiết
                 </button>
                 <button
-                  v-if="booking.status === 'Pending'"
+                  v-if="cluster.courtCluster.status === 'Active'"
+                  @click="deactiveCluster(cluster.courtCluster)"
                   class="reject-btn"
-                  @click="rejectBooking(booking)"
                 >
-                  Hủy đặt
+                  Ngừng sân
+                </button>
+                <button
+                  v-if="cluster.courtCluster.status === 'Inactive'"
+                  class="accept-btn"
+                  @click="activeCluster(cluster.courtCluster)"
+                >
+                  Mở sân
                 </button>
               </td>
             </tr>
@@ -93,61 +91,50 @@
   <div class="overlay" @click="hideForm" v-if="isFormVisible">
     <form class="detail-form" @click.stop @submit.prevent>
       <div class="left-form">
-        <div class="big-title">Chi tiết lịch đặt</div>
+        <div class="big-title">Chi tiết cụm sân</div>
         <div class="detail">
-          <div>Mã booking: {{ selectedBooking.code }}</div>
-          <div>
-            Thời gian đặt: {{ formatDate(selectedBooking.timeBooking) }}
-          </div>
-          <div>
-            Cụm sân: {{ getCourtClusterName(selectedBooking.courtClusterId) }}
-          </div>
-          <ul>
-            <li
-              v-for="courtTimeSlot in seletedCourTimeSlotsByBookingId"
-              :key="courtTimeSlot.id"
-            >
-              Sân {{ getCourtNumber(courtTimeSlot.courtId) }}:
-              {{
-                courtTimeSlot.time +
-                " - " +
-                formatDate(courtTimeSlot.date).split(" ")[1]
-              }}
-            </li>
-          </ul>
-          <div style="color: var(--topic-color4-500); font-size: 24px">
-            Tổng: {{ formatCurrency(selectedBooking.amount) }}
+          <div>Id cụm sân: {{ selectedCluster.courtCluster.id }}</div>
+          <div>Tên cụm sân: {{ selectedCluster.courtCluster.name }}</div>
+          <div>Số lượng sân: {{ selectedCluster.courts.length }}</div>
+          <div v-if="selectedCluster && selectedCluster.address">
+            Địa chỉ:
+            {{
+              `${selectedCluster.address.city}, ${selectedCluster.address.district}, ${selectedCluster.address.ward}, ${selectedCluster.address.street}`
+            }}
           </div>
           <br />
-          <div>Thông tin người đặt:</div>
-          <div>Tên: {{ selectedBookingCustomerInfo.name }}</div>
-          <div>Email: {{ selectedBookingCustomerInfo.email }}</div>
+          <div class="big-title">Thông tin chủ sân:</div>
+          <div>Tên: {{ selectedCluster.owner.name }}</div>
+          <div>Sđt: {{ selectedCluster.owner.phoneNumber }}</div>
+          <div>Email: {{ selectedCluster.owner.email }}</div>
         </div>
       </div>
       <div class="right-form">
         <div>
           <div class="big-title">Trạng thái</div>
-          <div class="big-title" :class="statusClass(selectedBooking.status)">
-            {{ formatStatus(selectedBooking.status) }}
-          </div>
-        </div>
-        <div>
-          <div class="big-title">Thanh toán</div>
           <div
             class="big-title"
-            :class="statusClass(selectedBooking.paymentStatus)"
+            :class="statusClass(selectedCluster.courtCluster.status)"
           >
-            {{ formatStatus(selectedBooking.paymentStatus) }}
+            {{ formatStatus(selectedCluster.courtCluster.status) }}
           </div>
         </div>
         <div class="buttons-container">
           <button
-            v-if="selectedBooking.status === 'Pending'"
+            v-if="selectedCluster.courtCluster.status === 'Active'"
             class="reject-btn roboto-bold font-size-24"
             style="width: 200px; height: 36px"
-            @click="rejectBooking(selectedBooking)"
+            @click="deactiveCluster(selectedCluster.courtCluster)"
           >
-            Hủy đặt
+            Ngừng sân
+          </button>
+          <button
+            v-if="selectedCluster.courtCluster.status === 'Inactive'"
+            class="accept-btn roboto-bold font-size-24"
+            style="width: 200px; height: 36px"
+            @click="activeCluster(selectedCluster.courtCluster)"
+          >
+            Mở sân
           </button>
         </div>
       </div>
@@ -158,12 +145,9 @@
 <script>
 import Swal from "sweetalert2";
 import {
-  getBookingStatus,
-  getCourtsOfCourtCluster,
-  getCourtTimeSlotsByBookingId,
-  getCustomerInfo,
-  cancelBooking,
-  getCourtClusterById,
+  updateCourtClusterStatus,
+  getClusterAdmin,
+  getAddressByid,
 } from "../../scripts/apiService.js";
 export default {
   data() {
@@ -171,33 +155,37 @@ export default {
       isFormVisible: false,
       searchQuery: "",
       statusFilter: "",
-      bookings: [],
+      clusters: [],
       currentPage: 1,
       itemsPerPage: 15,
       courtClusters: [],
       courts: [],
-      selectedBooking: null,
-      seletedCourTimeSlotsByBookingId: [],
-      selectedBookingCustomerInfo: {},
+      selectedCluster: null,
     };
   },
   async created() {
     this.loadData();
   },
   computed: {
-    filteredBookings() {
-      const filtered = this.bookings.filter((booking) => {
-        if (booking.code) {
-          const matchesSearch = booking.code
-            .toLowerCase()
-            .includes(this.searchQuery.toLowerCase());
+    filteredClusters() {
+      const filtered = this.clusters.filter((cluster) => {
+        if (cluster.courtCluster.name) {
+          const matchesSearch =
+            this.removeVietnameseTones(cluster.courtCluster.name)
+              .toLowerCase()
+              .includes(this.searchQuery.toLowerCase()) ||
+            cluster.owner.phoneNumber
+              .toLowerCase()
+              .includes(this.searchQuery.toLowerCase()) ||
+            cluster.owner.email
+              .toLowerCase()
+              .includes(this.searchQuery.toLowerCase()) ||
+            cluster.owner.username
+              .toLowerCase()
+              .includes(this.searchQuery.toLowerCase());
           const matchesStatus =
             !this.statusFilter ||
-            booking.status === this.statusFilter ||
-            booking.paymentStatus === this.statusFilter ||
-            (this.statusFilter === "ConfirmedButUnpaid" &&
-              booking.status === "CourtOwnerConfirmed" &&
-              booking.paymentStatus === "Unpaid");
+            cluster.courtCluster.status === this.statusFilter;
           return matchesSearch && matchesStatus;
         }
       });
@@ -206,22 +194,85 @@ export default {
       return filtered.slice(start, end);
     },
     totalPages() {
-      const totalFiltered = this.bookings.filter((booking) => {
-        if (booking.code) {
-          const matchesSearch = booking.code
-            .toLowerCase()
-            .includes(this.searchQuery.toLowerCase());
-          const matchesStatus =
-            !this.statusFilter ||
-            booking.status === this.statusFilter ||
-            booking.paymentStatus === this.statusFilter;
-          return matchesSearch && matchesStatus;
-        }
-      }).length;
+      const totalFiltered = this.filteredClusters.length;
       return Math.ceil(totalFiltered / this.itemsPerPage);
     },
   },
+
   methods: {
+    async deactiveCluster(courtCluster) {
+      const result = await Swal.fire({
+        title: "Bạn có chắc chắn muốn ngưng hoạt động của cụm sân?",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonText: "Xác nhận",
+        cancelButtonText: "Hủy",
+      });
+
+      if (result.isConfirmed) {
+        try {
+          var response = await updateCourtClusterStatus(
+            courtCluster.id,
+            "Inactive"
+          );
+          if (response.success) {
+            Swal.fire("Thành công!", response.userMsg, "success");
+          } else {
+            Swal.fire("Thất bại!", response.userMsg, "error");
+          }
+          await this.loadData();
+          const updatedCluster = this.clusters.find(
+            (item) => item.courtCluster.id === courtCluster.id
+          );
+          this.selectedCluster = updatedCluster;
+          await this.viewDetails(updatedCluster);
+        } catch (error) {
+          console.log(`deactiveCluster Admin.vue: ${error}`);
+        }
+      }
+    },
+    async activeCluster(courtCluster) {
+      const result = await Swal.fire({
+        title: "Bạn có chắc chắn mở hoạt động cho cụm sân?",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonText: "Xác nhận",
+        cancelButtonText: "Hủy",
+      });
+
+      if (result.isConfirmed) {
+        try {
+          var response = await updateCourtClusterStatus(
+            courtCluster.id,
+            "Active"
+          );
+          if (response.success) {
+            Swal.fire("Thành công!", response.userMsg, "success");
+          } else {
+            Swal.fire("Thất bại!", response.userMsg, "error");
+          }
+          await this.loadData();
+          const updatedCluster = this.clusters.find(
+            (item) => item.courtCluster.id === courtCluster.id
+          );
+          this.selectedCluster = updatedCluster;
+          await this.viewDetails(updatedCluster);
+        } catch (error) {
+          console.log(`deactiveCluster Admin.vue: ${error}`);
+        }
+      }
+    },
+    removeVietnameseTones(str) {
+      try {
+        return str
+          .normalize("NFD") // Tách các ký tự đặc biệt khỏi chữ cái
+          .replace(/[\u0300-\u036f]/g, "") // Loại bỏ dấu
+          .replace(/đ/g, "d") // Thay chữ "đ" thành "d"
+          .replace(/Đ/g, "D"); // Thay chữ "Đ" thành "D"
+      } catch (error) {
+        console.log(`removeVietnameseTones InputSelect: ${error}`);
+      }
+    },
     getCourtClusterName(courtClusterId) {
       const cluster = this.courtClusters.find(
         (cluster) => cluster.id === courtClusterId
@@ -275,6 +326,12 @@ export default {
         case "Completed":
           statusVie = "Đã hoàn thành";
           break;
+        case "Active":
+          statusVie = "Hoạt động";
+          break;
+        case "Inactive":
+          statusVie = "Ngừng hoạt động";
+          break;
         default:
           break;
       }
@@ -301,93 +358,35 @@ export default {
         case "Completed":
           statusClass = "paid";
           break;
+        case "Active":
+          statusClass = "confirmed";
+          break;
+        case "Inactive":
+          statusClass = "canceled";
+          break;
         default:
           break;
       }
       return statusClass;
     },
-    async viewDetails(booking) {
-      this.selectedBooking = booking; // Lưu thông tin booking được chọn
-      const [courtTimeSlotsRes, customerInfoRes] = await Promise.all([
-        getCourtTimeSlotsByBookingId(booking.id),
-        getCustomerInfo(booking.customerId),
-      ]);
-      if (courtTimeSlotsRes.success) {
-        this.seletedCourTimeSlotsByBookingId = courtTimeSlotsRes.data;
-      }
-      if (customerInfoRes.success) {
-        this.selectedBookingCustomerInfo = customerInfoRes.data;
+    async viewDetails(cluster) {
+      this.selectedCluster = cluster;
+      const resp = await getAddressByid(
+        this.selectedCluster.courtCluster.addressId
+      );
+      if (resp.success) {
+        this.selectedCluster.address = resp.data;
       }
       this.isFormVisible = true; // Hiển thị form chi tiết
     },
-    async rejectBooking(booking) {
-      const result = await Swal.fire({
-        title: "Bạn có chắc chắn muốn hủy lịch đặt này?",
-        icon: "question",
-        showCancelButton: true,
-        confirmButtonText: "Xác nhận",
-        cancelButtonText: "Hủy",
-      });
-
-      if (result.isConfirmed) {
-        try {
-          var response = await cancelBooking(booking.id);
-          if (response.success) {
-            Swal.fire("Thành công!", response.userMsg, "success");
-          } else {
-            Swal.fire("Thất bại!", response.userMsg, "error");
-          }
-          await this.loadData();
-          this.viewDetails(
-            this.bookings.find((item) => item.id === booking.id)
-          );
-        } catch (error) {
-          console.log(`rejectBooking CourtOwnerBookings.vue: ${error}`);
-        }
-      }
-    },
     async loadData() {
       try {
-        // Load booking và courtCluster đồng thời
-        const [bookingRes, courtClusterRes] = await Promise.all([
-          getBookingStatus("All"),
-        ]);
-
-        // Xử lý kết quả của booking và courtCluster
-        if (bookingRes.success) {
-          this.bookings = bookingRes.data;
-        }
-        const courtClusterIds = [
-          ...new Set(this.bookings.map((booking) => booking.courtClusterId)),
-        ];
-
-        // Fetch thông tin từng courtCluster dựa trên ID
-        const courtClusterPromises = courtClusterIds.map(
-          (id) => getCourtClusterById(id) // API lấy thông tin courtCluster theo ID
-        );
-
-        // Chạy tất cả các request song song
-        const courtClusterResponses = await Promise.all(courtClusterPromises);
-
-        // Lọc các response thành công và thêm vào courtClusters
-        this.courtClusters = courtClusterResponses
-          .filter((res) => res.success)
-          .map((res) => res.data);
-
-        // Sau khi load xong courtCluster, tiếp tục lấy courts của từng cluster
-        if (this.courtClusters.length > 0) {
-          const courtPromises = this.courtClusters.map(
-            (cluster) => getCourtsOfCourtCluster(cluster.id) // API nhận cluster.id
-          );
-          // Chạy tất cả request để lấy courts
-          const courtsRes = await Promise.all(courtPromises);
-          // Gộp tất cả các courts vào một mảng
-          this.courts = courtsRes
-            .filter((res) => res.success) // Lọc các response thành công
-            .flatMap((res) => res.data); // Lấy dữ liệu từ các response
+        const clusterRes = await getClusterAdmin(this.statusFilter);
+        if (clusterRes.success) {
+          this.clusters = clusterRes.data;
         }
       } catch (error) {
-        console.error(`Error in loadData CourtOwnerBookings.vue: ${error}`);
+        console.error(`Error in loadData Admin.vue: ${error}`);
       }
     },
   },
@@ -465,31 +464,31 @@ export default {
 }
 
 /* CSS TABLE */
-.booking-management {
+.cluster-management {
   padding: 16px;
   overflow-y: scroll;
   border-radius: 4px;
   position: relative;
 }
 
-.booking-table {
+.cluster-table {
   width: 100%;
   border-collapse: collapse;
 }
 
-.booking-table th {
+.cluster-table th {
   position: sticky;
   top: 0;
 }
 
-.booking-table th,
-.booking-table td {
+.cluster-table th,
+.cluster-table td {
   border: 1px solid rgba(0, 0, 0, 0.3);
   text-align: center;
   padding: 8px;
 }
 
-.booking-table th {
+.cluster-table th {
   background-color: #f4f4f4;
   font-weight: bold;
 }

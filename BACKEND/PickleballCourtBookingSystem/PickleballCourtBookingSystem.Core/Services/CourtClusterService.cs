@@ -80,7 +80,7 @@ namespace PickleballCourtBookingSystem.Core.Services
                     ClosingTime = closingTime,
                     AddressId = address.Id,
                     CourtOwnerId = courtOwner.Id,
-                    Status = (int)CourtClusterStatusEnum.Active
+                    Status = CourtClusterStatusEnum.Inactive
                 };
 
                 var result = _courtClusterRepository.Insert(courtCluster);
