@@ -38,35 +38,79 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <EditText
-        android:id="@+id/editTextDate"
+    <TextView
+        android:id="@+id/textViewDateShow"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_10"
-        android:hint="Ngày muốn chơi (yyyy-MM-dd)"
+        android:text="Ngày muốn chơi"
+        android:textSize="@dimen/sp_16"
         app:layout_constraintTop_toBottomOf="@id/editTextCityName"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        />
 
-    <EditText
-        android:id="@+id/editTextStartTime"
+    <TextView
+        android:id="@+id/textViewDate"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_10"
-        android:hint="Giờ bắt đầu (HH:mm)"
-        app:layout_constraintTop_toBottomOf="@id/editTextDate"
+        android:textSize="@dimen/sp_16"
+        android:layout_marginStart="@dimen/dp_10"
+        app:layout_constraintTop_toBottomOf="@id/editTextCityName"
+        app:layout_constraintStart_toEndOf="@id/textViewDateShow"
+        app:layout_constraintEnd_toStartOf="@id/selectDayButton" />
+
+    <Button
+        android:id="@+id/selectDayButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/select_day"
+        app:layout_constraintTop_toTopOf="@+id/textViewDate"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/textViewDate"/>
+
+    <TextView
+        android:id="@+id/textViewStartTime"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Giờ bắt đầu chơi: "
+        app:layout_constraintTop_toTopOf="@id/spinnerStartTime"
+        app:layout_constraintBottom_toBottomOf="@id/spinnerStartTime"
         app:layout_constraintStart_toStartOf="parent"
+        />
+
+    <Spinner
+        android:id="@+id/spinnerStartTime"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_15"
+        android:layout_marginStart="@dimen/dp_10"
+        android:hint="Giờ bắt đầu"
+        app:layout_constraintTop_toBottomOf="@id/textViewDate"
+        app:layout_constraintStart_toEndOf="@id/textViewStartTime"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <EditText
-        android:id="@+id/editTextEndTime"
+    <TextView
+        android:id="@+id/textViewEndTime"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Giờ kết thúc chơi: "
+        app:layout_constraintTop_toTopOf="@id/spinnerEndTime"
+        app:layout_constraintBottom_toBottomOf="@id/spinnerEndTime"
+        app:layout_constraintStart_toStartOf="parent"
+        />
+
+    <Spinner
+        android:id="@+id/spinnerEndTime"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_10"
-        android:hint="Giờ kết thúc (HH:mm)"
-        app:layout_constraintTop_toBottomOf="@id/editTextStartTime"
-        app:layout_constraintStart_toStartOf="parent"
+        android:hint="Giờ kết thúc"
+        app:layout_constraintTop_toBottomOf="@id/spinnerStartTime"
+        app:layout_constraintStart_toStartOf="@id/spinnerStartTime"
         app:layout_constraintEnd_toEndOf="parent" />
+
+
 
     <Button
         android:id="@+id/buttonSearch"
@@ -74,7 +118,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="Tìm kiếm"
-        app:layout_constraintTop_toBottomOf="@id/editTextEndTime"
+        app:layout_constraintTop_toBottomOf="@id/spinnerEndTime"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

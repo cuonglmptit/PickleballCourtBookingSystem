@@ -13,5 +13,6 @@ data class CourtCluster(
     var description: String?,
     var address: Address,
     var courtOwnerId: String,
-    var imageUrl: String? = null
+    var imageUrl: String? = null,
+    var status: String
 ) : Parcelable

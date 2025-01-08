@@ -3,15 +3,8 @@ package com.maxholmes.androidapp.screen.courtowner.detail
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.maxholmes.androidapp.R
-import com.maxholmes.androidapp.data.dto.response.APIResponse
-import com.maxholmes.androidapp.data.dto.response.parseApiResponseData
-import com.maxholmes.androidapp.data.model.Address
 import com.maxholmes.androidapp.data.model.CourtCluster
-import com.maxholmes.androidapp.data.service.APIService
-import com.maxholmes.androidapp.data.service.RetrofitClient
 import com.maxholmes.androidapp.databinding.ActivityCourtClusterEditBinding
 import com.maxholmes.androidapp.screen.courtowner.add.AddCourtTimeSlotActivity
 import com.maxholmes.androidapp.screen.courtowner.detail.courtprice.ManagePriceActivity
@@ -21,7 +14,11 @@ import com.maxholmes.androidapp.utils.ext.loadImageWithUrl
 
 import android.content.Intent
 import android.widget.Toast
+import com.maxholmes.androidapp.data.dto.response.APIResponse
+import com.maxholmes.androidapp.data.dto.response.parseApiResponseData
 import com.maxholmes.androidapp.data.model.ImageCourtUrl
+import com.maxholmes.androidapp.data.service.RetrofitClient
+import com.maxholmes.androidapp.utils.enum.CourtClusterStatus
 import com.maxholmes.androidapp.utils.ext.loadImageCircleWithUrl
 import retrofit2.Call
 import retrofit2.Callback
@@ -55,7 +52,7 @@ class CourtClusterEditActivity : AppCompatActivity() {
 
         binding.managePricesButton.setOnClickListener {
             val intent = Intent(this, ManagePriceActivity::class.java)
-            intent.putExtra("courtCluster", courtCluster)
+            intent.putExtra("courtClusterId", courtCluster!!.id)
             startActivity(intent)
         }
 
@@ -77,34 +74,34 @@ class CourtClusterEditActivity : AppCompatActivity() {
         binding.timeText.text = "${courtCluster?.openingTime} - ${courtCluster?.closingTime}"
         binding.description.text = courtCluster?.description ?: "Không có mô tả"
         binding.addressText.text = courtCluster?.address.toString()
-        loadImageFromApi(courtCluster?.id)
-    }
+        if(courtCluster!!.status == CourtClusterStatus.Active.value) {
+            binding.status.text = "Trạng thái: Hoạt động"
+        }
+        else
+        {
+            binding.status.text = "Trạng thái: Ngưng hoạt động"
+        }
 
 
-    private fun loadImageFromApi(clusterId: String?) {
-        if (clusterId.isNullOrEmpty()) return
-
-        RetrofitClient.ApiClient.apiService.getImagesByClusterId(clusterId).enqueue(object : Callback<APIResponse> {
+        RetrofitClient.ApiClient.apiService.getImagesByClusterId(courtCluster!!.id).enqueue(object: Callback<APIResponse> {
             override fun onResponse(call: Call<APIResponse>, response: Response<APIResponse>) {
                 if (response.isSuccessful) {
-                    val apiResponse = response.body()
-                    if (apiResponse != null && apiResponse.success) {
-                        val imageUrls = parseApiResponseData<List<ImageCourtUrl>>(apiResponse.data)
-                        imageUrls?.firstOrNull()?.let { image ->
-                            binding.courtImage.loadImageCircleWithUrl(image.url, R.drawable.image_court_1)
+                    response.body()?.let { apiResponse ->
+                        val images: List<ImageCourtUrl>? = parseApiResponseData(apiResponse.data)
+                        if (images != null && images.size != 0)
+                        {
+                            binding.courtImage.loadImageWithUrl(images[0].url, R.drawable.image_court_1)
+                        }
+                        else
+                        {
+                            binding.courtImage.setImageResource(R.drawable.image_court_1)
                         }
                     }
-                    else {
-                        binding.courtImage.setImageResource(R.drawable.image_court_1)
-                    }
-                } else {
-                    Toast.makeText(this@CourtClusterEditActivity, "Lỗi mạng", Toast.LENGTH_SHORT).show()
                 }
             }
-
             override fun onFailure(call: Call<APIResponse>, t: Throwable) {
-                Toast.makeText(this@CourtClusterEditActivity, "Lỗi kết nối: ${t.message}", Toast.LENGTH_SHORT).show()
             }
         })
     }
+
 }

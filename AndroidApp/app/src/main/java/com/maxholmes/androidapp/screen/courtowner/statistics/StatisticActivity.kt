@@ -15,6 +15,7 @@ import com.maxholmes.androidapp.data.service.RetrofitClient
 import com.maxholmes.androidapp.databinding.ActivityStatisticBinding
 import com.maxholmes.androidapp.screen.courtowner.statistics.adapter.StatisticAdapter
 import com.maxholmes.androidapp.utils.ext.SharedPreferencesUtils
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -27,9 +28,9 @@ class StatisticActivity : AppCompatActivity() {
     private lateinit var statisticAdapter: StatisticAdapter
     private val statistics = mutableListOf<StatisticDto>()
 
-    private var filterDays = 30 // Mặc định là 30 ngày
-    private var sortBy = "totalRevenue" // Mặc định sắp xếp theo doanh thu
-    private var isAscending = true // Mặc định là tăng dần
+    private var filterDays = 30
+    private var sortBy = "totalRevenue"
+    private var isAscending = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -115,7 +116,6 @@ class StatisticActivity : AppCompatActivity() {
                             statistics.clear()
                             statistics.addAll(parsedStatistics)
 
-                            // Sắp xếp theo tiêu chí
                             statistics.sortWith(compareBy { if (sortBy == "totalRevenue") it.totalRevenue else it.totalBookings })
                             if (!isAscending) statistics.reverse()
 
@@ -126,8 +126,9 @@ class StatisticActivity : AppCompatActivity() {
                         }
                     }
                 } else {
-                    Toast.makeText(this@StatisticActivity, "Lỗi khi lấy dữ liệu", Toast.LENGTH_SHORT).show()
-                    Log.e("StatisticActivity", "Error: ${response.message()}")
+                    val data = JSONObject(response.errorBody()?.string())
+                    val text: String = parseApiResponseData(data.get("userMsg")) ?: "Lỗi: ${response.code()}"
+                    Toast.makeText(this@StatisticActivity, text, Toast.LENGTH_SHORT).show()
                 }
             }
 

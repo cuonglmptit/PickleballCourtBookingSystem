@@ -51,9 +51,9 @@ class CourtTimeSlotBookingAdapter : RecyclerView.Adapter<CourtTimeSlotBookingAda
         }
 
         fun bindViewData(timeSlot: CourtTimeSlot) {
-            val startTime = formatTime(timeSlot.time)
+            val startTime = timeSlot.time.formatTime()
             val endTime = startTime.plusHours(1)
-            val timeRange = "${formatTimeToString(startTime)} - ${formatTimeToString(endTime)}"
+            val timeRange = "${startTime.formatTimeToString()} - ${endTime.formatTimeToString()}"
             val dateFormatted = timeSlot.date.toCustomDateFormat()
             binding.dateText.text = dateFormatted
             binding.timeText.text = timeRange

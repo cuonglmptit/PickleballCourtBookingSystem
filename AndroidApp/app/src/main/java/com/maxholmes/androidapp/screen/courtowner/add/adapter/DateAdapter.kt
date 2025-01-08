@@ -19,7 +19,6 @@ class DateAdapter(private val dates: List<String>) : RecyclerView.Adapter<DateAd
         return dates.size
     }
 
-    // ViewHolder chứa các view cần thiết để hiển thị dữ liệu
     class DateViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val dateTextView: TextView = view.findViewById(android.R.id.text1)
     }

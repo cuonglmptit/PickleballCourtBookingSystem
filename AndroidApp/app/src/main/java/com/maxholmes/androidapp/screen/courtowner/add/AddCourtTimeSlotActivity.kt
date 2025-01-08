@@ -1,82 +1,115 @@
 package com.maxholmes.androidapp.screen.courtowner.add
 
 import DateAdapter
-import PriceAdapter
+import android.app.DatePickerDialog
+import android.content.Intent
 import android.os.Bundle
-import androidx.activity.viewModels
+import android.widget.DatePicker
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.maxholmes.androidapp.R
-import com.maxholmes.androidapp.data.model.CourtPrice
-import java.time.LocalTime
-import kotlin.random.Random
-import java.util.UUID
+import com.maxholmes.androidapp.data.dto.request.AutoAddCourtTimeSlotRequest
+import com.maxholmes.androidapp.data.dto.response.APIResponse
+import com.maxholmes.androidapp.data.model.Court
+import com.maxholmes.androidapp.data.model.CourtCluster
+import com.maxholmes.androidapp.data.service.RetrofitClient
+import com.maxholmes.androidapp.databinding.ActivityAddCourtTimeSlotBinding
+import com.maxholmes.androidapp.screen.courtowner.detail.courtprice.ManagePriceActivity
+import com.maxholmes.androidapp.utils.ext.SharedPreferencesUtils
+import com.maxholmes.androidapp.utils.ext.formatDateToRequest
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.util.*
 
 class AddCourtTimeSlotActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivityAddCourtTimeSlotBinding
+    private var listDate: MutableList<String> = mutableListOf()
+    private lateinit var courtCluster: CourtCluster
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_add_court_time_slot)
+        binding = ActivityAddCourtTimeSlotBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        val token = SharedPreferencesUtils.getToken(this)
+        courtCluster = intent.getParcelableExtra("courtCluster", CourtCluster::class.java)!!
+        val courtClusterId = courtCluster.id
+        binding.dateRecyclerView.layoutManager = LinearLayoutManager(this)
+        binding.dateRecyclerView.adapter = DateAdapter(listDate)
 
-        val dateRecyclerView: RecyclerView = findViewById(R.id.dateRecyclerView)
-        val priceRecyclerView: RecyclerView = findViewById(R.id.priceRecyclerView)
-
-        // Generate fake data
-        val fakeDates = generateFakeDates()
-        val fakePrices = generateFakePrices()
-
-        // Set up the RecyclerViews with adapters
-        dateRecyclerView.layoutManager = LinearLayoutManager(this)
-        priceRecyclerView.layoutManager = LinearLayoutManager(this)
-
-        // Set up the adapters (make sure you have an adapter ready for both)
-        dateRecyclerView.adapter = DateAdapter(fakeDates)  // Custom adapter for date list
-        priceRecyclerView.adapter = PriceAdapter(fakePrices)  // Custom adapter for price list
-    }
-
-    // Generate fake dates in dd/MM/yyyy format
-    private fun generateFakeDates(): List<String> {
-        val dateList = mutableListOf<String>()
-        val currentDate = java.time.LocalDate.now()
-        val formatter = java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy")
-
-        // Generate 10 random dates starting from today
-        for (i in 0 until 10) {
-            val randomDate = currentDate.plusDays(i.toLong())
-            dateList.add(randomDate.format(formatter))
+        binding.selectDayButton.setOnClickListener {
+            showDatePickerDialog()
         }
 
-        return dateList
+        binding.manageCourtPriceButton.setOnClickListener {
+            val intent = Intent(this, ManagePriceActivity::class.java)
+            intent.putExtra("courtClusterId", courtClusterId)
+            startActivity(intent)
+        }
+
+        binding.confirmButton.setOnClickListener {
+            addCourtTimeSlots(token!!)
+        }
     }
 
-    // Generate fake prices for different time slots
-    private fun generateFakePrices(): List<CourtPrice> {
-        val priceList = mutableListOf<CourtPrice>()
-        val timeSlots = listOf(
-            LocalTime.of(8, 0), // 8:00 AM
-            LocalTime.of(10, 0), // 10:00 AM
-            LocalTime.of(12, 0), // 12:00 PM
-            LocalTime.of(14, 0), // 2:00 PM
-            LocalTime.of(16, 0)  // 4:00 PM
+    private fun showDatePickerDialog() {
+        val calendar = Calendar.getInstance()
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+        calendar.add(Calendar.DAY_OF_YEAR, 1)
+
+        val datePickerDialog = DatePickerDialog(
+            this,
+            { _: DatePicker, selectedYear: Int, selectedMonth: Int, selectedDay: Int ->
+                val selectedDateFormatted = String.format("%02d/%02d/%04d", selectedDay, selectedMonth + 1, selectedYear)
+                val formattedDateForRequest = selectedDateFormatted.formatDateToRequest()
+
+                if (!listDate.contains(formattedDateForRequest)) {
+                    listDate.add(formattedDateForRequest)
+                    binding.dateRecyclerView.adapter?.notifyDataSetChanged()
+                } else {
+                    showToast("Ngày này đã được chọn.")
+                }
+            },
+            year,
+            month,
+            day
         )
 
-        // Generate random prices for each time slot
-        for (time in timeSlots) {
-            val random = Random.nextInt(0, 2)
-            var price: Double
-            if(random == 0)
-                price = 100000.0
-            else
-                price = 150000.0
-            priceList.add(CourtPrice(
-                id = UUID.randomUUID().toString(),
-                time = time,
-                price = price,
-                courtClusterId = "cluster_01"
-            ))
+        datePickerDialog.datePicker.minDate = calendar.timeInMillis
+        datePickerDialog.show()
+    }
+
+    private fun addCourtTimeSlots(token: String) {
+        if (listDate.isEmpty()) {
+            showToast("Vui lòng chọn ít nhất một ngày.")
+            return
         }
 
-        return priceList
+        val request = AutoAddCourtTimeSlotRequest(courtCluster.id, listDate)
+
+        RetrofitClient.ApiClient.apiService.autoCreateCourtTimeSlot(request, "Bearer $token")
+            .enqueue(object : Callback<APIResponse> {
+                override fun onResponse(call: Call<APIResponse>, response: Response<APIResponse>) {
+                    if (response.isSuccessful) {
+                        showToast("Đã thêm slot đặt sân thành công.")
+                        finish()
+                    } else {
+                        showToast("Lỗi khi thêm slot đặt sân.")
+                    }
+                }
+
+                override fun onFailure(call: Call<APIResponse>, t: Throwable) {
+                    showToast("Lỗi kết nối mạng. Vui lòng thử lại!")
+                }
+            })
+    }
+
+    private fun showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 }

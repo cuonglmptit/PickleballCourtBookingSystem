@@ -2,12 +2,14 @@ package com.maxholmes.androidapp.data.service
 
 import com.maxholmes.androidapp.data.dto.request.AddBookingRequest
 import com.maxholmes.androidapp.data.dto.request.AddCourtClusterRequest
+import com.maxholmes.androidapp.data.dto.request.AutoAddCourtTimeSlotRequest
 import com.maxholmes.androidapp.data.dto.request.CancelBookingRequest
 import com.maxholmes.androidapp.data.dto.request.ConfirmBookingRequest
 import com.maxholmes.androidapp.data.dto.request.LoginRequest
 import com.maxholmes.androidapp.data.dto.request.RegisterRequest
 import com.maxholmes.androidapp.data.dto.response.APIResponse
 import com.maxholmes.androidapp.data.dto.response.LoginResponse
+import com.maxholmes.androidapp.data.model.CourtPrice
 import retrofit2.http.GET
 import retrofit2.Call
 import retrofit2.http.Body
@@ -53,9 +55,6 @@ interface APIService {
     @GET("/api/CourtCluster/Active")
     fun getActiveCourtClusters(): Call<APIResponse>
 
-    @GET("/api/CourtCluster/{id}/Image")
-    fun getImagesByCourtClusterId(@Path("id") courtClusterId: String): Call<APIResponse>
-
     @GET("/api/User/User/getInfo")
     fun getUserInfo(@Header("Authorization") token: String): Call<APIResponse>
 
@@ -88,4 +87,13 @@ interface APIService {
 
     @GET("/api/ImageCourtUrl/Cluster/{id}")
     fun getImagesByClusterId(@Path("id") clusterId: String): Call<APIResponse>
+
+    @GET("/api/CourtPrice/GetCourtPricesByCourtClusterId/{courtClusterId}")
+    fun getCourtPricesByCourtClusterId(@Path("courtClusterId") courtClusterId: String): Call<APIResponse>
+
+    @POST("/api/CourtPrice/multiple")
+    fun postManyCourtPrice(@Body courtPrices: List<CourtPrice>): Call<APIResponse>
+
+    @POST("/api/CourtCluster/AutoCreateCourtTimeSlot")
+    fun autoCreateCourtTimeSlot(@Body autoAddCourtTimeSlotRequest: AutoAddCourtTimeSlotRequest, @Header("Authorization") token: String): Call<APIResponse>
 }

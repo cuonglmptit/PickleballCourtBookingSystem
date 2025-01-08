@@ -8,41 +8,30 @@
     android:background="@drawable/rounded_border_layout">
 
     <TextView
-        android:id="@+id/tvTime"
-        android:layout_width="wrap_content"
+        android:id="@+id/timeTextView"
+        android:layout_width="@dimen/dp_80"
         android:layout_height="wrap_content"
-        android:text="06:00"
+        android:layout_marginTop="@dimen/dp_10"
+        android:text="05:00"
         android:textSize="@dimen/sp_16"
         android:layout_marginStart="@dimen/dp_10"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
 
-    <TextView
+    <EditText
         android:id="@+id/tvPrice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="100.000đ"
+        tools:text="100.000đ"
         android:textSize="@dimen/sp_16"
         android:layout_marginStart="@dimen/dp_20"
-        app:layout_constraintStart_toEndOf="@id/tvTime"
+        app:layout_constraintStart_toEndOf="@id/timeTextView"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />
 
-    <ImageView
-        android:id="@+id/ivEdit"
-        android:layout_width="@dimen/dp_24"
-        android:layout_height="@dimen/dp_24"
-        android:src="@drawable/ic_edit"
-        android:contentDescription="Edit Button"
-        android:layout_marginEnd="@dimen/dp_10"
-        app:layout_constraintEnd_toStartOf="@id/ivDelete"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
-
-    <!-- Delete Button -->
-    <ImageView
-        android:id="@+id/ivDelete"
+    <ImageButton
+        android:id="@+id/btnDelete"
         android:layout_width="@dimen/dp_24"
         android:layout_height="@dimen/dp_24"
         android:src="@drawable/ic_delete"

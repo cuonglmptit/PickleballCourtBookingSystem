@@ -101,6 +101,24 @@
             app:layout_constraintStart_toEndOf="@id/ratingText"
             app:layout_constraintTop_toTopOf="@id/starIcon" />
 
+        <ImageView
+            android:id="@+id/statusIcon"
+            android:layout_width="@dimen/dp_20"
+            android:layout_height="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_8"
+            android:src="@drawable/ic_status"
+            app:layout_constraintTop_toBottomOf="@id/starIcon"
+            app:layout_constraintStart_toStartOf="@id/starIcon" />
+
+        <TextView
+            android:id="@+id/status"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_8"
+            app:layout_constraintTop_toTopOf="@id/statusIcon"
+            app:layout_constraintStart_toEndOf="@id/statusIcon"
+            app:layout_constraintEnd_toEndOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.cardview.widget.CardView>

@@ -15,6 +15,8 @@ import com.maxholmes.androidapp.screen.courtowner.bookschedule.adapter.CustomBoo
 import com.maxholmes.androidapp.screen.courtowner.bookschedule.detail.BookingCourtOwnerDetailActivity
 import com.maxholmes.androidapp.screen.courtowner.home.HomeCourtOwnerActivity
 import com.maxholmes.androidapp.screen.customer.bookschedule.detail.BookingCustomerDetailActivity
+import com.maxholmes.androidapp.screen.customer.search.SearchActivity
+import com.maxholmes.androidapp.screen.user.UserActivity
 import com.maxholmes.androidapp.utils.OnItemRecyclerViewClickListener
 import com.maxholmes.androidapp.utils.ext.SharedPreferencesUtils
 import com.maxholmes.androidapp.utils.ext.SpacingItemDecoration
@@ -73,7 +75,7 @@ class BookScheduleOwnerActivity : AppCompatActivity() {
                         response.body()?.let { apiResponse ->
                             val parsedBookings: List<CustomBookingResponse>? = parseApiResponseData(apiResponse.data)
                             if (!parsedBookings.isNullOrEmpty()) {
-                                val sortedBookings = parsedBookings.sortedByDescending { booking -> parseToLocalDateTime(booking.lastUpdatedTime) }
+                                val sortedBookings = parsedBookings.sortedByDescending { booking -> booking.lastUpdatedTime.parseToLocalDateTime() }
                                 bookings.clear()
                                 bookings.addAll(sortedBookings)
                                 customBookingAdapter.updateData(bookings)
@@ -102,9 +104,22 @@ class BookScheduleOwnerActivity : AppCompatActivity() {
                     startActivity(intent)
                     true
                 }
-                R.id.booking -> true
+                R.id.booking -> {
+                    true
+                }
+                R.id.search -> {
+                    val intent = Intent(this, SearchActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
+                R.id.profile -> {
+                    val intent = Intent(this, UserActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
                 else -> false
             }
         }
+
     }
 }
