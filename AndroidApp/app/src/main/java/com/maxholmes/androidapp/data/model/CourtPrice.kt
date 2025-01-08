@@ -6,8 +6,8 @@ import java.time.LocalTime
 
 @Parcelize
 data class CourtPrice(
-    var id: String,
-    var time: LocalTime,
+    var id: String?,
+    var time: String,
     var price: Double,
     var courtClusterId: String
 ) : Parcelable

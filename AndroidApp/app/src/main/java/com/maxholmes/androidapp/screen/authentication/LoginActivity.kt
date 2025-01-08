@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.maxholmes.androidapp.R
 import com.maxholmes.androidapp.data.dto.request.LoginRequest
 import com.maxholmes.androidapp.data.dto.response.LoginResponse
+import com.maxholmes.androidapp.data.dto.response.parseApiResponseData
 import com.maxholmes.androidapp.data.service.RetrofitClient
 import com.maxholmes.androidapp.databinding.ActivityLoginBinding
 import com.maxholmes.androidapp.screen.admin.HomeAdminActivity
@@ -17,6 +18,7 @@ import com.maxholmes.androidapp.screen.test.TestActivity
 import com.maxholmes.androidapp.screen.register.RegisterActivity
 import com.maxholmes.androidapp.utils.ext.SharedPreferencesUtils
 import com.maxholmes.androidapp.utils.ext.authentication.decodeJWT
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -84,8 +86,9 @@ class LoginActivity : AppCompatActivity() {
                         finish()
                     }
                 } else {
-                    val errorMsg = response.body()?.userMsg ?: "Sai tài khoản hoặc mật khẩu"
-                    Toast.makeText(this@LoginActivity, errorMsg, Toast.LENGTH_SHORT).show()
+                    val data = JSONObject(response.errorBody()?.string())
+                    val text: String = parseApiResponseData(data.get("userMsg"))!!
+                    Toast.makeText(this@LoginActivity, text, Toast.LENGTH_SHORT).show()
                 }
             }
 

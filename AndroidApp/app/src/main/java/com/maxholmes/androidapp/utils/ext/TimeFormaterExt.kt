@@ -4,23 +4,23 @@ import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
-fun formatTime(timeString: String): LocalTime {
+fun String.formatTime(): LocalTime {
     val formatter = DateTimeFormatter.ofPattern("HH:mm:ss")
-    val time = LocalTime.parse(timeString, formatter)
+    val time = LocalTime.parse(this, formatter)
     return time
 }
 
-fun formatTimeToString(timeLocal: LocalTime): String {
+fun LocalTime.formatTimeToString(): String {
     val formatter = DateTimeFormatter.ofPattern("HH:mm")
-    return timeLocal.format(formatter)
+    return this.format(formatter)
 }
 
-fun formatTimeToStringWithSecond(timeString: String): String {
+fun String.formatTimeToStringWithSecond(): String {
     val formatter = DateTimeFormatter.ofPattern("HH:mm:ss")
-    val time = LocalTime.parse(timeString + ":00", formatter)
+    val time = LocalTime.parse(this + ":00", formatter)
     return time.format(formatter)
 }
 
-fun parseToLocalDateTime(timeString: String): LocalDateTime {
-    return LocalDateTime.parse(timeString, DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+fun String.parseToLocalDateTime(): LocalDateTime {
+    return LocalDateTime.parse(this, DateTimeFormatter.ISO_LOCAL_DATE_TIME)
 }

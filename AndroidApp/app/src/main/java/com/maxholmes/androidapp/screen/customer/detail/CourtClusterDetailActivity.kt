@@ -56,7 +56,6 @@ class CourtClusterDetailActivity : AppCompatActivity() {
 
         loadCourtClusterDetails()
         loadCourtOwnerInfo()
-        loadImage()
         loadCourts()
         loadDays()
     }
@@ -122,48 +121,25 @@ class CourtClusterDetailActivity : AppCompatActivity() {
         binding.starValueTextView.text = "0"
         val timeWorking = courtCluster!!.openingTime + " - " + courtCluster!!.closingTime
         binding.workingTimeTextView.text = timeWorking
-    }
-
-    private fun loadImage() {
-        RetrofitClient.ApiClient.apiService.getImagesByCourtClusterId(courtCluster!!.id)
-            .enqueue(object : Callback<APIResponse> {
-                override fun onResponse(call: Call<APIResponse>, response: Response<APIResponse>) {
-                    if (response.isSuccessful) {
-                        response.body()?.let { apiResponse ->
-                            val imageList: List<ImageCourtUrl>? = parseApiResponseData(apiResponse.data)
-                            imageList.let {
-                                if(it.isNullOrEmpty())
-                                {
-                                    binding.courtClusterImage.setImageResource(R.drawable.image_court_1)
-                                }
-                                else
-                                {
-                                    binding.courtClusterImage.loadImageCircleWithUrl(
-                                        it[0].url,
-                                        R.drawable.image_court_1
-                                    )
-                                }
-                            }
+        RetrofitClient.ApiClient.apiService.getImagesByClusterId(courtCluster!!.id).enqueue(object: Callback<APIResponse> {
+            override fun onResponse(call: Call<APIResponse>, response: Response<APIResponse>) {
+                if (response.isSuccessful) {
+                    response.body()?.let { apiResponse ->
+                        val images: List<ImageCourtUrl>? = parseApiResponseData(apiResponse.data)
+                        if (images != null && images.size != 0)
+                        {
+                            binding.courtClusterImage.loadImageWithUrl(images[0].url, R.drawable.image_court_1)
                         }
-                    } else {
-                        Toast.makeText(
-                            this@CourtClusterDetailActivity,
-                            "Lỗi khi tải hình ảnh!",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        binding.courtClusterImage.setImageResource(R.drawable.image_court_1)
+                        else
+                        {
+                            binding.courtClusterImage.setImageResource(R.drawable.image_court_1)
+                        }
                     }
                 }
-
-                override fun onFailure(call: Call<APIResponse>, t: Throwable) {
-                    Toast.makeText(
-                        this@CourtClusterDetailActivity,
-                        "Lỗi kết nối mạng. Vui lòng thử lại!",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    binding.courtClusterImage.setImageResource(R.drawable.image_court_1)
-                }
-            })
+            }
+            override fun onFailure(call: Call<APIResponse>, t: Throwable) {
+            }
+        })
     }
 
 
@@ -217,28 +193,11 @@ class CourtClusterDetailActivity : AppCompatActivity() {
         })
     }
 
-//    private fun loadDays() {
-//        val calendar = Calendar.getInstance()
-//        val selectDays = mutableListOf<Calendar>()
-//
-//        for (i in 0..6) {
-//            val day = calendar.clone() as Calendar
-//            day.add(Calendar.DAY_OF_YEAR, i)
-//            selectDays.add(day)
-//        }
-//
-//        selectDayAdapter.updateData(selectDays)
-//    }
-
     private fun loadDays() {
         val calendar = Calendar.getInstance()
         val selectDays = mutableListOf<Calendar>()
 
-        // Lùi lại 15 ngày từ hôm nay
-        calendar.add(Calendar.DAY_OF_YEAR, -20)
-
-        // Lặp từ 15 ngày trước đến ngày mai (tổng cộng 17 ngày)
-        for (i in 0..21) {
+        for (i in 0..6) {
             val day = calendar.clone() as Calendar
             day.add(Calendar.DAY_OF_YEAR, i)
             selectDays.add(day)
@@ -246,4 +205,5 @@ class CourtClusterDetailActivity : AppCompatActivity() {
 
         selectDayAdapter.updateData(selectDays)
     }
+
 }

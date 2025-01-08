@@ -9,5 +9,6 @@ data class AddCourtClusterRequest(
     val district: String,
     val ward: String,
     val street: String,
-    val numberOfCourts: Int
+    val numberOfCourts: Int,
+    val image: String?
 )

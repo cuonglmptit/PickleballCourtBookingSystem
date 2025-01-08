@@ -75,7 +75,7 @@ class BookScheduleActivity : AppCompatActivity() {
                     response.body()?.let { apiResponse ->
                         val parsedBookings: List<CustomBookingResponse>? = parseApiResponseData(apiResponse.data)
                         if (!parsedBookings.isNullOrEmpty()) {
-                            val sortedBookings = parsedBookings.sortedByDescending {booking -> parseToLocalDateTime(booking.lastUpdatedTime)}
+                            val sortedBookings = parsedBookings.sortedByDescending {booking -> booking.lastUpdatedTime.parseToLocalDateTime()}
                             bookings.clear()
                             bookings.addAll(sortedBookings)
                             customBookingAdapter.updateData(bookings)

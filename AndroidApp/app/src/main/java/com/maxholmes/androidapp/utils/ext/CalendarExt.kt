@@ -31,6 +31,17 @@ fun Calendar.formatDate(pattern: String = "yyyy-MM-dd"): String {
     return dateFormat.format(this.time)
 }
 
+fun Calendar.formatDateToShow(pattern: String = "dd/MM/yyyy"): String {
+    val dateFormat = SimpleDateFormat(pattern, Locale.getDefault())
+    return dateFormat.format(this.time)
+}
+fun String.formatDateToRequest(): String {
+    val inputFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.getDefault())
+    val outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.getDefault())
+    return LocalDate.parse(this, inputFormatter).format(outputFormatter)
+}
+
+
 fun String.toCustomDateFormat(): String {
     val inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
 

@@ -11,6 +11,7 @@ import com.maxholmes.androidapp.data.dto.response.CourtClusterResponse
 import com.maxholmes.androidapp.data.dto.response.parseApiResponseData
 import com.maxholmes.androidapp.data.model.Address
 import com.maxholmes.androidapp.data.model.CourtCluster
+import com.maxholmes.androidapp.data.model.ImageCourtUrl
 import com.maxholmes.androidapp.data.service.RetrofitClient
 import com.maxholmes.androidapp.databinding.ActivityHomeCourtOwnerBinding
 import com.maxholmes.androidapp.screen.courtowner.bookschedule.BookScheduleOwnerActivity
@@ -104,7 +105,9 @@ class HomeCourtOwnerActivity : AppCompatActivity() {
                                                     description = courtClusterResponse.description,
                                                     address = address,
                                                     courtOwnerId = courtClusterResponse.courtOwnerId,
+                                                    status = courtClusterResponse.status
                                                 )
+
                                                 courtClusters.add(courtCluster)
                                                 courtClusterAdapter.updateData(courtClusters.toMutableList())
                                             }

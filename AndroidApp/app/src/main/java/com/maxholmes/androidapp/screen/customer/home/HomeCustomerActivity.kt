@@ -12,6 +12,7 @@ import com.maxholmes.androidapp.data.dto.response.CourtClusterResponse
 import com.maxholmes.androidapp.data.dto.response.parseApiResponseData
 import com.maxholmes.androidapp.data.model.Address
 import com.maxholmes.androidapp.data.model.CourtCluster
+import com.maxholmes.androidapp.data.model.ImageCourtUrl
 import com.maxholmes.androidapp.screen.customer.home.adapter.CourtClusterAdapter
 import com.maxholmes.androidapp.data.service.RetrofitClient
 import com.maxholmes.androidapp.databinding.ActivityHomeCustomerBinding
@@ -23,6 +24,7 @@ import com.maxholmes.androidapp.screen.user.UserActivity
 import com.maxholmes.androidapp.utils.OnItemRecyclerViewClickListener
 import com.maxholmes.androidapp.utils.ext.SharedPreferencesUtils
 import com.maxholmes.androidapp.utils.ext.authentication.getRoleFromToken
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -79,6 +81,7 @@ class HomeCustomerActivity : AppCompatActivity() {
                                                 description = courtClusterResponse.description,
                                                 address = address!!,
                                                 courtOwnerId = courtClusterResponse.courtOwnerId,
+                                                status = courtClusterResponse.status
                                             )
                                             courtClusters.add(courtCluster)
                                             courtClusterAdapter.updateData(courtClusters.toMutableList())
@@ -94,7 +97,9 @@ class HomeCustomerActivity : AppCompatActivity() {
                         courtClusterAdapter.updateData(courtClusters.toMutableList())
                     }
                 } else {
-                    Toast.makeText(this@HomeCustomerActivity, "Lấy dữ liệu sân bị lỗi, vui lòng thử lại sau.", Toast.LENGTH_SHORT).show()
+                    val data = JSONObject(response.errorBody()?.string())
+                    val text: String = parseApiResponseData(data.get("userMsg")) ?: "Lỗi: ${response.code()}"
+                    Toast.makeText(this@HomeCustomerActivity, text, Toast.LENGTH_SHORT).show()
                 }
             }
 

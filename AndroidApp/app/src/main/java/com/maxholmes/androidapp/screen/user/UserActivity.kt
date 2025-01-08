@@ -13,7 +13,6 @@ import com.maxholmes.androidapp.data.service.RetrofitClient
 import com.maxholmes.androidapp.databinding.ActivityUserBinding
 import com.maxholmes.androidapp.screen.authentication.LoginActivity
 import com.maxholmes.androidapp.screen.courtowner.home.HomeCourtOwnerActivity
-import com.maxholmes.androidapp.screen.customer.booking.BookingActivity
 import com.maxholmes.androidapp.screen.customer.bookschedule.BookScheduleActivity
 import com.maxholmes.androidapp.screen.customer.home.HomeCustomerActivity
 import com.maxholmes.androidapp.screen.customer.search.SearchActivity
@@ -39,13 +38,13 @@ class UserActivity : AppCompatActivity() {
             return
         }
 
-        fetchUserInfo()
+        fetchUserInfo(token)
         setupLogoutButton()
         binding.bottomNavigationView.selectedItemId = R.id.user
         setupBottomNavigation(token)
     }
 
-    private fun fetchUserInfo() {
+    private fun fetchUserInfo(token: String) {
         val token = SharedPreferencesUtils.getToken(this) ?: return
         val headerAuthorize = "Bearer $token"
         RetrofitClient.ApiClient.apiService.getUserInfo(headerAuthorize).enqueue(object : Callback<APIResponse> {
@@ -53,7 +52,7 @@ class UserActivity : AppCompatActivity() {
                 if (response.isSuccessful) {
                     response.body()?.let { apiResponse ->
                         val userInfo: UserInfoDto? = parseApiResponseData(apiResponse.data)
-                        userInfo?.let { updateUI(it) }
+                        userInfo?.let { updateUI(it, token) }
                     }
                 } else {
                     Toast.makeText(this@UserActivity, "Lỗi khi lấy thông tin người dùng", Toast.LENGTH_SHORT).show()
@@ -68,10 +67,16 @@ class UserActivity : AppCompatActivity() {
         })
     }
 
-    private fun updateUI(userInfo: UserInfoDto) {
+    private fun updateUI(userInfo: UserInfoDto, token: String) {
         binding.textViewName.text = userInfo.name
         binding.textViewEmail.text = userInfo.email
         binding.textViewPhoneNumber.text = userInfo.phoneNumber
+        when (getRoleFromToken(token)) {
+            "Customer" -> binding.tvUserRole.text = "Khách hàng"
+            "CourtOwner" -> binding.tvUserRole.text = "Chủ sân"
+            "Admin" -> binding.tvUserRole.text = "Quản trị viên"
+            else -> binding.tvUserRole.text = "Khách hàng"
+        }
 
         userInfo.avatarUrl?.let { url ->
             binding.imgAvatar.loadImageCircleWithUrl(url, R.drawable.ic_avatar)

@@ -7,11 +7,13 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.maxholmes.androidapp.data.dto.request.RegisterRequest
 import com.maxholmes.androidapp.data.dto.response.APIResponse
+import com.maxholmes.androidapp.data.dto.response.parseApiResponseData
 import com.maxholmes.androidapp.data.service.RetrofitClient
 import com.maxholmes.androidapp.databinding.ActivityRegisterBinding
 import com.maxholmes.androidapp.screen.authentication.LoginActivity
 import com.maxholmes.androidapp.screen.test.TestActivity
 import com.maxholmes.androidapp.utils.enum.RoleEnum
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -114,10 +116,9 @@ class RegisterActivity : AppCompatActivity() {
                         startActivity(intent)
                     }
                 } else {
-                    binding.progressBar.visibility = View.GONE
-                    Toast.makeText(this@RegisterActivity, "Lỗi: ${response.message()}", Toast.LENGTH_SHORT).show()
-                    val intent = Intent(this@RegisterActivity, TestActivity::class.java)
-                    startActivity(intent)
+                    val data = JSONObject(response.errorBody()?.string())
+                    val text: String = parseApiResponseData(data.get("userMsg"))!!
+                    Toast.makeText(this@RegisterActivity, text, Toast.LENGTH_SHORT).show()
                 }
             }
 

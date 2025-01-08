@@ -5,16 +5,20 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.maxholmes.androidapp.R
 import com.maxholmes.androidapp.data.dto.response.APIResponse
 import com.maxholmes.androidapp.data.dto.response.parseApiResponseData
 import com.maxholmes.androidapp.data.model.Address
 import com.maxholmes.androidapp.data.model.CourtCluster
+import com.maxholmes.androidapp.data.model.ImageCourtUrl
 import com.maxholmes.androidapp.data.service.RetrofitClient
 import com.maxholmes.androidapp.databinding.ItemCourtClusterCourtownerBinding
 import com.maxholmes.androidapp.utils.OnItemRecyclerViewClickListener
+import com.maxholmes.androidapp.utils.enum.CourtClusterStatus
 import com.maxholmes.androidapp.utils.ext.loadImageCircleWithUrl
+import com.maxholmes.androidapp.utils.ext.loadImageWithUrl
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -66,16 +70,38 @@ class CourtClusterCourtOwnerAdapter : RecyclerView.Adapter<CourtClusterCourtOwne
 
         fun bindViewData(courtCluster: CourtCluster) {
             courtClusterData = courtCluster
-
-            courtCluster.imageUrl?.let {
-                binding.courtClusterImage.loadImageCircleWithUrl(it, R.drawable.image_court_1)
-            }
-
+            val imageUrl = courtCluster.imageUrl ?: ""
+            binding.courtClusterImage.loadImageCircleWithUrl(imageUrl, R.drawable.image_court_1)
             binding.courtClusterNameTextView.text = courtCluster.name
 
             binding.addressCourtClusterTextView.text = courtCluster.address.toString()
-
+            if(courtCluster.status == CourtClusterStatus.Active.value) {
+                binding.status.text = "Trạng thái: Hoạt động"
+            }
+            else
+            {
+                binding.status.text = "Trạng thái: Ngưng hoạt động"
+            }
             binding.ratingText.text = "0 (rate)"
+            RetrofitClient.ApiClient.apiService.getImagesByClusterId(courtCluster.id).enqueue(object: Callback<APIResponse> {
+                override fun onResponse(call: Call<APIResponse>, response: Response<APIResponse>) {
+                    if (response.isSuccessful) {
+                        response.body()?.let { apiResponse ->
+                            val images: List<ImageCourtUrl>? = parseApiResponseData(apiResponse.data)
+                            if (images != null && images.size != 0)
+                            {
+                                binding.courtClusterImage.loadImageWithUrl(images[0].url, R.drawable.image_court_1)
+                            }
+                            else
+                            {
+                                binding.courtClusterImage.setImageResource(R.drawable.image_court_1)
+                            }
+                        }
+                    }
+                }
+                override fun onFailure(call: Call<APIResponse>, t: Throwable) {
+                }
+            })
         }
 
         override fun onClick(view: View?) {

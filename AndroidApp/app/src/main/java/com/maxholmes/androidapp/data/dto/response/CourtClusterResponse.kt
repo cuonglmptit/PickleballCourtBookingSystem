@@ -13,4 +13,5 @@ data class CourtClusterResponse(
     var description: String?,
     var addressId: String,
     var courtOwnerId: String,
+    var status: String
 ) : Parcelable

@@ -26,6 +26,18 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
+import android.app.DatePickerDialog
+import android.widget.ArrayAdapter
+import android.widget.DatePicker
+import com.google.gson.JsonObject
+import com.maxholmes.androidapp.data.model.ImageCourtUrl
+import com.maxholmes.androidapp.utils.ext.formatDateToRequest
+import com.maxholmes.androidapp.utils.ext.formatDateToShow
+import com.maxholmes.androidapp.utils.ext.generateTimeList
+import org.json.JSONObject
+import java.text.SimpleDateFormat
+import java.util.*
+
 class SearchActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySearchBinding
@@ -38,17 +50,32 @@ class SearchActivity : AppCompatActivity() {
 
         val token = SharedPreferencesUtils.getToken(this)
         courtClusterAdapter = CourtClusterAdapter()
+        val timeOptions = generateTimeList()
+        val timeAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, timeOptions)
+        timeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.recyclerViewSearchResults.layoutManager = LinearLayoutManager(this)
         binding.recyclerViewSearchResults.adapter = courtClusterAdapter
+        val todayDate = Calendar.getInstance().formatDateToShow("dd/MM/yyyy")
+        binding.textViewDate.text = todayDate
+        binding.spinnerStartTime.adapter = timeAdapter
+        binding.spinnerEndTime.adapter = timeAdapter
+        binding.spinnerStartTime.setSelection(timeOptions.indexOf("05:00"))
+        binding.spinnerEndTime.setSelection(timeOptions.indexOf("22:00"))
+
+
 
         binding.buttonSearch.setOnClickListener {
             val name = binding.editTextCourtName.text.toString()
             val city = binding.editTextCityName.text.toString()
-            val date = binding.editTextDate.text.toString()
-            val startTime = binding.editTextStartTime.text.toString()
-            val endTime = binding.editTextEndTime.text.toString()
+            val date = binding.textViewDate.text.toString().formatDateToRequest()
+            val startTime = binding.spinnerStartTime.selectedItem.toString()
+            val endTime = binding.spinnerEndTime.selectedItem.toString()
 
             searchCourtClusters(name, city, date, startTime, endTime)
+        }
+
+        binding.selectDayButton.setOnClickListener {
+            showDatePickerDialog()
         }
 
         courtClusterAdapter.registerItemRecyclerViewClickListener(object :
@@ -58,7 +85,6 @@ class SearchActivity : AppCompatActivity() {
                     val intent = Intent(this@SearchActivity, CourtClusterDetailActivity::class.java)
                     intent.putExtra("courtCluster", it)
                     startActivity(intent)
-                    Toast.makeText(this@SearchActivity, "Clicked on: ${it.name}", Toast.LENGTH_SHORT).show()
                 }
             }
         })
@@ -66,6 +92,23 @@ class SearchActivity : AppCompatActivity() {
         binding.bottomNavigationView.selectedItemId = R.id.search
         setupBottomNavigation(token!!)
     }
+
+    private fun showDatePickerDialog() {
+        val calendar = Calendar.getInstance()
+
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+        val datePickerDialog = DatePickerDialog(this, { view: DatePicker, year: Int, monthOfYear: Int, dayOfMonth: Int ->
+            val selectedDateFormatted = String.format("%02d/%02d/%04d", dayOfMonth, monthOfYear + 1, year)
+            binding.textViewDate.setText(selectedDateFormatted)
+        }, year, month, day)
+
+        datePickerDialog.datePicker.minDate = calendar.timeInMillis
+        datePickerDialog.show()
+    }
+
 
     private fun searchCourtClusters(
         name: String,
@@ -96,7 +139,22 @@ class SearchActivity : AppCompatActivity() {
                                                     description = courtClusterResponse.description,
                                                     address = address,
                                                     courtOwnerId = courtClusterResponse.courtOwnerId,
+                                                    status = courtClusterResponse.status
                                                 )
+                                                RetrofitClient.ApiClient.apiService.getImagesByClusterId(courtCluster.id).enqueue(object: Callback<APIResponse> {
+                                                    override fun onResponse(call: Call<APIResponse>, response: Response<APIResponse>) {
+                                                        if (response.isSuccessful) {
+                                                            response.body()?.let { apiResponse ->
+                                                                val images: List<ImageCourtUrl>? = parseApiResponseData(apiResponse.data)
+                                                                courtCluster.imageUrl = images?.get(0)?.url
+                                                            }
+                                                        }
+                                                    }
+                                                    override fun onFailure(call: Call<APIResponse>, t: Throwable) {
+                                                        Toast.makeText(this@SearchActivity, "Không lấy được dữ liệu hình ảnh: ${t.message}", Toast.LENGTH_SHORT).show()
+                                                    }
+
+                                                })
                                                 courtClusters.add(courtCluster)
 
                                                 courtClusterAdapter.updateData(courtClusters.toMutableList())
@@ -120,7 +178,9 @@ class SearchActivity : AppCompatActivity() {
                             Toast.makeText(this@SearchActivity, "Không tìm thấy sân nào.", Toast.LENGTH_SHORT).show()
                         }
                     } else {
-                        Toast.makeText(this@SearchActivity, "Lỗi tìm kiếm, vui lòng thử lại.", Toast.LENGTH_SHORT).show()
+                        val data = JSONObject(response.errorBody()?.string())
+                        val text: String = parseApiResponseData(data.get("userMsg"))!!
+                        Toast.makeText(this@SearchActivity, text, Toast.LENGTH_SHORT).show()
                     }
                 }
 
@@ -171,5 +231,5 @@ class SearchActivity : AppCompatActivity() {
             }
         }
     }
-
 }
+

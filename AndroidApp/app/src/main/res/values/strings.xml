@@ -29,6 +29,8 @@
     <string name="list_booking">Danh sách lịch đặt sân</string>
     <string name="search_court_cluster">Tìm kiếm cụm sân</string>
     <string name="court_cluster_detail">Thông tin cụm sân</string>
+    <string name="manage_court_price">Quản lý giá sân</string>
+    <string name="update">Cập nhật</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Xin chào, fragment trống</string>
     <string name="title_activity_login">Màn hình đăng nhập</string>
