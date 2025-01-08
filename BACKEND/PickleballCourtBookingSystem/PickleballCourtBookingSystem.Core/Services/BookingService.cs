@@ -526,7 +526,7 @@ public class BookingService : BaseService<Booking>, IBookingService
                 {
                     return courtOwnerResult;
                 }
-                
+
                 var customerResult = _userService.GetInfoByCustomerId(booking.CustomerId!.Value);
 
                 var courtOwnerPhoneNumber = ((CourtOwnerInfoDto)courtOwnerResult.Data!).PhoneNumber;
@@ -642,11 +642,9 @@ public class BookingService : BaseService<Booking>, IBookingService
             }
             var courtClusters = (IEnumerable<CourtCluster>)courtClusterResult.Data!;
             var statistics = new List<StatisticDto>();
-            //Nếu endDate bằng với ngày start thì endDate sẽ là cuối ngày
-            if (startDate.Date == endDate.Date)
-            {
-                endDate = endDate.Date.AddHours(23).AddMinutes(59).AddSeconds(59);
-            }
+
+            endDate = endDate.Date.AddHours(23).AddMinutes(59).AddSeconds(59);
+
             foreach (var courtCluster in courtClusters)
             {
                 var bookings = (List<Booking>)_bookingRepository.GetCompletedBookingByDate(courtCluster.Id!.Value, startDate, endDate);

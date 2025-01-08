@@ -70,6 +70,8 @@ export default {
     try {
       //Lấy gợi ý list time
       const listTimeResposne = await getListTime();
+      console.log(listTimeResposne);
+
       this.timeSuggestionList = listTimeResposne.data;
       this.updateEndTimeList(this.searchData.startTime);
       // console.log(this.timeSuggestionList);
