@@ -18,7 +18,7 @@
             class="search-input"
           />
           <div>
-            Lọc theo:
+            Trạng thái:
             <select v-model="statusFilter" class="status-select">
               <option value="">Tất cả</option>
               <option value="Pending">Đang chờ</option>
@@ -30,6 +30,19 @@
               <option value="Unpaid">Chưa thanh toán</option>
               <option value="Completed">Đã hoàn thành</option>
               <option value="Canceled">Đã hủy</option>
+            </select>
+          </div>
+          <div>
+            Cụm Sân:
+            <select v-model="clusterFilter" class="status-select">
+              <option value="">Tất cả</option>
+              <option
+                v-for="(cluster, index) in courtClusters"
+                :value="cluster.id"
+                :key="index"
+              >
+                {{ cluster.name }}
+              </option>
             </select>
           </div>
         </div>
@@ -130,7 +143,6 @@
           <div>
             Cụm sân: {{ getCourtClusterName(selectedBooking.courtClusterId) }}
           </div>
-          <div>Địa chỉ: Đường Nguyễn Trãi, Hà Đông, Hà Nội</div>
           <ul>
             <li
               v-for="courtTimeSlot in seletedCourTimeSlotsByBookingId"
@@ -225,6 +237,7 @@ export default {
       isFormVisible: false,
       searchQuery: "",
       statusFilter: "",
+      clusterFilter: "",
       bookings: [],
       currentPage: 1,
       itemsPerPage: 15,
@@ -252,7 +265,10 @@ export default {
             (this.statusFilter === "ConfirmedButUnpaid" &&
               booking.status === "CourtOwnerConfirmed" &&
               booking.paymentStatus === "Unpaid");
-          return matchesSearch && matchesStatus;
+          const matchesCluster =
+            !this.clusterFilter ||
+            booking.courtClusterId === this.clusterFilter;
+          return matchesSearch && matchesStatus && matchesCluster;
         }
       });
       const start = (this.currentPage - 1) * this.itemsPerPage;

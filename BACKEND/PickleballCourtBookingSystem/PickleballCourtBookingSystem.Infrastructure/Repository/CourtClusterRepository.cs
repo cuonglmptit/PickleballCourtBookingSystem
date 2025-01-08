@@ -26,6 +26,7 @@ namespace PickleballCourtBookingSystem.Infrastructure.Repository
                                 JOIN Court c ON cc.id = c.courtClusterId
                                 JOIN CourtTimeSlot cts ON c.id = cts.courtId
                                 WHERE cts.isAvailable = 1
+                                AND cc.status = 1
                                 AND cts.date = @date
                                 AND cts.time >= @startTime
                                 AND cts.time < @endTime

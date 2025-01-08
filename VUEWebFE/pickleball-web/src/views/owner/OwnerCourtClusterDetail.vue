@@ -1,5 +1,18 @@
 <template>
   <div class="container">
+    <div class="overlay" v-if="cluster.status === 'Inactive'">
+      <div class="message-box">
+        <p
+          class="roboto-bold font-size-32"
+          style="color: var(--topic-color3-500); white-space: nowrap"
+        >
+          Sân đang bị ngừng hoạt động, vui lòng chờ admin duyệt mở sân.
+        </p>
+        <button class="regular-btn add-time-slot-btn" @click="goBack">
+          Quay lại
+        </button>
+      </div>
+    </div>
     <div class="content">
       <div class="left-container">
         <div class="left-top">
@@ -19,7 +32,11 @@
               :key="courtPrice.id"
               class="time-slot"
             >
-              {{ courtPrice.time + " - Giá tiền: " + courtPrice.price }}
+              {{
+                courtPrice.time +
+                " - Giá tiền: " +
+                formatCurrency(courtPrice.price)
+              }}
               <button
                 class="delete-slot-btn p-icon-x"
                 @click="removeCourtPrice(index)"
@@ -111,7 +128,7 @@
       <div class="add-price-form" @click.stop>
         <div class="font-size-24 roboto-bold">Thêm giờ (lịch đặt)</div>
         <InputSelect
-          style="width: 86px"
+          style="width: fit-content; border: 1px solid var(--topic-color-300)"
           :placeHoder="'Chọn giờ'"
           v-model="newPrice.time"
           :suggestions="
@@ -199,7 +216,7 @@ export default {
         closingTime: "",
         addressId: "",
         courtOwnerId: "",
-        status: 1,
+        status: "",
       },
       listCourtPrices: [],
       courts: {},
@@ -321,6 +338,9 @@ export default {
       } catch (error) {
         console.log(`handleCreateCourtTimeSlots ${error}`);
       }
+    },
+    goBack() {
+      this.$router.go(-1); // Quay lại trang trước đó
     },
     generateDateArray(startDate, endDate) {
       const start = new Date(startDate);
@@ -658,5 +678,21 @@ export default {
 .add-price-form .add-price-input {
   width: 100%;
   padding: 4px 16px;
+}
+
+/* Làm bở nếu disabled */
+.message-box {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 64px;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  row-gap: 32px;
 }
 </style>

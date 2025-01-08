@@ -38,7 +38,10 @@ const endpoints = {
     getStatisticInRange: '/api/Booking/Statistic',
     getStatisticAll: `/api/Booking/Statistic/All`,
     //Customer
-    addBooking: `/api/Booking/add-booking`
+    addBooking: `/api/Booking/add-booking`,
+    //Admin
+    getClusterAdmin: (status) => `/api/Admin/Clusters/${status}`,
+    updateCourtClusterStatus: (clusterId, clusterStatus) => `/api/Admin/Update/CourtClusterStatus/${clusterId}/${clusterStatus}`
 };
 
 export const searchCourtClusters = (queryParams) => {
@@ -210,4 +213,12 @@ export const getStatisticAll = () => {
 }
 export const getStatisticInRange = (startDate, endDate) => {
     return getData(endpoints.getStatisticInRange, { startDate, endDate })
+}
+
+export const updateCourtClusterStatus = (clusterId, clusterStatus) => {
+    return putData(endpoints.updateCourtClusterStatus(clusterId, clusterStatus));
+}
+
+export const getClusterAdmin = (status) => {
+    return getData(endpoints.getClusterAdmin(status))
 }

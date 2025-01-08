@@ -1,9 +1,11 @@
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PickleballCourtBookingSystem.Api.Models;
 using PickleballCourtBookingSystem.Core.Entities;
 using PickleballCourtBookingSystem.Core.Interfaces.Infrastructure;
 using PickleballCourtBookingSystem.Core.Interfaces.Services;
+using PickleballCourtBookingSystem.Core.PEnum;
 using PickleballCourtBookingSystem.Infrastructure.Repository;
 
 namespace PickleballCourtBookingSystem.Api.Controllers
@@ -24,7 +26,7 @@ namespace PickleballCourtBookingSystem.Api.Controllers
             var result = _adminService.GetAllService();
             return StatusCode(result.StatusCode, result);
         }
-        
+
         [HttpGet("{id}")]
         public IActionResult GetAdminById(Guid id)
         {
@@ -46,7 +48,7 @@ namespace PickleballCourtBookingSystem.Api.Controllers
             var result = _adminService.UpdateService(admin, id);
             return StatusCode(result.StatusCode, result);
         }
-        
+
         [HttpDelete("{id}")]
         public IActionResult DeleteAdmin(Guid id)
         {
@@ -54,5 +56,22 @@ namespace PickleballCourtBookingSystem.Api.Controllers
             return StatusCode(result.StatusCode, result);
         }
 
+        //Api cập nhật status của court cluster
+        [HttpPut("Update/CourtClusterStatus/{clusterId}/{status}")]
+        [Authorize(Roles = nameof(RoleEnum.Admin))]
+        public IActionResult UpdateClusterStatus(Guid clusterId, CourtClusterStatusEnum status)
+        {
+            var result = _adminService.UpdateClusterStatus(clusterId, status);
+            return StatusCode(result.StatusCode, result);
+        }
+
+        //Api lấy ra các cluster cho admin
+        [HttpGet("Clusters/{status?}")]
+        [Authorize(Roles = nameof(RoleEnum.Admin))]
+        public IActionResult GetClusters(CourtClusterStatusEnum? status = null)
+        {
+            var result = _adminService.GetListCourtClusterForAdmin(status);
+            return StatusCode(result.StatusCode, result);
+        }
     }
 }

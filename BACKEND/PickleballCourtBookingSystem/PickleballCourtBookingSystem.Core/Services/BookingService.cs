@@ -83,13 +83,13 @@ public class BookingService : BaseService<Booking>, IBookingService
                         DevMsg: "Lich san da bi dang ky");
                 }
 
-                // if (courtTimeSlot.Date != null && courtTimeSlot.Time != null &&
-                //     courtTimeSlot.Date.Value + courtTimeSlot.Time.Value < _timeService.GetCurrentTime())
-                // {
-                //     return CreateServiceResult(false, StatusCode: 400,
-                //         UserMsg: "Ban dang ky san vao thoi gian trong qua khu",
-                //         DevMsg: "Thoi gian dang ky san o qua khu");
-                // }
+                if (courtTimeSlot.Date != null && courtTimeSlot.Time != null &&
+                    courtTimeSlot.Date.Value + courtTimeSlot.Time.Value < _timeService.GetCurrentTime())
+                {
+                    return CreateServiceResult(false, StatusCode: 400,
+                        UserMsg: "Ban dang ky san vao thoi gian trong qua khu",
+                        DevMsg: "Thoi gian dang ky san o qua khu");
+                }
 
                 if (courtTimeSlot.Price.HasValue)
                 {
